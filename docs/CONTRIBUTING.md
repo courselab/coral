@@ -1,15 +1,15 @@
 
-Contributing to KobraPy
+Contributing to Coral
 ==============================
  
- KobraPy is open source and you are welcome and encouraged to contribute.
+ Coral is open source and you are welcome and encouraged to contribute.
 
  These are a few guidelines.
 
  Contribution workflow
  ------------------------------
 
- The official KobraPy repository is at https://github.com/monaco/kobrapy
+ The official Coral repository is at https://github.com/monaco/kobrapy
    
  To start contributing, make sure you've read the essential documentation
  thoroughly:
