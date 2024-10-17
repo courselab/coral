@@ -26,6 +26,7 @@
 
  __KNOWN BUGS__
 
+ # Fixed
  * In the current implementation, reversing movement (e.g. if the snake moving
    right and the player press the left key), is not an illegal move, although
    a bad one, as it causes the snake to bite itself (this adds to the game
