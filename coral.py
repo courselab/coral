@@ -55,7 +55,6 @@ arena = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # BIG_FONT   = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/8))
 # SMALL_FONT = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/20))
-
 BIG_FONT   = pygame.font.Font("assets/font/GetVoIP-Grotesque.ttf", int(WIDTH/8))
 SMALL_FONT = pygame.font.Font("assets/font/GetVoIP-Grotesque.ttf", int(WIDTH/20))
 
@@ -238,16 +237,16 @@ while True:
 
           # Key pressed
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DOWN:    # Down arrow:  move down
+            if event.key == pygame.K_DOWN and snake.ymov == 0:    # Down arrow:  move down
                 snake.ymov = 1
                 snake.xmov = 0
-            elif event.key == pygame.K_UP:    # Up arrow:    move up
+            elif event.key == pygame.K_UP and snake.ymov == 0:    # Up arrow:    move up
                 snake.ymov = -1
                 snake.xmov = 0
-            elif event.key == pygame.K_RIGHT: # Right arrow: move right
+            elif event.key == pygame.K_RIGHT and snake.xmov == 0: # Right arrow: move right
                 snake.ymov = 0
                 snake.xmov = 1
-            elif event.key == pygame.K_LEFT:  # Left arrow:  move left
+            elif event.key == pygame.K_LEFT and snake.xmov == 0:  # Left arrow:  move left
                 snake.ymov = 0
                 snake.xmov = -1
             elif event.key == pygame.K_q:     # Q         : quit game
