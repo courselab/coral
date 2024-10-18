@@ -180,16 +180,34 @@ class Snake:
             self.head.x += self.xmov * GRID_SIZE
             self.head.y += self.ymov * GRID_SIZE
 
+    def is_in_position(self, x, y):
+        """ Determine whether any part of the snake is in position (x, y). """
+        """This could be optimized by always maintaining a hashmap of the positions
+        of the snake's segments, which felt unecessary by now. """
+
+        if self.head.x == x and self.head.y == y:
+            return True
+        for square in self.tail: 
+            if square.x == x and square.y == y:
+                return True
+        return False
+
 ##
 ## The apple class.
 ##
 
 class Apple:
-    def __init__(self):
+    def __init__(self, snake=None):
 
         # Pick a random position within the game arena
         self.x = int(random.randint(0, WIDTH)/GRID_SIZE) * GRID_SIZE
         self.y = int(random.randint(0, HEIGHT)/GRID_SIZE) * GRID_SIZE
+
+        if snake:
+            while snake.is_in_position(self.x, self.y):
+                # Prevent apples from spawning on top of the snake
+                self.x = int(random.randint(0, WIDTH)/GRID_SIZE) * GRID_SIZE
+                self.y = int(random.randint(0, HEIGHT)/GRID_SIZE) * GRID_SIZE
 
         # Create an apple at that location
         self.rect = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
@@ -253,7 +271,7 @@ while True:
             elif event.key == pygame.K_q:     # Q         : quit game
                 pygame.quit()
                 sys.exit()
-            elif event.key == pygame.K_p:     # S         : pause game
+            elif event.key == pygame.K_p:     # P         : pause game
                 game_on = not game_on
 
     ## Update the game
@@ -281,8 +299,8 @@ while True:
     # If the head pass over an apple, lengthen the snake and drop another apple
     if snake.head.x == apple.x and snake.head.y == apple.y:
         #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
-        snake.got_apple = True;
-        apple = Apple()
+        snake.got_apple = True
+        apple = Apple(snake)
 
 
     # Update display and move clock.
