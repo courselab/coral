@@ -97,7 +97,7 @@ def random_position():
 
     # Not too close to the border (minimum of 2 border squares)
     x = int(random.randint(GRID_SIZE*2, WIDTH - GRID_SIZE*2)/GRID_SIZE) * GRID_SIZE
-    y = int(random.randint(GRID_SIZE*2, WIDTH - GRID_SIZE*2)/GRID_SIZE) * GRID_SIZE
+    y = int(random.randint(GRID_SIZE*2, HEIGHT - GRID_SIZE*2)/GRID_SIZE) * GRID_SIZE
 
     # Calculate distances to the borders
     left_dist = x
