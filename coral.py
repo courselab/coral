@@ -92,6 +92,35 @@ def center_prompt(title, subtitle):
         sys.exit()
 
 
+## This function generate random positions for the snake
+def random_position():
+
+    # Not too close to the border (minimum of 2 border squares)
+    x = int(random.randint(GRID_SIZE*2, WIDTH - GRID_SIZE*2)/GRID_SIZE) * GRID_SIZE
+    y = int(random.randint(GRID_SIZE*2, HEIGHT - GRID_SIZE*2)/GRID_SIZE) * GRID_SIZE
+
+    # Calculate distances to the borders
+    left_dist = x
+    right_dist = WIDTH - x
+    top_dist = y
+    bottom_dist = HEIGHT - y
+
+    # Decide movement direction (horizontal or vertical)
+    if min(left_dist, right_dist) < min(top_dist, bottom_dist): # Move horizontally
+        if left_dist < right_dist:
+            xmov = 1 
+        else:
+            xmov = -1 
+        ymov = 0
+    else:  # Move vertically
+        if top_dist < bottom_dist: 
+            ymov = 1  
+        else:
+            ymov = -1 
+        xmov = 0
+
+    return x, y, xmov, ymov
+
 ##
 ## Snake class
 ##
@@ -99,15 +128,13 @@ def center_prompt(title, subtitle):
 class Snake:
     def __init__(self):
 
-        # Dimension of each snake segment.
-
-        self.x, self.y = GRID_SIZE, GRID_SIZE
-
         # Initial direction
         # xmov :  -1 left,    0 still,   1 right
         # ymov :  -1 up       0 still,   1 dows
-        self.xmov = 1
-        self.ymov = 0
+
+        # Dimension of each snake segment.
+
+        self.x, self.y, self.xmov, self.ymov = random_position()
 
         # The snake has a head segement,
         self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
@@ -143,16 +170,13 @@ class Snake:
             pygame.draw.rect(arena, DEAD_HEAD_COLOR, snake.head)
             center_prompt("Game Over", "Press to restart")
 
-            # Respan the head
-            self.x, self.y = GRID_SIZE, GRID_SIZE
+            # Respan the head with initial directions
+            self.x, self.y, self.xmov, self.ymov = random_position()
+
             self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
 
             # Respan the initial tail
             self.tail = []
-
-            # Initial direction
-            self.xmov = 1 # Right
-            self.ymov = 0 # Still
 
             # Resurrection
             self.alive = True
