@@ -257,7 +257,19 @@ while True:
                 game_on = not game_on
 
     ## Update the game
-
+    if not game_on:
+        pause_text = BIG_FONT.render("Paused", True, MESSAGE_COLOR)
+        pause_text_rect = pause_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
+        arena.blit(pause_text, pause_text_rect)
+        
+        continue_text = SMALL_FONT.render("Press P to continue", True, MESSAGE_COLOR)
+        continue_text_rect = continue_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 50))
+        arena.blit(continue_text, continue_text_rect)
+        
+        
+        pygame.display.update()
+        continue  # Skip the rest of the loop when paused
+    
     if game_on:
 
         snake.update()
