@@ -257,6 +257,8 @@ while True:
                 game_on = not game_on
 
     ## Update the game
+
+    ## Show "Paused" and "Press P to continue" messages in the center of the grid
     if not game_on:
         pause_text = BIG_FONT.render("Paused", True, MESSAGE_COLOR)
         pause_text_rect = pause_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
