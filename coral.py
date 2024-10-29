@@ -43,6 +43,15 @@ WINDOW_TITLE    = "Coral"  # Window title.
 
 CLOCK_TICKS     = 7         # How fast the snake moves.
 
+WHITE_COLOR = (255, 255, 255)
+RED_COLOR = (255, 0, 0)
+GREEN_COLOR = (0, 153, 0)
+
+ENERGY_BAR_WIDTH, ENERGY_BAR_HEIGHT = 200, 20
+ENERGY_CONSUMPTION = 1
+MAX_ENERGY = 100
+APPLE_ENERGY = 50
+
 ##
 ## Game implementation.
 ##
@@ -58,6 +67,7 @@ arena = pygame.display.set_mode((WIDTH, HEIGHT))
 
 BIG_FONT   = pygame.font.Font("assets/font/GetVoIP-Grotesque.ttf", int(WIDTH/8))
 SMALL_FONT = pygame.font.Font("assets/font/GetVoIP-Grotesque.ttf", int(WIDTH/20))
+IN_GAME_FONT = pygame.font.Font("assets/font/GetVoIP-Grotesque.ttf", int(WIDTH/48))
 
 pygame.display.set_caption(WINDOW_TITLE)
 
@@ -120,11 +130,39 @@ def random_position():
         xmov = 0
 
     return x, y, xmov, ymov
+##
+## Energy bar class
+##
+class EnergyBar:
+    def __init__(self, initalEnergy):
+        self.x = 0
+        self.y = 0
+        self.width = ENERGY_BAR_WIDTH
+        self.height = ENERGY_BAR_HEIGHT
+        self.energy = initalEnergy
+
+    def update(self):
+        pygame.draw.rect(arena, RED_COLOR, (self.x, self.y, self.width, self.height))
+        self.decrease_energy(ENERGY_CONSUMPTION)
+        pygame.draw.rect(arena, GREEN_COLOR, (self.x, self.y, self.energy * 2, self.height))
+        label = IN_GAME_FONT.render(f'Energy: {self.energy} / 100', True, WHITE_COLOR)
+        arena.blit(label, (self.x, self.y + 3))
+
+    def increase_energy(self, amount):
+        self.energy = min(MAX_ENERGY, self.energy + amount)
+
+    def decrease_energy(self, amount):
+        self.energy = max(0, self.energy - amount)
+
+    def get_energy(self):
+        return self.energy
+    
+    def set_max_energy(self):
+        self.energy = MAX_ENERGY
 
 ##
 ## Snake class
 ##
-
 class Snake:
     def __init__(self):
 
@@ -148,6 +186,8 @@ class Snake:
         # No collected apples.
         self.got_apple = False
 
+        # The energy is full
+        self.energy = EnergyBar(MAX_ENERGY)
         
     # This function is called at each loop interation.
 
@@ -162,6 +202,10 @@ class Snake:
         for square in self.tail:
             if self.head.x == square.x and self.head.y == square.y:
                 self.alive = False
+
+        # Check for not enough energy
+        if self.energy.get_energy() <= 0:
+            self.alive = False
 
         # In the event of death, reset the game arena.
         if not self.alive:
@@ -181,6 +225,7 @@ class Snake:
             # Resurrection
             self.alive = True
             self.got_apple = False
+            self.energy.set_max_energy()
 
             # Drop an apple
             apple = Apple()
@@ -195,10 +240,10 @@ class Snake:
             self.tail.insert(0,pygame.Rect(self.head.x, self.head.y, GRID_SIZE, GRID_SIZE))
 
             if self.got_apple:
-                self.got_apple = False 
+                self.got_apple = False
+                self.energy.increase_energy(APPLE_ENERGY)
             else:
                 self.tail.pop()
-
 
             # Move the head along current direction.
             self.head.x += self.xmov * GRID_SIZE
@@ -304,6 +349,8 @@ while True:
         draw_grid()
 
         apple.update()
+
+        snake.energy.update()
 
     # Draw the tail
     for square in snake.tail:
