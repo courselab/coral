@@ -70,12 +70,23 @@ def center_prompt(title, subtitle):
     # Show title and subtitle.
 
     center_title = BIG_FONT.render(title, True, MESSAGE_COLOR)
-    center_title_rect = center_title.get_rect(center=(WIDTH/2, HEIGHT/2))
+    center_title_rect = center_title.get_rect(center=(WIDTH/2, HEIGHT/3))
     arena.blit(center_title, center_title_rect)
 
-    center_subtitle = SMALL_FONT.render(subtitle, True, MESSAGE_COLOR)
-    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*2/3))
-    arena.blit(center_subtitle, center_subtitle_rect)
+    # Split the subtitle into lines and adjust long text
+    wrapped_lines = []
+    max_chars_per_line = 30  # Adjust this value as needed to limit line length
+
+    # Break the subtitle into multiple lines, if necessary
+    for line in subtitle.split("\n"):
+        wrapped_lines.extend(textwrap.wrap(line, max_chars_per_line))
+
+    # Render each line
+    for i, line in enumerate(wrapped_lines):
+        center_subtitle = SMALL_FONT.render(line, True, MESSAGE_COLOR)
+        # Adjust the position of each line to appear one below the other
+        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT/2 + i * (HEIGHT / 20)))
+        arena.blit(center_subtitle, center_subtitle_rect)
 
     pygame.display.update()
 
