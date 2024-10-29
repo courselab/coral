@@ -21,6 +21,7 @@
 import pygame
 import random
 import sys
+import textwrap
 
 ##
 ## Game customization.
@@ -152,7 +153,7 @@ class Snake:
 
             # Tell the bad news
             pygame.draw.rect(arena, DEAD_HEAD_COLOR, snake.head)
-            center_prompt("Game Over", "Press to restart")
+            center_prompt("Game Over", "Press any key to restart.\nPress Q to quit the game.")
 
             # Respan the head
             self.x, self.y = GRID_SIZE, GRID_SIZE
@@ -232,7 +233,7 @@ snake = Snake()    # The snake
 
 apple = Apple()    # An apple
 
-center_prompt(WINDOW_TITLE, "Press to start")
+center_prompt(WINDOW_TITLE, "Press any key to start.\nPress P to pause the game.\nPress Q to quit the game.\nUse the arrow keys to move the snake")
 
 ##
 ## Main loop
