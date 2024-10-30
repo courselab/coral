@@ -62,6 +62,11 @@ clock = pygame.time.Clock()
 
 arena = pygame.display.set_mode((WIDTH, HEIGHT))
 
+# Play background sound and change volume
+pygame.mixer.music.set_volume(0.4)
+background_music = pygame.mixer.music.load('musics/CPU Talk - FMA - CC BY BoxCat Games.mp3')
+pygame.mixer.music.play(-1)
+
 # BIG_FONT   = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/8))
 # SMALL_FONT = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/20))
 
