@@ -52,6 +52,8 @@ ENERGY_CONSUMPTION = 1
 MAX_ENERGY = 100
 APPLE_ENERGY = 50
 
+hard_mode = False  # Defined normal mode as standart.
+
 ##
 ## Game implementation.
 ##
@@ -76,9 +78,9 @@ game_on = 1
 ## This function is called when the snake dies.
 
 def center_prompt(title, subtitle):
+    global hard_mode, CLOCK_TICKS
 
-    # Show title and subtitle.
-
+    # Show title and subtitle
     center_title = BIG_FONT.render(title, True, MESSAGE_COLOR)
     center_title_rect = center_title.get_rect(center=(WIDTH/2, HEIGHT/2))
     arena.blit(center_title, center_title_rect)
@@ -87,19 +89,32 @@ def center_prompt(title, subtitle):
     center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*2/3))
     arena.blit(center_subtitle, center_subtitle_rect)
 
+    # Add hard mode prompt
+    hard_mode_text = SMALL_FONT.render("Press H for Hard Mode", True, MESSAGE_COLOR)
+    hard_mode_text_rect = hard_mode_text.get_rect(center=(WIDTH/2, HEIGHT*3/4))
+    arena.blit(hard_mode_text, hard_mode_text_rect)
+
     pygame.display.update()
 
-   # Wait for a keypres or a game quit event.
-
-    while ( event := pygame.event.wait() ):
+    # Wait for a keypress or a game quit event
+    while (event := pygame.event.wait()):
         if event.type == pygame.KEYDOWN:
-            break
+            if event.key == pygame.K_h:  # 'H' for Hard mode
+                hard_mode = True
+                CLOCK_TICKS = 12  # Increase speed for hard mode
+                break
+            elif event.key == pygame.K_q:  # 'Q' quits game
+                pygame.quit()
+                sys.exit()
+            else:  # Any other key for normal mode
+                break
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-    if event.key == pygame.K_q:          # 'Q' quits game
-        pygame.quit()
-        sys.exit()
+
+    # Set CLOCK_TICKS back to normal if not in hard mode
+    if not hard_mode:
+        CLOCK_TICKS = 7
 
 
 ## This function generate random positions for the snake
