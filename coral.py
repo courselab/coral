@@ -90,9 +90,26 @@ def center_prompt(title, subtitle):
     if event.key == pygame.K_q:          # 'Q' quits game
         pygame.quit()
         sys.exit()
-
-
 ##
+## Obstacle class
+##
+class Obstacle:
+    def __init__(self):
+        # Generate a random position for the obstacle within the game arena.
+        self.x = int(random.randint(0, WIDTH - GRID_SIZE) / GRID_SIZE) * GRID_SIZE
+        self.y = int(random.randint(0, HEIGHT - GRID_SIZE) / GRID_SIZE) * GRID_SIZE
+        # Create a rectangle object representing the obstacle.
+        self.rect = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
+
+    def update(self):
+        # Draw the obstacle on the arena.
+        pygame.draw.rect(arena, "#FF4500", self.rect)  # Use orange color for obstacles.
+
+# Function to create a list of obstacles.
+def create_obstacles(count=5):
+    return [Obstacle() for _ in range(count)]
+
+
 ## Snake class
 ##
 
@@ -221,6 +238,9 @@ snake = Snake()    # The snake
 
 apple = Apple()    # An apple
 
+# Generate obstacles at the start of the game.
+obstacles = create_obstacles(5)
+
 center_prompt(WINDOW_TITLE, "Press to start")
 
 ##
@@ -284,7 +304,14 @@ while True:
         snake.got_apple = True;
         apple = Apple()
 
+    # Update and draw the obstacles on the arena.
+    for obstacle in obstacles:
+        obstacle.update()
 
+    # Check if the snake collides with any obstacles.
+    for obstacle in obstacles:
+        if snake.head.colliderect(obstacle.rect):
+            snake.alive = False  # End the game if a collision occurs.
     # Update display and move clock.
     pygame.display.update()
     clock.tick(CLOCK_TICKS)
