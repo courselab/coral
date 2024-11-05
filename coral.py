@@ -21,6 +21,7 @@
 import pygame
 import random
 import sys
+import os
 
 ##
 ## Game customization.
@@ -92,21 +93,49 @@ def center_prompt(title, subtitle):
         sys.exit()
 
 
-## Get highscore
-highscore = 0
+## Get and save highscore from/in a file
+
+def save_high_score(score):
+    filename = "data/highscore.txt"
+
+    if not os.path.exists("data/"):
+        os.makedirs("data/")
+
+    try:
+        with open(filename, "w+") as file:
+            file.write(str(score))
+    except (FileNotFoundError, ValueError):
+        return 0
+
+
+def get_high_score():
+    filename = "data/highscore.txt"
+    try:
+        with open(filename, "r") as file:
+            return int(file.read())
+    except (FileNotFoundError, ValueError):
+        return 0
+
+
+highscore = get_high_score()
 
 ## Display highscore
 
 def display_highscore(score):
     global highscore
     if score > highscore:
+        # Update highscore
         highscore = score
+        save_high_score(score)
+
+        # Message to show that the score was a new highscore
         new_highscore = SMALL_FONT.render("NEW HIGHSCORE!", True, MESSAGE_COLOR)
         new_highscore_rect = new_highscore.get_rect(center=(WIDTH/2, HEIGHT*1/4))
         arena.blit(new_highscore, new_highscore_rect)
 
     text = "Highscore: " + str(highscore)
 
+    # Display highscore value
     center_highscore = SMALL_FONT.render(text, True, MESSAGE_COLOR)
     center_highscore_rect = center_highscore.get_rect(center=(WIDTH/2, HEIGHT*1/3))
     arena.blit(center_highscore, center_highscore_rect)
