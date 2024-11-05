@@ -72,11 +72,11 @@ def center_prompt(title, subtitle):
     center_title = BIG_FONT.render(title, True, MESSAGE_COLOR)
     center_title_rect = center_title.get_rect(center=(WIDTH/2, HEIGHT/2))
     arena.blit(center_title, center_title_rect)
-
+    
     center_subtitle = SMALL_FONT.render(subtitle, True, MESSAGE_COLOR)
     center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*2/3))
     arena.blit(center_subtitle, center_subtitle_rect)
-
+    
     pygame.display.update()
 
    # Wait for a keypres or a game quit event.
@@ -90,6 +90,28 @@ def center_prompt(title, subtitle):
     if event.key == pygame.K_q:          # 'Q' quits game
         pygame.quit()
         sys.exit()
+
+
+## Get highscore
+highscore = 0
+
+## Display highscore
+
+def display_highscore(score):
+    global highscore
+    if score > highscore:
+        highscore = score
+        new_highscore = SMALL_FONT.render("NEW HIGHSCORE!", True, MESSAGE_COLOR)
+        new_highscore_rect = new_highscore.get_rect(center=(WIDTH/2, HEIGHT*1/4))
+        arena.blit(new_highscore, new_highscore_rect)
+
+    text = "Highscore: " + str(highscore)
+
+    center_highscore = SMALL_FONT.render(text, True, MESSAGE_COLOR)
+    center_highscore_rect = center_highscore.get_rect(center=(WIDTH/2, HEIGHT*1/3))
+    arena.blit(center_highscore, center_highscore_rect)
+
+    pygame.display.update()
 
 
 ##
@@ -141,6 +163,7 @@ class Snake:
 
             # Tell the bad news
             pygame.draw.rect(arena, DEAD_HEAD_COLOR, snake.head)
+            display_highscore(len(snake.tail))
             center_prompt("Game Over", "Press to restart")
 
             # Respan the head
