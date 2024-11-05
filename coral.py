@@ -67,6 +67,13 @@ pygame.mixer.music.set_volume(0.4)
 background_music = pygame.mixer.music.load('musics/CPU Talk - FMA - CC BY BoxCat Games.mp3')
 pygame.mixer.music.play(-1)
 
+# Set game's sounds effects
+got_apple_sound = pygame.mixer.Sound('musics/got_apple.ogg')
+got_apple_sound.set_volume(0.6)
+
+game_over_sound = pygame.mixer.Sound('musics/game_over.wav')
+game_over_sound.set_volume(0.7)
+
 # BIG_FONT   = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/8))
 # SMALL_FONT = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/20))
 
@@ -214,6 +221,10 @@ class Snake:
 
         # In the event of death, reset the game arena.
         if not self.alive:
+            
+            # Play game over sound effect
+            pygame.mixer.music.stop()
+            game_over_sound.play()
 
             # Tell the bad news
             pygame.draw.rect(arena, DEAD_HEAD_COLOR, snake.head)
@@ -231,6 +242,7 @@ class Snake:
             self.alive = True
             self.got_apple = False
             self.energy.set_max_energy()
+            pygame.mixer.music.play()
 
             # Drop an apple
             apple = Apple()
@@ -373,6 +385,7 @@ while True:
         #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
         snake.got_apple = True;
         apple = Apple()
+        got_apple_sound.play()
 
 
     # Update display and move clock.
