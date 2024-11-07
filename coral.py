@@ -26,15 +26,7 @@ import sys
 ## Game customization.
 ##
 
-
-# Supported video modes
-
-VIDEO_MODES = [
-    (800, 800), (700, 700), (600, 600),
-    (500, 500), (400, 400), (300, 300)
-]
-
-WIDTH, HEIGHT = 800, 800     # Default game screen dimensions.
+WIDTH, HEIGHT = 800, 800     # Game screen dimensions.
 
 GRID_SIZE = 50               # Square grid size.
 
@@ -59,25 +51,7 @@ pygame.init()
 
 clock = pygame.time.Clock()
 
-display_info = pygame.display.Info()
-
-mon_w = display_info.current_w
-mon_h = display_info.current_h
-
-# Default window size
-win_res = WIDTH
-
-# If default video_mode doesn't fit, look for video mode that fits user's screen size
-if (mon_w<WIDTH or mon_h<HEIGHT):
-    min_dim = min(mon_w, mon_h)
-    win_res = VIDEO_MODES[-1][0] # The default is the smallest one
-    for mode in VIDEO_MODES:
-        if mode[0] < mon_w and mode[1] < mon_h:
-            win_res = mode[0]
-            break
-
-win = pygame.display.set_mode((win_res, win_res))
-arena = pygame.Surface((WIDTH, HEIGHT))
+arena = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # BIG_FONT   = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/8))
 # SMALL_FONT = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/20))
@@ -103,9 +77,6 @@ def center_prompt(title, subtitle):
     center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*2/3))
     arena.blit(center_subtitle, center_subtitle_rect)
 
-    # Scaling surface to display size
-    win.blit(pygame.transform.rotozoom(arena, 0, win_res/WIDTH), (0, 0))
-
     pygame.display.update()
 
    # Wait for a keypres or a game quit event.
@@ -121,35 +92,6 @@ def center_prompt(title, subtitle):
         sys.exit()
 
 
-## This function generate random positions for the snake
-def random_position():
-
-    # Not too close to the border (minimum of 2 border squares)
-    x = int(random.randint(GRID_SIZE*2, WIDTH - GRID_SIZE*2)/GRID_SIZE) * GRID_SIZE
-    y = int(random.randint(GRID_SIZE*2, HEIGHT - GRID_SIZE*2)/GRID_SIZE) * GRID_SIZE
-
-    # Calculate distances to the borders
-    left_dist = x
-    right_dist = WIDTH - x
-    top_dist = y
-    bottom_dist = HEIGHT - y
-
-    # Decide movement direction (horizontal or vertical)
-    if min(left_dist, right_dist) < min(top_dist, bottom_dist): # Move horizontally
-        if left_dist < right_dist:
-            xmov = 1 
-        else:
-            xmov = -1 
-        ymov = 0
-    else:  # Move vertically
-        if top_dist < bottom_dist: 
-            ymov = 1  
-        else:
-            ymov = -1 
-        xmov = 0
-
-    return x, y, xmov, ymov
-
 ##
 ## Snake class
 ##
@@ -157,13 +99,15 @@ def random_position():
 class Snake:
     def __init__(self):
 
+        # Dimension of each snake segment.
+
+        self.x, self.y = GRID_SIZE, GRID_SIZE
+
         # Initial direction
         # xmov :  -1 left,    0 still,   1 right
         # ymov :  -1 up       0 still,   1 dows
-
-        # Dimension of each snake segment.
-
-        self.x, self.y, self.xmov, self.ymov = random_position()
+        self.xmov = 1
+        self.ymov = 0
 
         # The snake has a head segement,
         self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
@@ -199,13 +143,16 @@ class Snake:
             pygame.draw.rect(arena, DEAD_HEAD_COLOR, snake.head)
             center_prompt("Game Over", "Press to restart")
 
-            # Respan the head with initial directions
-            self.x, self.y, self.xmov, self.ymov = random_position()
-
+            # Respan the head
+            self.x, self.y = GRID_SIZE, GRID_SIZE
             self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
 
             # Respan the initial tail
             self.tail = []
+
+            # Initial direction
+            self.xmov = 1 # Right
+            self.ymov = 0 # Still
 
             # Resurrection
             self.alive = True
@@ -339,8 +286,5 @@ while True:
 
 
     # Update display and move clock.
-
-    # Scaling surface to display size
-    win.blit(pygame.transform.rotozoom(arena, 0, win_res/WIDTH), (0, 0))
     pygame.display.update()
     clock.tick(CLOCK_TICKS)
