@@ -271,7 +271,7 @@ class Snake:
             game_over_sound.play()
 
             # Tell the bad news
-            pygame.draw.rect(arena, DEAD_HEAD_COLOR, snake.head)
+            pygame.draw.rect(arena, DEAD_HEAD_COLOR, self.head)
             center_prompt("Game Over", "Press to restart")
 
             # Respan the head with initial directions
@@ -289,7 +289,7 @@ class Snake:
             pygame.mixer.music.play()
 
             # Drop an apple
-            apple = Apple()
+            game.apple = Apple()
 
 
         # Move the snake.
@@ -331,6 +331,99 @@ class Apple:
         # Drop the apple
         pygame.draw.rect(arena, APPLE_COLOR, self.rect)
 
+##
+## The game class.
+##
+
+class Game:
+    def __init__(self):
+        self.snake = Snake()
+        self.apple = Apple()
+
+    def input(self):
+        for event in pygame.event.get():           # Wait for events
+
+            # App terminated
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            # Key pressed
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN:    # Down arrow:  move down
+                    self.snake.ymov = 1
+                    self.snake.xmov = 0
+                elif event.key == pygame.K_UP:    # Up arrow:    move up
+                    self.snake.ymov = -1
+                    self.snake.xmov = 0
+                elif event.key == pygame.K_RIGHT: # Right arrow: move right
+                    self.snake.ymov = 0
+                    self.snake.xmov = 1
+                elif event.key == pygame.K_LEFT:  # Left arrow:  move left
+                    self.snake.ymov = 0
+                    self.snake.xmov = -1
+                elif event.key == pygame.K_q:     # Q         : quit game
+                    pygame.quit()
+                    sys.exit()
+                elif event.key == pygame.K_p:     # S         : pause game
+                    game_on = not game_on
+
+    def update(self):
+        ## Show "Paused" and "Press P to continue" messages in the center of the grid
+        if not game_on:
+            pause_text = BIG_FONT.render("Paused", True, MESSAGE_COLOR)
+            pause_text_rect = pause_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
+            arena.blit(pause_text, pause_text_rect)
+            
+            continue_text = SMALL_FONT.render("Press P to continue", True, MESSAGE_COLOR)
+            continue_text_rect = continue_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 50))
+            arena.blit(continue_text, continue_text_rect)
+            
+            
+            pygame.display.update()
+            return  # Skip the rest of the loop when paused
+        
+        if game_on:
+
+            self.snake.update()
+
+            arena.fill(ARENA_COLOR)
+            draw_grid()
+
+            self.apple.update()
+
+            self.snake.energy.update()
+
+        # Draw the tail
+        for square in self.snake.tail:
+            pygame.draw.rect(arena, TAIL_COLOR, square)
+
+        # Draw head
+        pygame.draw.rect(arena, HEAD_COLOR, self.snake.head)
+
+        # Show score (snake length = head + tail)
+        score = BIG_FONT.render(f"{len(self.snake.tail)}", True, SCORE_COLOR)
+        arena.blit(score, score_rect)
+
+        # If the head pass over an apple, lengthen the snake and drop another apple
+        if self.snake.head.x == self.apple.x and self.snake.head.y == self.apple.y:
+            #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
+            self.snake.got_apple = True;
+            self.apple = Apple()
+            got_apple_sound.play()
+
+
+        # Update display and move clock.
+
+        # Scaling surface to display size
+        win.blit(pygame.transform.rotozoom(arena, 0, win_res/WIDTH), (0, 0))
+        pygame.display.update()
+        clock.tick(CLOCK_TICKS)
+
+    def run(self):
+        while True:
+            self.input()
+            self.update()
 
 ##
 ## Draw the arena
@@ -347,94 +440,12 @@ score_rect = score.get_rect(center=(WIDTH/2, HEIGHT/20+HEIGHT/30))
 
 draw_grid()
 
-snake = Snake()    # The snake
-
-apple = Apple()    # An apple
+game = Game()
 
 center_prompt(WINDOW_TITLE, "Press to start")
 
 ##
-## Main loop
+## Start main loop
 ##
 
-while True:
-
-    for event in pygame.event.get():           # Wait for events
-
-       # App terminated
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-
-          # Key pressed
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DOWN:    # Down arrow:  move down
-                snake.ymov = 1
-                snake.xmov = 0
-            elif event.key == pygame.K_UP:    # Up arrow:    move up
-                snake.ymov = -1
-                snake.xmov = 0
-            elif event.key == pygame.K_RIGHT: # Right arrow: move right
-                snake.ymov = 0
-                snake.xmov = 1
-            elif event.key == pygame.K_LEFT:  # Left arrow:  move left
-                snake.ymov = 0
-                snake.xmov = -1
-            elif event.key == pygame.K_q:     # Q         : quit game
-                pygame.quit()
-                sys.exit()
-            elif event.key == pygame.K_p:     # S         : pause game
-                game_on = not game_on
-
-    ## Update the game
-
-    ## Show "Paused" and "Press P to continue" messages in the center of the grid
-    if not game_on:
-        pause_text = BIG_FONT.render("Paused", True, MESSAGE_COLOR)
-        pause_text_rect = pause_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
-        arena.blit(pause_text, pause_text_rect)
-        
-        continue_text = SMALL_FONT.render("Press P to continue", True, MESSAGE_COLOR)
-        continue_text_rect = continue_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 50))
-        arena.blit(continue_text, continue_text_rect)
-        
-        
-        pygame.display.update()
-        continue  # Skip the rest of the loop when paused
-    
-    if game_on:
-
-        snake.update()
-
-        arena.fill(ARENA_COLOR)
-        draw_grid()
-
-        apple.update()
-
-        snake.energy.update()
-
-    # Draw the tail
-    for square in snake.tail:
-        pygame.draw.rect(arena, TAIL_COLOR, square)
-
-    # Draw head
-    pygame.draw.rect(arena, HEAD_COLOR, snake.head)
-
-    # Show score (snake length = head + tail)
-    score = BIG_FONT.render(f"{len(snake.tail)}", True, SCORE_COLOR)
-    arena.blit(score, score_rect)
-
-    # If the head pass over an apple, lengthen the snake and drop another apple
-    if snake.head.x == apple.x and snake.head.y == apple.y:
-        #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
-        snake.got_apple = True;
-        apple = Apple()
-        got_apple_sound.play()
-
-
-    # Update display and move clock.
-
-    # Scaling surface to display size
-    win.blit(pygame.transform.rotozoom(arena, 0, win_res/WIDTH), (0, 0))
-    pygame.display.update()
-    clock.tick(CLOCK_TICKS)
+game.run()
