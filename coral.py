@@ -191,7 +191,7 @@ def random_position():
 ## Energy bar class
 ##
 class EnergyBar:
-    def __init__(self, initalEnergy):
+    def __init__(self, initalEnergy = MAX_ENERGY):
         self.x = 0
         self.y = 0
         self.width = ENERGY_BAR_WIDTH
@@ -201,8 +201,9 @@ class EnergyBar:
     def update(self):
         pygame.draw.rect(arena, RED_COLOR, (self.x, self.y, self.width, self.height))
         self.decrease_energy(ENERGY_CONSUMPTION)
-        pygame.draw.rect(arena, GREEN_COLOR, (self.x, self.y, self.energy * 2, self.height))
-        label = IN_GAME_FONT.render(f'Energy: {self.energy} / 100', True, WHITE_COLOR)
+        current_width = (self.energy / MAX_ENERGY) * ENERGY_BAR_WIDTH
+        pygame.draw.rect(arena, GREEN_COLOR, (self.x, self.y, current_width, self.height))
+        label = IN_GAME_FONT.render(f'Energy: {self.energy} / {MAX_ENERGY}', True, WHITE_COLOR)
         arena.blit(label, (self.x, self.y + 3))
 
     def increase_energy(self, amount):
