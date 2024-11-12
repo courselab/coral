@@ -26,7 +26,15 @@ import sys
 ## Game customization.
 ##
 
-WIDTH, HEIGHT = 800, 800     # Game screen dimensions.
+
+# Supported video modes
+
+VIDEO_MODES = [
+    (800, 800), (700, 700), (600, 600),
+    (500, 500), (400, 400), (300, 300)
+]
+
+WIDTH, HEIGHT = 800, 800     # Default game screen dimensions.
 
 GRID_SIZE = 50               # Square grid size.
 
@@ -43,6 +51,17 @@ WINDOW_TITLE    = "Coral"  # Window title.
 
 CLOCK_TICKS     = 7         # How fast the snake moves.
 
+WHITE_COLOR = (255, 255, 255)
+RED_COLOR = (255, 0, 0)
+GREEN_COLOR = (0, 153, 0)
+
+ENERGY_BAR_WIDTH, ENERGY_BAR_HEIGHT = 200, 20
+ENERGY_CONSUMPTION = 1
+MAX_ENERGY = 100
+APPLE_ENERGY = 50
+
+hard_mode = False  # Defined normal mode as standart.
+
 ##
 ## Game implementation.
 ##
@@ -51,13 +70,44 @@ pygame.init()
 
 clock = pygame.time.Clock()
 
-arena = pygame.display.set_mode((WIDTH, HEIGHT))
+display_info = pygame.display.Info()
+
+mon_w = display_info.current_w
+mon_h = display_info.current_h
+
+# Default window size
+win_res = WIDTH
+
+# If default video_mode doesn't fit, look for video mode that fits user's screen size
+if (mon_w<WIDTH or mon_h<HEIGHT):
+    min_dim = min(mon_w, mon_h)
+    win_res = VIDEO_MODES[-1][0] # The default is the smallest one
+    for mode in VIDEO_MODES:
+        if mode[0] < mon_w and mode[1] < mon_h:
+            win_res = mode[0]
+            break
+
+win = pygame.display.set_mode((win_res, win_res))
+arena = pygame.Surface((WIDTH, HEIGHT))
+
+# Play background sound and change volume
+pygame.mixer.music.set_volume(0.4)
+background_music = pygame.mixer.music.load('musics/CPU Talk - FMA - CC BY BoxCat Games.mp3')
+pygame.mixer.music.play(-1)
+
+# Set game's sounds effects
+got_apple_sound = pygame.mixer.Sound('musics/got_apple.ogg')
+got_apple_sound.set_volume(0.6)
+
+game_over_sound = pygame.mixer.Sound('musics/game_over.wav')
+game_over_sound.set_volume(0.7)
 
 # BIG_FONT   = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/8))
 # SMALL_FONT = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/20))
 
 BIG_FONT   = pygame.font.Font("assets/font/GetVoIP-Grotesque.ttf", int(WIDTH/8))
 SMALL_FONT = pygame.font.Font("assets/font/GetVoIP-Grotesque.ttf", int(WIDTH/20))
+IN_GAME_FONT = pygame.font.Font("assets/font/GetVoIP-Grotesque.ttf", int(WIDTH/48))
 
 pygame.display.set_caption(WINDOW_TITLE)
 
@@ -66,9 +116,9 @@ game_on = 1
 ## This function is called when the snake dies.
 
 def center_prompt(title, subtitle):
+    global hard_mode, CLOCK_TICKS
 
-    # Show title and subtitle.
-
+    # Show title and subtitle
     center_title = BIG_FONT.render(title, True, MESSAGE_COLOR)
     center_title_rect = center_title.get_rect(center=(WIDTH/2, HEIGHT/2))
     arena.blit(center_title, center_title_rect)
@@ -77,37 +127,110 @@ def center_prompt(title, subtitle):
     center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*2/3))
     arena.blit(center_subtitle, center_subtitle_rect)
 
+    # Add hard mode prompt
+    hard_mode_text = SMALL_FONT.render("Press H for Hard Mode", True, MESSAGE_COLOR)
+    hard_mode_text_rect = hard_mode_text.get_rect(center=(WIDTH/2, HEIGHT*3/4))
+    arena.blit(hard_mode_text, hard_mode_text_rect)
+    
+    # Scaling surface to display size
+    win.blit(pygame.transform.rotozoom(arena, 0, win_res/WIDTH), (0, 0))
+
     pygame.display.update()
 
-   # Wait for a keypres or a game quit event.
-
-    while ( event := pygame.event.wait() ):
+    # Wait for a keypress or a game quit event
+    while (event := pygame.event.wait()):
         if event.type == pygame.KEYDOWN:
-            break
+            if event.key == pygame.K_h:  # 'H' for Hard mode
+                hard_mode = True
+                CLOCK_TICKS = 12  # Increase speed for hard mode
+                break
+            elif event.key == pygame.K_q:  # 'Q' quits game
+                pygame.quit()
+                sys.exit()
+            else:  # Any other key for normal mode
+                hard_mode = False
+                break
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-    if event.key == pygame.K_q:          # 'Q' quits game
-        pygame.quit()
-        sys.exit()
 
+    # Set CLOCK_TICKS back to normal if not in hard mode
+    if not hard_mode:
+        CLOCK_TICKS = 7
+
+
+## This function generate random positions for the snake
+def random_position():
+
+    # Not too close to the border (minimum of 2 border squares)
+    x = int(random.randint(GRID_SIZE*2, WIDTH - GRID_SIZE*2)/GRID_SIZE) * GRID_SIZE
+    y = int(random.randint(GRID_SIZE*2, HEIGHT - GRID_SIZE*2)/GRID_SIZE) * GRID_SIZE
+
+    # Calculate distances to the borders
+    left_dist = x
+    right_dist = WIDTH - x
+    top_dist = y
+    bottom_dist = HEIGHT - y
+
+    # Decide movement direction (horizontal or vertical)
+    if min(left_dist, right_dist) < min(top_dist, bottom_dist): # Move horizontally
+        if left_dist < right_dist:
+            xmov = 1 
+        else:
+            xmov = -1 
+        ymov = 0
+    else:  # Move vertically
+        if top_dist < bottom_dist: 
+            ymov = 1  
+        else:
+            ymov = -1 
+        xmov = 0
+
+    return x, y, xmov, ymov
+##
+## Energy bar class
+##
+class EnergyBar:
+    def __init__(self, initalEnergy = MAX_ENERGY):
+        self.x = 0
+        self.y = 0
+        self.width = ENERGY_BAR_WIDTH
+        self.height = ENERGY_BAR_HEIGHT
+        self.energy = initalEnergy
+
+    def update(self):
+        pygame.draw.rect(arena, RED_COLOR, (self.x, self.y, self.width, self.height))
+        self.decrease_energy(ENERGY_CONSUMPTION)
+        current_width = (self.energy / MAX_ENERGY) * ENERGY_BAR_WIDTH
+        pygame.draw.rect(arena, GREEN_COLOR, (self.x, self.y, current_width, self.height))
+        label = IN_GAME_FONT.render(f'Energy: {self.energy} / {MAX_ENERGY}', True, WHITE_COLOR)
+        arena.blit(label, (self.x, self.y + 3))
+
+    def increase_energy(self, amount):
+        self.energy = min(MAX_ENERGY, self.energy + amount)
+
+    def decrease_energy(self, amount):
+        self.energy = max(0, self.energy - amount)
+
+    def get_energy(self):
+        return self.energy
+    
+    def set_max_energy(self):
+        self.energy = MAX_ENERGY
 
 ##
 ## Snake class
 ##
-
 class Snake:
     def __init__(self):
-
-        # Dimension of each snake segment.
-
-        self.x, self.y = GRID_SIZE, GRID_SIZE
 
         # Initial direction
         # xmov :  -1 left,    0 still,   1 right
         # ymov :  -1 up       0 still,   1 dows
-        self.xmov = 1
-        self.ymov = 0
+
+        # Dimension of each snake segment.
+
+        self.x, self.y, self.xmov, self.ymov = random_position()
 
         # The snake has a head segement,
         self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
@@ -121,6 +244,8 @@ class Snake:
         # No collected apples.
         self.got_apple = False
 
+        # The energy is full
+        self.energy = EnergyBar(MAX_ENERGY)
         
     # This function is called at each loop interation.
 
@@ -136,27 +261,34 @@ class Snake:
             if self.head.x == square.x and self.head.y == square.y:
                 self.alive = False
 
+        # Check for not enough energy
+        if self.energy.get_energy() <= 0:
+            self.alive = False
+
         # In the event of death, reset the game arena.
         if not self.alive:
+            
+            # Play game over sound effect
+            pygame.mixer.music.stop()
+            game_over_sound.play()
 
             # Tell the bad news
             pygame.draw.rect(arena, DEAD_HEAD_COLOR, snake.head)
             center_prompt("Game Over", "Press to restart")
 
-            # Respan the head
-            self.x, self.y = GRID_SIZE, GRID_SIZE
+            # Respan the head with initial directions
+            self.x, self.y, self.xmov, self.ymov = random_position()
+
             self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
 
             # Respan the initial tail
             self.tail = []
 
-            # Initial direction
-            self.xmov = 1 # Right
-            self.ymov = 0 # Still
-
             # Resurrection
             self.alive = True
             self.got_apple = False
+            self.energy.set_max_energy()
+            pygame.mixer.music.play()
 
             # Drop an apple
             apple = Apple()
@@ -171,10 +303,10 @@ class Snake:
             self.tail.insert(0,pygame.Rect(self.head.x, self.head.y, GRID_SIZE, GRID_SIZE))
 
             if self.got_apple:
-                self.got_apple = False 
+                self.got_apple = False
+                self.energy.increase_energy(APPLE_ENERGY)
             else:
                 self.tail.pop()
-
 
             # Move the head along current direction.
             self.head.x += self.xmov * GRID_SIZE
@@ -246,21 +378,35 @@ while True:
 
             # Allow movement only if the game is not paused
             if game_on:
-                if event.key == pygame.K_DOWN:      # Down arrow:  move down
+                if event.key == pygame.K_DOWN and snake.ymov == 0:    # Down arrow:  move down
                     snake.ymov = 1
                     snake.xmov = 0
-                elif event.key == pygame.K_UP:      # Up arrow:    move up
+                elif event.key == pygame.K_UP and snake.ymov == 0:    # Up arrow:    move up
                     snake.ymov = -1
                     snake.xmov = 0
-                elif event.key == pygame.K_RIGHT:   # Right arrow: move right
+                elif event.key == pygame.K_RIGHT and snake.xmov == 0: # Right arrow: move right
                     snake.ymov = 0
                     snake.xmov = 1
-                elif event.key == pygame.K_LEFT:    # Left arrow:  move left
+                elif event.key == pygame.K_LEFT and snake.xmov == 0:  # Left arrow:  move left
                     snake.ymov = 0
                     snake.xmov = -1
 
     ## Update the game
 
+    ## Show "Paused" and "Press P to continue" messages in the center of the grid
+    if not game_on:
+        pause_text = BIG_FONT.render("Paused", True, MESSAGE_COLOR)
+        pause_text_rect = pause_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
+        arena.blit(pause_text, pause_text_rect)
+        
+        continue_text = SMALL_FONT.render("Press P to continue", True, MESSAGE_COLOR)
+        continue_text_rect = continue_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 50))
+        arena.blit(continue_text, continue_text_rect)
+        
+        
+        pygame.display.update()
+        continue  # Skip the rest of the loop when paused
+    
     if game_on:
 
         snake.update()
@@ -269,6 +415,8 @@ while True:
         draw_grid()
 
         apple.update()
+
+        snake.energy.update()
 
     # Draw the tail
     for square in snake.tail:
@@ -286,8 +434,12 @@ while True:
         #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
         snake.got_apple = True;
         apple = Apple()
+        got_apple_sound.play()
 
 
     # Update display and move clock.
+
+    # Scaling surface to display size
+    win.blit(pygame.transform.rotozoom(arena, 0, win_res/WIDTH), (0, 0))
     pygame.display.update()
     clock.tick(CLOCK_TICKS)
