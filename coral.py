@@ -26,7 +26,15 @@ import sys
 ## Game customization.
 ##
 
-WIDTH, HEIGHT = 800, 800     # Game screen dimensions.
+
+# Supported video modes
+
+VIDEO_MODES = [
+    (800, 800), (700, 700), (600, 600),
+    (500, 500), (400, 400), (300, 300)
+]
+
+WIDTH, HEIGHT = 800, 800     # Default game screen dimensions.
 
 GRID_SIZE = 50               # Square grid size.
 
@@ -62,7 +70,25 @@ pygame.init()
 
 clock = pygame.time.Clock()
 
-arena = pygame.display.set_mode((WIDTH, HEIGHT))
+display_info = pygame.display.Info()
+
+mon_w = display_info.current_w
+mon_h = display_info.current_h
+
+# Default window size
+win_res = WIDTH
+
+# If default video_mode doesn't fit, look for video mode that fits user's screen size
+if (mon_w<WIDTH or mon_h<HEIGHT):
+    min_dim = min(mon_w, mon_h)
+    win_res = VIDEO_MODES[-1][0] # The default is the smallest one
+    for mode in VIDEO_MODES:
+        if mode[0] < mon_w and mode[1] < mon_h:
+            win_res = mode[0]
+            break
+
+win = pygame.display.set_mode((win_res, win_res))
+arena = pygame.Surface((WIDTH, HEIGHT))
 
 # BIG_FONT   = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/8))
 # SMALL_FONT = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/20))
@@ -93,6 +119,9 @@ def center_prompt(title, subtitle):
     hard_mode_text = SMALL_FONT.render("Press H for Hard Mode", True, MESSAGE_COLOR)
     hard_mode_text_rect = hard_mode_text.get_rect(center=(WIDTH/2, HEIGHT*3/4))
     arena.blit(hard_mode_text, hard_mode_text_rect)
+    
+    # Scaling surface to display size
+    win.blit(pygame.transform.rotozoom(arena, 0, win_res/WIDTH), (0, 0))
 
     pygame.display.update()
 
@@ -386,5 +415,8 @@ while True:
 
 
     # Update display and move clock.
+
+    # Scaling surface to display size
+    win.blit(pygame.transform.rotozoom(arena, 0, win_res/WIDTH), (0, 0))
     pygame.display.update()
     clock.tick(CLOCK_TICKS)
