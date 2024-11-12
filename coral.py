@@ -61,6 +61,7 @@ MAX_ENERGY = 100
 APPLE_ENERGY = 50
 
 hard_mode = False  # Defined normal mode as standart.
+is_muted = False #Definied is muted as false 
 
 ##
 ## Game implementation.
@@ -375,6 +376,9 @@ while True:
                 sys.exit()
             elif event.key == pygame.K_p:           # P         : pause game
                 game_on = not game_on
+            elif event.key == pygame.K_m:
+                is_muted = not is_muted  
+                pygame.mixer.music.set_volume(0 if is_muted else 0.4) 
 
             # Allow movement only if the game is not paused
             if game_on:
