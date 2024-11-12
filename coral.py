@@ -148,6 +148,7 @@ def center_prompt(title, subtitle):
                 pygame.quit()
                 sys.exit()
             else:  # Any other key for normal mode
+                hard_mode = False
                 break
         if event.type == pygame.QUIT:
             pygame.quit()
