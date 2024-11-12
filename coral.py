@@ -44,6 +44,8 @@ WINDOW_TITLE    = "Coral"  # Window title.
 
 CLOCK_TICKS     = 7         # How fast the snake moves.
 
+HIGHSCORE_FILENAME = "data/highscore.txt"
+
 ##
 ## Game implementation.
 ##
@@ -96,22 +98,19 @@ def center_prompt(title, subtitle):
 ## Get and save highscore from/in a file
 
 def save_high_score(score):
-    filename = "data/highscore.txt"
-
     if not os.path.exists("data/"):
         os.makedirs("data/")
 
     try:
-        with open(filename, "w+") as file:
+        with open(HIGHSCORE_FILENAME, "w+") as file:
             file.write(str(score))
     except (FileNotFoundError, ValueError):
         return 0
 
 
 def get_high_score():
-    filename = "data/highscore.txt"
     try:
-        with open(filename, "r") as file:
+        with open(HIGHSCORE_FILENAME, "r") as file:
             return int(file.read())
     except (FileNotFoundError, ValueError):
         return 0
