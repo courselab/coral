@@ -44,7 +44,7 @@ WINDOW_TITLE    = "Coral"  # Window title.
 
 CLOCK_TICKS     = 7         # How fast the snake moves.
 
-HIGHSCORE_FILENAME = "data/highscore.txt"
+HIGHSCORE_FILENAME = "data/highscore.bin"
 
 ##
 ## Game implementation.
@@ -102,16 +102,16 @@ def save_high_score(score):
         os.makedirs("data/")
 
     try:
-        with open(HIGHSCORE_FILENAME, "w+") as file:
-            file.write(str(score))
+        with open(HIGHSCORE_FILENAME, "wb+") as file:
+            file.write(score.to_bytes(4))
     except (FileNotFoundError, ValueError):
         return 0
 
 
 def get_high_score():
     try:
-        with open(HIGHSCORE_FILENAME, "r") as file:
-            return int(file.read())
+        with open(HIGHSCORE_FILENAME, "rb") as file:
+            return int.from_bytes(file.read(4))
     except (FileNotFoundError, ValueError):
         return 0
 
