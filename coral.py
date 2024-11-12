@@ -232,7 +232,7 @@ class Snake:
 
         self.x, self.y, self.xmov, self.ymov = random_position()
 
-        # The snake has a head segement,
+        # The snake has a head segment,
         self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
 
         # and a tail (array of segments).
@@ -285,6 +285,7 @@ class Snake:
             self.tail = []
 
             # Resurrection
+            game_over_sound.stop()
             self.alive = True
             self.got_apple = False
             self.energy.set_max_energy()
