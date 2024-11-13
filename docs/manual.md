@@ -39,7 +39,7 @@
  
  CONTROLS
 
- * `arrow keys`:  move the snake up, down, left, right
+ * `arrow keys` or W,A,S,D:  move the snake up, down, left, right
  * `Q / q     `:  quits the game at any instant
 
  When the game ends, press any key to restart or 'q' to quit.
