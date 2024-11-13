@@ -53,7 +53,9 @@ MAX_QUEUE_SIZE = 3 # Movement queue max size
 velocity = [4, 7, 10,15]
 size = [60, 40, 20]  
 n_apple = [1, 2, 3] 
-configs = [1, 1, 0]
+base_volume_levels = [0.4, 0.6, 0.7]
+volume_multiplier = [0.5, 1, 1.5]
+configs = [1, 1, 0, 1]
 
 
 WHITE_COLOR = (255, 255, 255)
@@ -101,16 +103,16 @@ arena = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
 # Play background sound and change volume
-pygame.mixer.music.set_volume(0.4)
+pygame.mixer.music.set_volume(base_volume_levels[0])
 background_music = pygame.mixer.music.load('musics/CPU Talk - FMA - CC BY BoxCat Games.mp3')
 pygame.mixer.music.play(-1)
 
 # Set game's sounds effects
 got_apple_sound = pygame.mixer.Sound('musics/got_apple.ogg')
-got_apple_sound.set_volume(0.6)
+got_apple_sound.set_volume(base_volume_levels[1])
 
 game_over_sound = pygame.mixer.Sound('musics/game_over.wav')
-game_over_sound.set_volume(0.7)
+game_over_sound.set_volume(base_volume_levels[2])
 
 # BIG_FONT   = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/8))
 # SMALL_FONT = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/20))
@@ -178,10 +180,12 @@ def center_prompt(title, subtitle):
     if not hard_mode:
         configs[0] = 1
         
-def draw_config(conf=[1,1,1]):
+def draw_config(conf=[1,1,1,1]):
     velocity_string = ["Baixa", "Média", "Alta", "Extrema"]
     size_string = ["Pequeno", "Médio", "Grande"]
     f_string = ["Baixa", "Normal", "Alta"]
+    sound_string = ["Baixo", "Médio", "Alto"]
+
     arena.fill(CONFIG_COLOR)
     center_title = BIG_FONT.render("Configuração", True, MESSAGE_COLOR)
     center_title_rect = center_title.get_rect(center=(WIDTH/2, HEIGHT*(0.20)))
@@ -202,20 +206,33 @@ def draw_config(conf=[1,1,1]):
     arena.blit(center_subtitle, center_subtitle_rect)
     
     center_subtitle = SMALL_FONT.render("Tamanho:", True, LINE_COLOR)
-    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.60)))
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.55)))
     arena.blit(center_subtitle, center_subtitle_rect)
     center_subtitle = SMALL_FONT.render("{}".format(size_string[conf[1]]), True, MESSAGE_COLOR)
-    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.65)))
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.60)))
     arena.blit(center_subtitle, center_subtitle_rect)
     
     center_subtitle = SMALL_FONT.render("Frequência:", True, LINE_COLOR)
-    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.75)))
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.65)))
     arena.blit(center_subtitle, center_subtitle_rect)
     center_subtitle = SMALL_FONT.render("{}".format(f_string[conf[2]]), True, MESSAGE_COLOR)
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.70)))
+    arena.blit(center_subtitle, center_subtitle_rect)
+
+    center_subtitle = SMALL_FONT.render("Volume:", True, LINE_COLOR)
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.75)))
+    arena.blit(center_subtitle, center_subtitle_rect)
+    center_subtitle = SMALL_FONT.render("{}".format(sound_string[conf[3]]), True, MESSAGE_COLOR)
     center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.80)))
     arena.blit(center_subtitle, center_subtitle_rect)
     
     pygame.display.update()
+
+def update_volume():
+    pygame.mixer.music.set_volume(base_volume_levels[0] * volume_multiplier[configs[3]])
+    got_apple_sound.set_volume(base_volume_levels[1] * volume_multiplier[configs[3]])
+    game_over_sound.set_volume(base_volume_levels[2] * volume_multiplier[configs[3]])
+
     
 def config_prompt():
     draw_config()
@@ -236,13 +253,13 @@ def config_prompt():
             # Key pressed
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:  
-                    if n == 2:
+                    if n == 3:
                         n = 0  
                     else:
                         n += 1
                 elif event.key == pygame.K_UP:   
                     if n == 0:
-                        n = 2 
+                        n = 3 
                     else:
                         n -= 1
                 elif event.key == pygame.K_RIGHT: 
@@ -250,11 +267,15 @@ def config_prompt():
                         configs[n] = 0
                     else:
                         configs[n] += 1
+                    if n == 3:
+                        update_volume()
                 elif event.key == pygame.K_LEFT:  
                     if configs[n] == 0:
                         configs[n] = 2
                     else:
                         configs[n] -= 1
+                    if n == 3:
+                        update_volume()
                 elif event.key == pygame.K_q:     
                     pygame.quit()
                     sys.exit()
