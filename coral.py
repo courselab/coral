@@ -415,7 +415,9 @@ class Snake:
             self.head.x += self.xmov * size[configs[1]]
             self.head.y += self.ymov * size[configs[1]]
             
-    import random
+        if border_wrap:
+            self.head.x %= WIDTH
+            self.head.y %= HEIGHT
 
     # Draw stylized head 
     def draw_head(self):
@@ -522,10 +524,6 @@ class Snake:
 
         # Draw the rectangular part connecting to the next segment
         pygame.draw.circle(arena, tail_color, big_tail_center, 3 / 2* tail_radius)
-        
-    if border_wrap:
-        self.head.x %= WIDTH
-        self.head.y %= HEIGHT
 
 ##
 ## The apple class.
