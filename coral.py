@@ -65,6 +65,7 @@ MAX_ENERGY = 100
 APPLE_ENERGY = 50
 
 hard_mode = False  # Defined normal mode as standart.
+border_wrap = False
 is_muted = False #Definied is muted as false 
 
 ##
@@ -124,25 +125,30 @@ game_on = 1
 ## This function is called when the snake dies.
 
 def center_prompt(title, subtitle):
-    global hard_mode, CLOCK_TICKS
+    global hard_mode, border_wrap, CLOCK_TICKS
 
     # Show title and subtitle
     center_title = BIG_FONT.render(title, True, MESSAGE_COLOR)
-    center_title_rect = center_title.get_rect(center=(WIDTH/2, HEIGHT/2))
+    center_title_rect = center_title.get_rect(center=(WIDTH/2, HEIGHT*(0.3)))
     arena.blit(center_title, center_title_rect)
 
     center_subtitle = SMALL_FONT.render(subtitle, True, MESSAGE_COLOR)
-    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.6)))
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.4)))
     arena.blit(center_subtitle, center_subtitle_rect)
     
     center_subtitle = SMALL_FONT.render("Aperte C para configurar o jogo!", True, MESSAGE_COLOR)
-    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.7)))
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.5)))
     arena.blit(center_subtitle, center_subtitle_rect)
 
     # Add hard mode prompt
     hard_mode_text = SMALL_FONT.render("Press H for Hard Mode", True, MESSAGE_COLOR)
-    hard_mode_text_rect = hard_mode_text.get_rect(center=(WIDTH/2, HEIGHT*(0.8)))
+    hard_mode_text_rect = hard_mode_text.get_rect(center=(WIDTH/2, HEIGHT*(0.7)))
     arena.blit(hard_mode_text, hard_mode_text_rect)
+
+    # Add easy mode prompt
+    easy_mode_text = SMALL_FONT.render("Press E for Easy Mode", True, MESSAGE_COLOR)
+    easy_mode_text_rect = easy_mode_text.get_rect(center=(WIDTH/2, HEIGHT*(0.8)))
+    arena.blit(easy_mode_text, easy_mode_text_rect)
     
     pygame.display.update()
         
@@ -152,6 +158,10 @@ def center_prompt(title, subtitle):
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+
+    # Reset game configurations before starting a new game
+    border_wrap = False
+
     if event.key == pygame.K_q:          # 'Q' quits game
         pygame.quit()
         sys.exit()
@@ -160,6 +170,8 @@ def center_prompt(title, subtitle):
     if event.key == pygame.K_h:
         hard_mode = True
         configs[0] = 2
+    if event.key == pygame.K_e:
+        border_wrap = True
 
     # Set CLOCK_TICKS back to normal if not in hard mode
     if not hard_mode:
@@ -340,7 +352,7 @@ class Snake:
     # This function is called at each loop interation.
 
     def update(self):
-        global apple
+        global apple, border_wrap
 
         # Check for border crash.
         if self.head.x not in range(0, WIDTH) or self.head.y not in range(0, HEIGHT):
@@ -511,6 +523,10 @@ class Snake:
         # Draw the rectangular part connecting to the next segment
         pygame.draw.circle(arena, tail_color, big_tail_center, 3 / 2* tail_radius)
         
+    if border_wrap:
+        self.head.x %= WIDTH
+        self.head.y %= HEIGHT
+
 ##
 ## The apple class.
 ##
