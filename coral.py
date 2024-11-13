@@ -470,16 +470,15 @@ while True:
                     snake.ymov = 0
                     snake.xmov = -1
 
-    # If the current screen is the options menu, let the user navigate the options 
-    # with the arrow keys
-    if (pause_options_menu):
-        event = pygame.event.poll()
-        if event.type == pygame.KEYDOWN:    # Key press
-            if event.key == pygame.K_DOWN:  # Down Arrow
-                options_menu.next_option()
-            elif event.key == pygame.K_UP:  # Up arrow
-                options_menu.back_option()
-            options_menu_screen(options_menu)
+        # If the current screen is the options menu, let the user navigate the options
+        # with the arrow keys
+        if (pause_options_menu):
+            if event.type == pygame.KEYDOWN:    # Key press
+                if event.key == pygame.K_DOWN:  # Down Arrow
+                    options_menu.next_option()
+                elif event.key == pygame.K_UP:  # Up arrow
+                    options_menu.back_option()
+                options_menu_screen(options_menu)
 
     ## Update the game
     if pause_options_menu:
