@@ -400,6 +400,8 @@ while True:
 
     ## Show "Paused" and "Press P to continue" messages in the center of the grid
     if not game_on:
+        arena.fill(ARENA_COLOR)  # Clear the arena to prevent overlap
+        
         pause_text = BIG_FONT.render("Paused", True, MESSAGE_COLOR)
         pause_text_rect = pause_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
         arena.blit(pause_text, pause_text_rect)
@@ -408,9 +410,16 @@ while True:
         continue_text_rect = continue_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 50))
         arena.blit(continue_text, continue_text_rect)
         
-        
+        quit_text = SMALL_FONT.render("Press q to quit", True, MESSAGE_COLOR)
+        quit_text_rect = quit_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 125))
+        arena.blit(quit_text, quit_text_rect)
+        # Draw the pause menu and update the display
+        win.blit(pygame.transform.rotozoom(arena, 0, win_res / WIDTH), (0, 0))
         pygame.display.update()
-        continue  # Skip the rest of the loop when paused
+        
+        # Skip the rest of the loop when paused, preventing unnecessary updates
+        continue  
+
     
     if game_on:
 
