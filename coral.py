@@ -36,20 +36,24 @@ VIDEO_MODES = [
 
 WIDTH, HEIGHT = 800, 800     # Default game screen dimensions.
 
-GRID_SIZE = 50               # Square grid size.
-
 HEAD_COLOR      = "#00aa00"  # Color of the snake's head.
 DEAD_HEAD_COLOR = "#4b0082"  # Color of the dead snake's head.
 TAIL_COLOR      = "#00ff00"  # Color of the snake's tail.
 APPLE_COLOR     = "#aa0000"  # Color of the apple.
 ARENA_COLOR     = "#202020"  # Color of the ground.
+CONFIG_COLOR    = "#D3D3D3"  # Color of the config section.
 GRID_COLOR      = "#3c3c3b"  # Color of the grid lines.
 SCORE_COLOR     = "#ffffff"  # Color of the scoreboard.
+LINE_COLOR     = "#000000"  # Color of lines in scoreboard.
 MESSAGE_COLOR   = "#808080"  # Color of the game-over message.
 
 WINDOW_TITLE    = "Coral"  # Window title.
 
-CLOCK_TICKS     = 7         # How fast the snake moves.
+velocity = [4, 7, 10,15]
+size = [60, 40, 20]  
+n_apple = [1, 2, 3] 
+configs = [1, 1, 0]
+
 
 WHITE_COLOR = (255, 255, 255)
 RED_COLOR = (255, 0, 0)
@@ -89,7 +93,10 @@ if (mon_w<WIDTH or mon_h<HEIGHT):
             break
 
 win = pygame.display.set_mode((win_res, win_res))
-arena = pygame.Surface((WIDTH, HEIGHT))
+
+# arena = pygame.Surface((WIDTH, HEIGHT))
+arena = pygame.display.set_mode((WIDTH, HEIGHT))
+
 
 # Play background sound and change volume
 pygame.mixer.music.set_volume(0.4)
@@ -125,47 +132,130 @@ def center_prompt(title, subtitle):
     arena.blit(center_title, center_title_rect)
 
     center_subtitle = SMALL_FONT.render(subtitle, True, MESSAGE_COLOR)
-    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*2/3))
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.6)))
+    arena.blit(center_subtitle, center_subtitle_rect)
+    
+    center_subtitle = SMALL_FONT.render("Aperte C para configurar o jogo!", True, MESSAGE_COLOR)
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.7)))
     arena.blit(center_subtitle, center_subtitle_rect)
 
     # Add hard mode prompt
     hard_mode_text = SMALL_FONT.render("Press H for Hard Mode", True, MESSAGE_COLOR)
-    hard_mode_text_rect = hard_mode_text.get_rect(center=(WIDTH/2, HEIGHT*3/4))
+    hard_mode_text_rect = hard_mode_text.get_rect(center=(WIDTH/2, HEIGHT*(0.8)))
     arena.blit(hard_mode_text, hard_mode_text_rect)
     
-    # Scaling surface to display size
-    win.blit(pygame.transform.rotozoom(arena, 0, win_res/WIDTH), (0, 0))
-
     pygame.display.update()
-
-    # Wait for a keypress or a game quit event
-    while (event := pygame.event.wait()):
+        
+    while ( event := pygame.event.wait() ):
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_h:  # 'H' for Hard mode
-                hard_mode = True
-                CLOCK_TICKS = 12  # Increase speed for hard mode
-                break
-            elif event.key == pygame.K_q:  # 'Q' quits game
-                pygame.quit()
-                sys.exit()
-            else:  # Any other key for normal mode
-                hard_mode = False
-                break
+            break
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+    if event.key == pygame.K_q:          # 'Q' quits game
+        pygame.quit()
+        sys.exit()
+    if event.key == pygame.K_c:
+        print("aaaaaaaa")
+        config_prompt()
+    if event.key == pygame.K_h:
+        hard_mode = True
+        configs[0] = 2
 
     # Set CLOCK_TICKS back to normal if not in hard mode
     if not hard_mode:
-        CLOCK_TICKS = 7
+        configs[0] = 1
+        
+def draw_config(conf=[1,1,1]):
+    velocity_string = ["Baixa", "Média", "Alta", "Extrema"]
+    size_string = ["Pequeno", "Médio", "Grande"]
+    f_string = ["Baixa", "Normal", "Alta"]
+    arena.fill(CONFIG_COLOR)
+    center_title = BIG_FONT.render("Configuração", True, MESSAGE_COLOR)
+    center_title_rect = center_title.get_rect(center=(WIDTH/2, HEIGHT*(0.20)))
+    arena.blit(center_title, center_title_rect)
 
+    center_subtitle = SMALL_FONT.render("Utilize as setas para navegar!", True, MESSAGE_COLOR)
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.30)))
+    arena.blit(center_subtitle, center_subtitle_rect)
+    center_subtitle = SMALL_FONT.render("Aperte J para jogar!", True, MESSAGE_COLOR)
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.35)))
+    arena.blit(center_subtitle, center_subtitle_rect)
+
+    center_subtitle = SMALL_FONT.render("Velocidade:", True, LINE_COLOR)
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.45)))
+    arena.blit(center_subtitle, center_subtitle_rect)
+    center_subtitle = SMALL_FONT.render("{}".format(velocity_string[conf[0]]), True, MESSAGE_COLOR)
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.50)))
+    arena.blit(center_subtitle, center_subtitle_rect)
+    
+    center_subtitle = SMALL_FONT.render("Tamanho:", True, LINE_COLOR)
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.60)))
+    arena.blit(center_subtitle, center_subtitle_rect)
+    center_subtitle = SMALL_FONT.render("{}".format(size_string[conf[1]]), True, MESSAGE_COLOR)
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.65)))
+    arena.blit(center_subtitle, center_subtitle_rect)
+    
+    center_subtitle = SMALL_FONT.render("Frequência:", True, LINE_COLOR)
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.75)))
+    arena.blit(center_subtitle, center_subtitle_rect)
+    center_subtitle = SMALL_FONT.render("{}".format(f_string[conf[2]]), True, MESSAGE_COLOR)
+    center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.80)))
+    arena.blit(center_subtitle, center_subtitle_rect)
+    
+    pygame.display.update()
+    
+def config_prompt():
+    draw_config()
+
+   # Wait for a keypres or a game quit event.
+    n = 0
+    stop = 0
+    while True:
+        if stop == 1:
+            break
+        for event in pygame.event.get():      
+            if stop == 1:
+                break     
+        # App terminated
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            # Key pressed
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN:  
+                    if n == 2:
+                        n = 0  
+                    else:
+                        n += 1
+                elif event.key == pygame.K_UP:   
+                    if n == 0:
+                        n = 2 
+                    else:
+                        n -= 1
+                elif event.key == pygame.K_RIGHT: 
+                    if configs[n] == 2:
+                        configs[n] = 0
+                    else:
+                        configs[n] += 1
+                elif event.key == pygame.K_LEFT:  
+                    if configs[n] == 0:
+                        configs[n] = 2
+                    else:
+                        configs[n] -= 1
+                elif event.key == pygame.K_q:     
+                    pygame.quit()
+                    sys.exit()
+                elif event.key == pygame.K_j: 
+                    stop = 1
+            draw_config(configs)   
 
 ## This function generate random positions for the snake
 def random_position():
 
     # Not too close to the border (minimum of 2 border squares)
-    x = int(random.randint(GRID_SIZE*2, WIDTH - GRID_SIZE*2)/GRID_SIZE) * GRID_SIZE
-    y = int(random.randint(GRID_SIZE*2, HEIGHT - GRID_SIZE*2)/GRID_SIZE) * GRID_SIZE
+    x = int(random.randint(size[configs[1]]*2, WIDTH - size[configs[1]]*2)/size[configs[1]]) * size[configs[1]]
+    y = int(random.randint(size[configs[1]]*2, HEIGHT - size[configs[1]]*2)/size[configs[1]]) * size[configs[1]]
 
     # Calculate distances to the borders
     left_dist = x
@@ -233,8 +323,8 @@ class Snake:
 
         self.x, self.y, self.xmov, self.ymov = random_position()
 
-        # The snake has a head segment,
-        self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
+        # The snake has a head segement,
+        self.head = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
 
         # and a tail (array of segments).
         self.tail = []
@@ -280,7 +370,7 @@ class Snake:
             # Respan the head with initial directions
             self.x, self.y, self.xmov, self.ymov = random_position()
 
-            self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
+            self.head = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
 
             # Respan the initial tail
             self.tail = []
@@ -302,7 +392,7 @@ class Snake:
         if (self.xmov or self.ymov):
 
             # Prepend a new segment to tail.
-            self.tail.insert(0,pygame.Rect(self.head.x, self.head.y, GRID_SIZE, GRID_SIZE))
+            self.tail.insert(0,pygame.Rect(self.head.x, self.head.y, size[configs[1]], size[configs[1]]))
 
             if self.got_apple:
                 self.got_apple = False
@@ -311,8 +401,8 @@ class Snake:
                 self.tail.pop()
 
             # Move the head along current direction.
-            self.head.x += self.xmov * GRID_SIZE
-            self.head.y += self.ymov * GRID_SIZE
+            self.head.x += self.xmov * size[configs[1]]
+            self.head.y += self.ymov * size[configs[1]]
 
 ##
 ## The apple class.
@@ -322,11 +412,11 @@ class Apple:
     def __init__(self):
 
         # Pick a random position within the game arena
-        self.x = int(random.randint(0, WIDTH)/GRID_SIZE) * GRID_SIZE
-        self.y = int(random.randint(0, HEIGHT)/GRID_SIZE) * GRID_SIZE
+        self.x = int(random.randint(0, WIDTH)/size[configs[1]]) * size[configs[1]]
+        self.y = int(random.randint(0, HEIGHT)/size[configs[1]]) * size[configs[1]]
 
         # Create an apple at that location
-        self.rect = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
+        self.rect = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
 
     # This function is called each interation of the game loop
 
@@ -341,9 +431,9 @@ class Apple:
 ##
 
 def draw_grid():
-    for x in range(0, WIDTH, GRID_SIZE):
-        for y in range(0, HEIGHT, GRID_SIZE):
-            rect = pygame.Rect(x, y, GRID_SIZE, GRID_SIZE)
+    for x in range(0, WIDTH, size[configs[1]]):
+        for y in range(0, HEIGHT, size[configs[1]]):
+            rect = pygame.Rect(x, y, size[configs[1]], size[configs[1]])
             pygame.draw.rect(arena, GRID_COLOR, rect, 1)
 
 score = BIG_FONT.render("1", True, MESSAGE_COLOR)
@@ -447,4 +537,5 @@ while True:
     # Scaling surface to display size
     win.blit(pygame.transform.rotozoom(arena, 0, win_res/WIDTH), (0, 0))
     pygame.display.update()
-    clock.tick(CLOCK_TICKS)
+    clock.tick(velocity[configs[0]])
+
