@@ -573,13 +573,14 @@ class Apple:
 
         # Create an apple at that location
         self.rect = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
+        self.radius = size[configs[1]] // 2
 
     # This function is called each interation of the game loop
 
     def update(self):
 
         # Drop the apple
-        pygame.draw.rect(arena, APPLE_COLOR, self.rect)
+        pygame.draw.circle(arena, APPLE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
 
 
 ##
