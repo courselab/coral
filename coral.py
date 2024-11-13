@@ -26,6 +26,7 @@ import sys
 ## Game customization.
 ##
 
+NUM_OPTIONS = 6
 
 # Supported video modes
 
@@ -114,28 +115,53 @@ pygame.display.set_caption(WINDOW_TITLE)
 
 game_on = 1
 
-## This function is called when the snake dies.
+##
+## Draws the option menu screen
+##
+def options_menu_screen(options_menu):
 
-def options_menu():
-    #title = BIG_FONT.render("Options", True, MESSAGE_COLOR)
-    #title_rect = title.get_rect(center=(WIDTH/2, HEIGHT/2))
-    #arena.blit(title, title_rect)
-    #pygame.display.update()
-    # Show title and subtitle
+    arena.fill((0,0,0))
+
     option_title = BIG_FONT.render("Options", True, MESSAGE_COLOR)
-    option_title_rect = option_title.get_rect(center=(WIDTH/2, HEIGHT/5))
+    option_title_rect = option_title.get_rect(center=(WIDTH/2, HEIGHT/10))
     arena.blit(option_title, option_title_rect)
 
-    option_subtitle = SMALL_FONT.render("Grid Size", True, MESSAGE_COLOR)
-    option_subtitle_rect = option_subtitle.get_rect(center=(WIDTH/5, HEIGHT*3/10))
+    # Selected option indicator
+    option_selected = SMALL_FONT.render("*", True, MESSAGE_COLOR)
+    option_selected_rect = option_selected.get_rect(right=WIDTH/10,top=(options_menu.selected_opt+3)*HEIGHT/10)
+    arena.blit(option_selected, option_selected_rect)
+
+    option_subtitle = SMALL_FONT.render("Grid Size: " + str(options_menu.grid_size), True, MESSAGE_COLOR)
+    option_subtitle_rect = option_subtitle.get_rect(topleft=(WIDTH/10, HEIGHT*3/10))
     arena.blit(option_subtitle, option_subtitle_rect)
+
+    option_subtitle = SMALL_FONT.render("Snake Speed: " + str(options_menu.snake_speed), True, MESSAGE_COLOR)
+    option_subtitle_rect = option_subtitle.get_rect(topleft=(WIDTH/10, HEIGHT*4/10))
+    arena.blit(option_subtitle, option_subtitle_rect)
+
+    option_subtitle = SMALL_FONT.render("Number of apples: " + str(options_menu.n_apples), True, MESSAGE_COLOR)
+    option_subtitle_rect = option_subtitle.get_rect(topleft=(WIDTH/10, HEIGHT*5/10))
+    arena.blit(option_subtitle, option_subtitle_rect)
+
+    option_subtitle = SMALL_FONT.render("Snake reversing: " + str(options_menu.reversing), True, MESSAGE_COLOR)
+    option_subtitle_rect = option_subtitle.get_rect(topleft=(WIDTH/10, HEIGHT*6/10))
+    arena.blit(option_subtitle, option_subtitle_rect)
+
+    option_subtitle = SMALL_FONT.render("Disapearing apples: " + str(options_menu.disappearing), True, MESSAGE_COLOR)
+    option_subtitle_rect = option_subtitle.get_rect(topleft=(WIDTH/10, HEIGHT*7/10))
+    arena.blit(option_subtitle, option_subtitle_rect)
+
+    option_subtitle = SMALL_FONT.render("Poisoned Apples: " + str(options_menu.poisoned), True, MESSAGE_COLOR)
+    option_subtitle_rect = option_subtitle.get_rect(topleft=(WIDTH/10, HEIGHT*8/10))
+    arena.blit(option_subtitle, option_subtitle_rect)
+
 
     # Scaling surface to display size
     win.blit(pygame.transform.rotozoom(arena, 0, win_res/WIDTH), (0, 0))
 
     pygame.display.update()
 
-
+## This function is called when the snake dies.
 def center_prompt(title, subtitle):
     global hard_mode, CLOCK_TICKS
 
@@ -240,6 +266,28 @@ class EnergyBar:
         self.energy = MAX_ENERGY
 
 ##
+## Options class
+##
+class OptionsMenu:
+    def __init__(self, grid_size = GRID_SIZE, snake_speed = CLOCK_TICKS, n_apples = 1, 
+                 reversing = False, disappearing = False, poisoned = False):
+        self.grid_size = grid_size 
+        self.snake_speed = snake_speed 
+        self.n_apples = n_apples
+        self.reversing = reversing
+        self.disappearing = disappearing
+        self.poisoned = poisoned
+        self.selected_opt = 0
+
+    def next_option(self):
+        self.selected_opt = (self.selected_opt + 1) % NUM_OPTIONS
+        print(self.selected_opt)
+
+    def back_option(self):
+        if self.selected_opt == 0:
+            self.selected_opt = NUM_OPTIONS
+        self.selected_opt = self.selected_opt - 1
+
 ## Snake class
 ##
 class Snake:
@@ -380,9 +428,10 @@ center_prompt(WINDOW_TITLE, "Press to start")
 ##
 ## Main loop
 ##
-    
 
+options_menu = OptionsMenu()
 pause_options_menu = False
+
 while True:
 
     for event in pygame.event.get():           # Wait for events
@@ -400,7 +449,7 @@ while True:
             elif event.key == pygame.K_p:           # P         : pause game
                 game_on = not game_on
             elif event.key == pygame.K_o:           # O         : options menu
-                options_menu()
+                options_menu_screen(options_menu)
                 pause_options_menu = not pause_options_menu
             elif event.key == pygame.K_m:
                 is_muted = not is_muted  
@@ -420,6 +469,17 @@ while True:
                 elif event.key == pygame.K_LEFT and snake.xmov == 0:  # Left arrow:  move left
                     snake.ymov = 0
                     snake.xmov = -1
+
+    # If the current screen is the options menu, let the user navigate the options 
+    # with the arrow keys
+    if (pause_options_menu):
+        event = pygame.event.poll()
+        if event.type == pygame.KEYDOWN:    # Key press
+            if event.key == pygame.K_DOWN:  # Down Arrow
+                options_menu.next_option()
+            elif event.key == pygame.K_UP:  # Up arrow
+                options_menu.back_option()
+            options_menu_screen(options_menu)
 
     ## Update the game
     if pause_options_menu:
