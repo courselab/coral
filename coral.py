@@ -156,7 +156,6 @@ def center_prompt(title, subtitle):
         pygame.quit()
         sys.exit()
     if event.key == pygame.K_c:
-        print("aaaaaaaa")
         config_prompt()
     if event.key == pygame.K_h:
         hard_mode = True
@@ -535,7 +534,6 @@ while True:
     # Update display and move clock.
 
     # Scaling surface to display size
-    win.blit(pygame.transform.rotozoom(arena, 0, win_res/WIDTH), (0, 0))
     pygame.display.update()
     clock.tick(velocity[configs[0]])
 
