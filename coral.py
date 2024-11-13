@@ -43,6 +43,10 @@ WINDOW_TITLE    = "Coral"  # Window title.
 
 CLOCK_TICKS     = 7         # How fast the snake moves.
 
+speed = 7         # Velocidade inicial (equivalente ao valor inicial de CLOCK_TICKS)
+min_speed = 1     # Velocidade mínima permitida
+max_speed = 20    # Velocidade máxima permitida
+
 ##
 ## Game implementation.
 ##
@@ -224,6 +228,30 @@ apple = Apple()    # An apple
 center_prompt(WINDOW_TITLE, "Press to start")
 
 ##
+## Speed Feature
+##
+
+def draw_speed_bar():
+    # Configuring backbar
+    bar_width = WIDTH // 4
+    bar_height = 20
+    bar_x = WIDTH - bar_width - 20
+    bar_y = 20
+
+    # Drawing backbar
+    pygame.draw.rect(arena, (50, 50, 50), (bar_x, bar_y, bar_width, bar_height))
+
+    # Calculates the length of the speed bar according to the 'speed' value
+    fill_width = (speed - min_speed) / (max_speed - min_speed) * bar_width
+
+    # Draws bar fill
+    pygame.draw.rect(arena, (0, 255, 0), (bar_x, bar_y, fill_width, bar_height))
+
+    # Displays the speed value
+    speed_text = SMALL_FONT.render(f"Velocidade: {speed}", True, SCORE_COLOR)
+    arena.blit(speed_text, (bar_x, bar_y + bar_height + 5))
+
+##
 ## Main loop
 ##
 
@@ -255,6 +283,13 @@ while True:
                 sys.exit()
             elif event.key == pygame.K_p:     # S         : pause game
                 game_on = not game_on
+            elif (event.key == pygame.K_t or event.key == pygame.K_KP_PLUS) and CLOCK_TICKS < max_speed:
+                CLOCK_TICKS += 1
+            elif (event.key == pygame.K_r or event.key == pygame.K_KP_MINUS) and CLOCK_TICKS > min_speed:
+                CLOCK_TICKS -= 1
+
+    # Update CLOCK_TICKS
+    speed = CLOCK_TICKS
 
     ## Update the game
 
@@ -284,6 +319,7 @@ while True:
         snake.got_apple = True;
         apple = Apple()
 
+    draw_speed_bar()
 
     # Update display and move clock.
     pygame.display.update()
