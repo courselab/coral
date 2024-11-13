@@ -663,8 +663,6 @@ while True:
 
         apple.update()
 
-        snake.energy.update()
-
     # Draw the tail
     for square in snake.tail:
         if square is snake.tail[-1]:
@@ -676,6 +674,10 @@ while True:
             pygame.draw.rect(arena, HEAD_COLOR, square)
     # Draw head
     snake.draw_head()
+
+    if game_on:
+
+        snake.energy.update()
 
     # Show score (snake length = head + tail)
     score = BIG_FONT.render(f"{len(snake.tail)}", True, SCORE_COLOR)
