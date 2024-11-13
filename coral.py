@@ -629,13 +629,13 @@ while True:
 
             # Allow movement only if the game is not paused
             if game_on:
-                if event.key == pygame.K_DOWN and snake.ymov == 0:    # Down arrow:  move down
+                if event.key == pygame.K_DOWN or event.key == pygame.K_s and snake.ymov == 0:    # Down arrow:  move down
                     snake.set_direction(0, 1)
-                elif event.key == pygame.K_UP and snake.ymov == 0:    # Up arrow:    move up
+                elif event.key == pygame.K_UP or event.key == pygame.K_w and snake.ymov == 0:    # Up arrow:    move up
                     snake.set_direction(0, -1)
-                elif event.key == pygame.K_RIGHT and snake.xmov == 0: # Right arrow: move right
+                elif event.key == pygame.K_RIGHT or event.key == pygame.K_d and snake.xmov == 0: # Right arrow: move right
                     snake.set_direction(1, 0)
-                elif event.key == pygame.K_LEFT and snake.xmov == 0:  # Left arrow:  move left
+                elif event.key == pygame.K_LEFT or event.key == pygame.K_a and snake.xmov == 0:  # Left arrow:  move left
                     snake.set_direction(-1, 0)
 
     ## Update the game
