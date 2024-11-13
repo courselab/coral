@@ -115,6 +115,31 @@ game_on = 1
 
 ## This function is called when the snake dies.
 
+def options_menu():
+    #title = BIG_FONT.render("Options", True, MESSAGE_COLOR)
+    #title_rect = title.get_rect(center=(WIDTH/2, HEIGHT/2))
+    #arena.blit(title, title_rect)
+    #pygame.display.update()
+    # Show title and subtitle
+    option_title = BIG_FONT.render("Options", True, MESSAGE_COLOR)
+    option_title_rect = option_title.get_rect(center=(WIDTH/2, HEIGHT/5))
+    arena.blit(option_title, option_title_rect)
+
+    option_subtitle = SMALL_FONT.render("Oi", True, MESSAGE_COLOR)
+    option_subtitle_rect = option_subtitle.get_rect(center=(WIDTH/2, HEIGHT*2/3))
+    arena.blit(option_subtitle, option_subtitle_rect)
+
+    # Add hard mode prompt
+    hard_mode_text = SMALL_FONT.render("Press H for Hard Mode", True, MESSAGE_COLOR)
+    hard_mode_text_rect = hard_mode_text.get_rect(center=(WIDTH/2, HEIGHT*3/4))
+    arena.blit(hard_mode_text, hard_mode_text_rect)
+    
+    # Scaling surface to display size
+    win.blit(pygame.transform.rotozoom(arena, 0, win_res/WIDTH), (0, 0))
+
+    pygame.display.update()
+
+
 def center_prompt(title, subtitle):
     global hard_mode, CLOCK_TICKS
 
@@ -375,6 +400,8 @@ while True:
                 sys.exit()
             elif event.key == pygame.K_p:           # P         : pause game
                 game_on = not game_on
+                print('drawing the options menu')
+                options_menu()
 
             # Allow movement only if the game is not paused
             if game_on:
