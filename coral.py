@@ -375,13 +375,13 @@ class Snake:
             game_over_sound.play()
 
             # Tell the bad news
-            pygame.draw.rect(arena, DEAD_HEAD_COLOR, snake.head)
+            self.draw_head()
             center_prompt("Game Over", "Press to restart")
 
             # Respan the head with initial directions
             self.x, self.y, self.xmov, self.ymov = random_position()
 
-            self.head = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
+            self.draw_head()
 
             # Respan the initial tail
             self.tail = []
@@ -414,10 +414,116 @@ class Snake:
             # Move the head along current direction.
             self.head.x += self.xmov * size[configs[1]]
             self.head.y += self.ymov * size[configs[1]]
+            
+        if border_wrap:
+            self.head.x %= WIDTH
+            self.head.y %= HEIGHT
 
-            if border_wrap:
-                self.head.x %= WIDTH
-                self.head.y %= HEIGHT
+    # Draw stylized head 
+    def draw_head(self):
+        # Define head and rectangle dimensions
+        GRID_SIZE = size[configs[1]]
+        head_radius = GRID_SIZE // 2
+        head_center = (self.head.x + head_radius, self.head.y + head_radius)
+        
+        # Select color based on snake's alive status
+        head_color = HEAD_COLOR if self.alive else DEAD_HEAD_COLOR
+        
+        # Draw the rounded head
+        pygame.draw.circle(arena, head_color, head_center, head_radius)
+        
+        # Draw the rectangle body behind the head circle based on direction
+        eye_offset = head_radius // 2
+        if self.xmov == 1:  # Moving right
+            body_rect = pygame.Rect(self.head.x, self.head.y, GRID_SIZE // 2, GRID_SIZE)
+            right_eye = (eye_offset, -eye_offset)
+            left_eye = (eye_offset, eye_offset)
+            tongue_pos = (head_center[0] + head_radius, head_center[1])
+            tongue_direction = (10, 2)  # Horizontal tongue
+        elif self.xmov == -1:  # Moving left
+            body_rect = pygame.Rect(self.head.x + head_radius, self.head.y, GRID_SIZE // 2, GRID_SIZE)
+            right_eye = (-eye_offset, -eye_offset)
+            left_eye = (-eye_offset, eye_offset)
+            tongue_pos = (head_center[0] - 3 / 2 * head_radius, head_center[1])
+            tongue_direction = (10, 2)  # Horizontal tongue
+        elif self.ymov == 1:  # Moving down
+            body_rect = pygame.Rect(self.head.x, self.head.y, GRID_SIZE, GRID_SIZE // 2)
+            right_eye = (-eye_offset, eye_offset)
+            left_eye = (eye_offset, eye_offset)
+            tongue_pos = (head_center[0], head_center[1] + head_radius)
+            tongue_direction = (2, 10)  # Vertical tongue
+        else:  # Moving up
+            body_rect = pygame.Rect(self.head.x, self.head.y + head_radius, GRID_SIZE, GRID_SIZE // 2)
+            right_eye = (-eye_offset, -eye_offset)
+            left_eye = (eye_offset, -eye_offset)
+            tongue_pos = (head_center[0], head_center[1] - 3 / 2 * head_radius)
+            tongue_direction = (2, 10)  # Vertical tongue
+
+        pygame.draw.rect(arena, head_color, body_rect)
+
+        eye_radius = 7
+        left_eye_pos = (head_center[0] + left_eye[0], head_center[1] + left_eye[1])
+        right_eye_pos = (head_center[0] + right_eye[0], head_center[1] + right_eye[1])
+        
+        # Draw eyes based on snake's alive status
+        if self.alive:
+            pupil_radius = 4
+            pygame.draw.circle(arena, "#FFFFFF", left_eye_pos, eye_radius)
+            pygame.draw.circle(arena, "#FFFFFF", right_eye_pos, eye_radius)
+            pygame.draw.circle(arena, "#000000", left_eye_pos, pupil_radius)
+            pygame.draw.circle(arena, "#000000", right_eye_pos, pupil_radius)
+        else:
+            eye_line_length = 3
+            pygame.draw.circle(arena, "#FFFFFF", left_eye_pos, eye_radius)
+            pygame.draw.circle(arena, "#FFFFFF", right_eye_pos, eye_radius)
+            pygame.draw.line(arena, "#000000", 
+                            (left_eye_pos[0] - eye_line_length, left_eye_pos[1] - eye_line_length), 
+                            (left_eye_pos[0] + eye_line_length, left_eye_pos[1] + eye_line_length), 3)
+            pygame.draw.line(arena, "#000000", 
+                            (left_eye_pos[0] - eye_line_length, left_eye_pos[1] + eye_line_length), 
+                            (left_eye_pos[0] + eye_line_length, left_eye_pos[1] - eye_line_length), 3)
+            pygame.draw.line(arena, "#000000", 
+                            (right_eye_pos[0] - eye_line_length, right_eye_pos[1] - eye_line_length), 
+                            (right_eye_pos[0] + eye_line_length, right_eye_pos[1] + eye_line_length), 3)
+            pygame.draw.line(arena, "#000000", 
+                            (right_eye_pos[0] - eye_line_length, right_eye_pos[1] + eye_line_length), 
+                            (right_eye_pos[0] + eye_line_length, right_eye_pos[1] - eye_line_length), 3)
+
+        # Randomly display the tongue
+        if self.alive and random.randint(0, 10) > 8:  # Adjust chance of appearance here
+            pygame.draw.rect(arena, "#FF0000", pygame.Rect(tongue_pos, tongue_direction))
+            
+    # Draw stylized tail
+    def draw_tail(self, tail, direction):
+        print(direction)
+        # Define tail dimensions
+        GRID_SIZE = size[configs[1]]
+        tail_radius = GRID_SIZE // 3  # Smaller radius for the tail
+        big_tail_center = (tail[0] + tail_radius, tail[1] + tail_radius)
+        tail_center = (tail[0] + tail_radius, tail[1] + tail_radius)
+
+        # Determine tail shape and position based on the last segment's movement
+        if direction[0] > 0:  # Moving right
+            big_tail_center = (tail[0] + GRID_SIZE, tail[1] + GRID_SIZE // 2)
+            tail_center = (tail[0] + GRID_SIZE - tail_radius, tail[1] + GRID_SIZE // 2)
+        elif direction[0] < 0:  # Moving left
+            big_tail_center = (tail[0], tail[1] + GRID_SIZE // 2)
+            tail_center = (tail[0] + tail_radius, tail[1] + GRID_SIZE // 2)
+        elif direction[1] > 0:  # Moving down
+            big_tail_center = (tail[0] + GRID_SIZE // 2 , tail[1] + GRID_SIZE)
+            tail_center = (tail[0] + GRID_SIZE // 2, tail[1] + 2 * tail_radius)
+        else:  # Moving up
+            big_tail_center = (tail[0] + GRID_SIZE // 2 , tail[1])
+            tail_center = (tail[0] + GRID_SIZE // 2, tail[1] + tail_radius)
+
+        # Choose color based on alive status
+        tail_color = HEAD_COLOR if self.alive else DEAD_HEAD_COLOR
+
+        # Draw the main part of the tail (rounded edge)
+        pygame.draw.circle(arena, tail_color, tail_center, tail_radius)
+
+        # Draw the rectangular part connecting to the next segment
+        pygame.draw.circle(arena, tail_color, big_tail_center, 3 / 2* tail_radius)
 
 ##
 ## The apple class.
@@ -530,10 +636,15 @@ while True:
 
     # Draw the tail
     for square in snake.tail:
-        pygame.draw.rect(arena, TAIL_COLOR, square)
-
+        if square is snake.tail[-1]:
+            if (len(snake.tail) == 1):
+                snake.draw_tail(square, (snake.xmov, snake.ymov))
+            else:
+                snake.draw_tail(square, (snake.tail[-2][0] - square[0], snake.tail[-2][1] - square[1]))
+        else:
+            pygame.draw.rect(arena, HEAD_COLOR, square)
     # Draw head
-    pygame.draw.rect(arena, HEAD_COLOR, snake.head)
+    snake.draw_head()
 
     # Show score (snake length = head + tail)
     score = BIG_FONT.render(f"{len(snake.tail)}", True, SCORE_COLOR)
@@ -542,7 +653,7 @@ while True:
     # If the head pass over an apple, lengthen the snake and drop another apple
     if snake.head.x == apple.x and snake.head.y == apple.y:
         #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
-        snake.got_apple = True;
+        snake.got_apple = True
         apple = Apple()
         got_apple_sound.play()
 
