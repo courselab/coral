@@ -61,6 +61,7 @@ MAX_ENERGY = 100
 APPLE_ENERGY = 50
 
 hard_mode = False  # Defined normal mode as standart.
+is_muted = False #Definied is muted as false 
 
 ##
 ## Game implementation.
@@ -257,7 +258,7 @@ class Snake:
 
         self.x, self.y, self.xmov, self.ymov = random_position()
 
-        # The snake has a head segement,
+        # The snake has a head segment,
         self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
 
         # and a tail (array of segments).
@@ -310,6 +311,7 @@ class Snake:
             self.tail = []
 
             # Resurrection
+            game_over_sound.stop()
             self.alive = True
             self.got_apple = False
             self.energy.set_max_energy()
@@ -400,8 +402,9 @@ while True:
                 sys.exit()
             elif event.key == pygame.K_p:           # P         : pause game
                 game_on = not game_on
-                print('drawing the options menu')
-                options_menu()
+            elif event.key == pygame.K_m:
+                is_muted = not is_muted  
+                pygame.mixer.music.set_volume(0 if is_muted else 0.4) 
 
             # Allow movement only if the game is not paused
             if game_on:
