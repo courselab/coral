@@ -48,6 +48,7 @@ LINE_COLOR     = "#000000"  # Color of lines in scoreboard.
 MESSAGE_COLOR   = "#808080"  # Color of the game-over message.
 
 WINDOW_TITLE    = "Coral"  # Window title.
+MAX_QUEUE_SIZE = 3 # Movement queue max size
 
 velocity = [4, 7, 10,15]
 size = [60, 40, 20]  
@@ -348,11 +349,24 @@ class Snake:
 
         # The energy is full
         self.energy = EnergyBar(MAX_ENERGY)
-        
-    # This function is called at each loop interation.
 
+        # Movement queue
+        self.move_queue = []
+        
+
+    # Add movement to movement queuedef
+    def set_direction(self, xmov, ymov):
+        if not(xmov == -self.xmov and ymov == -self.ymov) and len(self.move_queue) <= MAX_QUEUE_SIZE:
+            self.move_queue.append((xmov, ymov))
+
+
+    # This function is called at each loop interation.
     def update(self):
         global apple, border_wrap
+
+        # Read and pop movement from queue.
+        if self.move_queue:
+            self.xmov, self.ymov = self.move_queue.pop(0)
 
         # Check for border crash.
         if self.head.x not in range(0, WIDTH) or self.head.y not in range(0, HEIGHT):
@@ -595,17 +609,13 @@ while True:
             # Allow movement only if the game is not paused
             if game_on:
                 if event.key == pygame.K_DOWN and snake.ymov == 0:    # Down arrow:  move down
-                    snake.ymov = 1
-                    snake.xmov = 0
+                    snake.set_direction(0, 1)
                 elif event.key == pygame.K_UP and snake.ymov == 0:    # Up arrow:    move up
-                    snake.ymov = -1
-                    snake.xmov = 0
+                    snake.set_direction(0, -1)
                 elif event.key == pygame.K_RIGHT and snake.xmov == 0: # Right arrow: move right
-                    snake.ymov = 0
-                    snake.xmov = 1
+                    snake.set_direction(1, 0)
                 elif event.key == pygame.K_LEFT and snake.xmov == 0:  # Left arrow:  move left
-                    snake.ymov = 0
-                    snake.xmov = -1
+                    snake.set_direction(-1, 0)
 
     ## Update the game
 
