@@ -126,15 +126,10 @@ def options_menu():
     option_title_rect = option_title.get_rect(center=(WIDTH/2, HEIGHT/5))
     arena.blit(option_title, option_title_rect)
 
-    option_subtitle = SMALL_FONT.render("Oi", True, MESSAGE_COLOR)
-    option_subtitle_rect = option_subtitle.get_rect(center=(WIDTH/2, HEIGHT*2/3))
+    option_subtitle = SMALL_FONT.render("Grid Size", True, MESSAGE_COLOR)
+    option_subtitle_rect = option_subtitle.get_rect(center=(WIDTH/5, HEIGHT*3/10))
     arena.blit(option_subtitle, option_subtitle_rect)
 
-    # Add hard mode prompt
-    hard_mode_text = SMALL_FONT.render("Press H for Hard Mode", True, MESSAGE_COLOR)
-    hard_mode_text_rect = hard_mode_text.get_rect(center=(WIDTH/2, HEIGHT*3/4))
-    arena.blit(hard_mode_text, hard_mode_text_rect)
-    
     # Scaling surface to display size
     win.blit(pygame.transform.rotozoom(arena, 0, win_res/WIDTH), (0, 0))
 
@@ -385,7 +380,9 @@ center_prompt(WINDOW_TITLE, "Press to start")
 ##
 ## Main loop
 ##
+    
 
+pause_options_menu = False
 while True:
 
     for event in pygame.event.get():           # Wait for events
@@ -402,6 +399,9 @@ while True:
                 sys.exit()
             elif event.key == pygame.K_p:           # P         : pause game
                 game_on = not game_on
+            elif event.key == pygame.K_o:           # O         : options menu
+                options_menu()
+                pause_options_menu = not pause_options_menu
             elif event.key == pygame.K_m:
                 is_muted = not is_muted  
                 pygame.mixer.music.set_volume(0 if is_muted else 0.4) 
@@ -422,6 +422,8 @@ while True:
                     snake.xmov = -1
 
     ## Update the game
+    if pause_options_menu:
+        continue
 
     ## Show "Paused" and "Press P to continue" messages in the center of the grid
     if not game_on:
