@@ -46,6 +46,7 @@ GRID_COLOR      = "#3c3c3b"  # Color of the grid lines.
 SCORE_COLOR     = "#ffffff"  # Color of the scoreboard.
 LINE_COLOR     = "#000000"  # Color of lines in scoreboard.
 MESSAGE_COLOR   = "#808080"  # Color of the game-over message.
+STEM_COLOR      = "#228B22"
 
 WINDOW_TITLE    = "Coral"  # Window title.
 MAX_QUEUE_SIZE = 3 # Movement queue max size
@@ -581,6 +582,10 @@ class Apple:
 
         # Drop the apple
         pygame.draw.circle(arena, APPLE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
+        
+        stem_x = self.rect.centerx
+        stem_y = self.rect.top - 5  # Um pouco acima da maçã
+        pygame.draw.line(arena, STEM_COLOR, (stem_x, stem_y), (stem_x, stem_y - 10), 3)
 
 
 ##
