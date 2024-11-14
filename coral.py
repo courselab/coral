@@ -91,6 +91,10 @@ def center_prompt(title, subtitle):
         pygame.quit()
         sys.exit()
 
+# Add this new function
+def calculate_max_snake_length():
+    # Total grid squares minus 1 (for the head)
+    return (WIDTH // GRID_SIZE) * (HEIGHT // GRID_SIZE) - 1
 
 ##
 ## Snake class
@@ -121,11 +125,20 @@ class Snake:
         # No collected apples.
         self.got_apple = False
 
-        
+        # Add max length calculation
+        self.max_length = calculate_max_snake_length()
+
     # This function is called at each loop interation.
 
     def update(self):
         global apple
+
+        # Add win condition check before crash checks
+        if len(self.tail) >= self.max_length:
+            # Show win message
+            center_prompt("You Win!", "Press to play again")
+            self.reset()
+            return
 
         # Check for border crash.
         if self.head.x not in range(0, WIDTH) or self.head.y not in range(0, HEIGHT):
@@ -179,6 +192,18 @@ class Snake:
             # Move the head along current direction.
             self.head.x += self.xmov * GRID_SIZE
             self.head.y += self.ymov * GRID_SIZE
+
+    # Add helper method to reduce code duplication
+    def reset(self):
+        self.x, self.y = GRID_SIZE, GRID_SIZE
+        self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
+        self.tail = []
+        self.xmov = 1
+        self.ymov = 0
+        self.alive = True
+        self.got_apple = False
+        global apple
+        apple = Apple()
 
 ##
 ## The apple class.
