@@ -661,7 +661,7 @@ while True:
                 game_on = True
 
             # Allow movement only if the game is not paused
-            if game_on:
+            if game_on and not instructions_shown:
                 if event.key == pygame.K_DOWN or event.key == pygame.K_s and snake.ymov == 0:    # Down arrow:  move down
                     snake.set_direction(0, 1)
                 elif event.key == pygame.K_UP or event.key == pygame.K_w and snake.ymov == 0:    # Up arrow:    move up
