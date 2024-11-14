@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+!/usr/bin/python3
 #
 #   Copyright (c) 2023, Monaco F. J. <monaco@usp.br>
 #   Copyright 2024 The Authors of Coral
@@ -18,9 +18,10 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import pygame
 import random
 import sys
+
+import pygame
 
 ##
 ## Game customization.
@@ -416,6 +417,8 @@ class Snake:
 
             # Respan the head with initial directions
             self.x, self.y, self.xmov, self.ymov = random_position()
+            self.head.x = self.x
+            self.head.y = self.y
 
             self.draw_head()
 
