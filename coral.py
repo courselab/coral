@@ -21,6 +21,7 @@
 import pygame
 import random
 import sys
+import time
 
 ##
 ## Game customization.
@@ -34,6 +35,7 @@ HEAD_COLOR      = "#00aa00"  # Color of the snake's head.
 DEAD_HEAD_COLOR = "#4b0082"  # Color of the dead snake's head.
 TAIL_COLOR      = "#00ff00"  # Color of the snake's tail.
 APPLE_COLOR     = "#aa0000"  # Color of the apple.
+POISON_APPLE_COLOR = "#5500aa"  # Color of the poisoned apple.
 ARENA_COLOR     = "#202020"  # Color of the ground.
 GRID_COLOR      = "#3c3c3b"  # Color of the grid lines.
 SCORE_COLOR     = "#ffffff"  # Color of the scoreboard.
@@ -79,15 +81,15 @@ def center_prompt(title, subtitle):
 
     pygame.display.update()
 
-   # Wait for a keypres or a game quit event.
+    # Wait for a keypres or a game quit event.
 
-    while ( event := pygame.event.wait() ):
+    while (event := pygame.event.wait()):
         if event.type == pygame.KEYDOWN:
             break
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-    if event.key == pygame.K_q:          # 'Q' quits game
+    if event.key == pygame.K_q:          # 'Q' quits game     
         pygame.quit()
         sys.exit()
 
@@ -115,7 +117,7 @@ class Snake:
 
         # The snake has a head segement,
         self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
-
+        
         # and a tail (array of segments).
         self.tail = []
 
@@ -131,7 +133,7 @@ class Snake:
     # This function is called at each loop interation.
 
     def update(self):
-        global apple
+        global apple, poison_apple
 
         # Add win condition check before crash checks
         if len(self.tail) >= self.max_length:
@@ -149,52 +151,42 @@ class Snake:
             if self.head.x == square.x and self.head.y == square.y:
                 self.alive = False
 
-        # In the event of death, reset the game arena.
+         # In the event of death, reset the game arena.
         if not self.alive:
 
             # Tell the bad news
-            pygame.draw.rect(arena, DEAD_HEAD_COLOR, snake.head)
+            pygame.draw.rect(arena, DEAD_HEAD_COLOR, self.head)
             center_prompt("Game Over", "Press to restart")
-
-            # Respan the head
-            self.x, self.y = GRID_SIZE, GRID_SIZE
-            self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
-
-            # Respan the initial tail
-            self.tail = []
-
-            # Initial direction
-            self.xmov = 1 # Right
-            self.ymov = 0 # Still
-
-            # Resurrection
-            self.alive = True
-            self.got_apple = False
-
-            # Drop an apple
-            apple = Apple()
-
-
-        # Move the snake.
+            self.reset() # Reset the snake
 
         # If head hasn't moved, tail shouldn't either (otherwise, self-byte).
         if (self.xmov or self.ymov):
 
             # Prepend a new segment to tail.
-            self.tail.insert(0,pygame.Rect(self.head.x, self.head.y, GRID_SIZE, GRID_SIZE))
-
+            self.tail.insert(0, pygame.Rect(self.head.x, self.head.y, GRID_SIZE, GRID_SIZE))
+            
             if self.got_apple:
-                self.got_apple = False 
+                self.got_apple = False
             else:
                 self.tail.pop()
-
 
             # Move the head along current direction.
             self.head.x += self.xmov * GRID_SIZE
             self.head.y += self.ymov * GRID_SIZE
 
-    # Add helper method to reduce code duplication
+        # Check if snake has eaten a poisoned apple
+        if self.head.x == poison_apple.x and self.head.y == poison_apple.y:
+            if len(self.tail) == 0:  # Game over if only the head exists
+                self.alive = False
+                pygame.draw.rect(arena, DEAD_HEAD_COLOR, self.head)
+                center_prompt("Game Over", "Press to restart")
+                self.reset()
+            else:
+                self.tail.pop()
+            poison_apple = PoisonApple()  # Respawn poisoned apple
+
     def reset(self):
+        """Reset the snake to its initial state after dying."""
         self.x, self.y = GRID_SIZE, GRID_SIZE
         self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
         self.tail = []
@@ -213,9 +205,9 @@ class Apple:
     def __init__(self):
 
         # Pick a random position within the game arena
-        self.x = int(random.randint(0, WIDTH)/GRID_SIZE) * GRID_SIZE
-        self.y = int(random.randint(0, HEIGHT)/GRID_SIZE) * GRID_SIZE
-
+        self.x = int(random.randint(0, WIDTH) / GRID_SIZE) * GRID_SIZE
+        self.y = int(random.randint(0, HEIGHT) / GRID_SIZE) * GRID_SIZE
+        
         # Create an apple at that location
         self.rect = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
 
@@ -226,6 +218,43 @@ class Apple:
         # Drop the apple
         pygame.draw.rect(arena, APPLE_COLOR, self.rect)
 
+##
+## The Poison Apple
+##
+
+class PoisonApple:
+    def __init__(self):
+
+        # Pick a random position within the game arena
+        self.x = int(random.randint(0, WIDTH) / GRID_SIZE) * GRID_SIZE
+        self.y = int(random.randint(0, HEIGHT) / GRID_SIZE) * GRID_SIZE
+        
+        # Create a poisoned apple at that location
+        self.rect = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
+        
+        # Set random respawn time
+        self.respawn_time = time.time() + random.randint(5, 10)
+
+    def update(self):
+
+        # Check if the time to respawn has passed
+        if time.time() >= self.respawn_time:
+            self.respawn()
+
+        # Drop the poisoned apple
+        pygame.draw.rect(arena, POISON_APPLE_COLOR, self.rect)
+
+    def respawn(self):
+
+        #Respawn the poisoned apple at a new random position.
+        self.x = int(random.randint(0, WIDTH) / GRID_SIZE) * GRID_SIZE
+        self.y = int(random.randint(0, HEIGHT) / GRID_SIZE) * GRID_SIZE
+        
+        
+        self.rect = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
+        
+        # Set random respawn time
+        self.respawn_time = time.time() + random.randint(5, 10)  # Reset respawn time
 
 ##
 ## Draw the arena
@@ -243,8 +272,8 @@ score_rect = score.get_rect(center=(WIDTH/2, HEIGHT/20+HEIGHT/30))
 draw_grid()
 
 snake = Snake()    # The snake
-
 apple = Apple()    # An apple
+poison_apple = PoisonApple()  # A poisoned apple
 
 center_prompt(WINDOW_TITLE, "Press any key to start")
 
@@ -255,13 +284,13 @@ center_prompt(WINDOW_TITLE, "Press any key to start")
 while True:
 
     for event in pygame.event.get():           # Wait for events
-
-       # App terminated
+        
+        # App terminated
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
-          # Key pressed
+        # Key pressed
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_DOWN:    # Down arrow:  move down
                 snake.ymov = 1
@@ -291,6 +320,7 @@ while True:
         draw_grid()
 
         apple.update()
+        poison_apple.update()
 
     # Draw the tail
     for square in snake.tail:
@@ -306,7 +336,7 @@ while True:
     # If the head pass over an apple, lengthen the snake and drop another apple
     if snake.head.x == apple.x and snake.head.y == apple.y:
         #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
-        snake.got_apple = True;
+        snake.got_apple = True
         apple = Apple()
 
 
