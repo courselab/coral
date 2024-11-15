@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+# !/usr/bin/python3
 #
 #   Copyright (c) 2023, Monaco F. J. <monaco@usp.br>
 #   Copyright 2024 The Authors of Coral
@@ -440,6 +440,8 @@ class Snake:
 
             # Respan the head with initial directions
             self.x, self.y, self.xmov, self.ymov = random_position()
+            self.head.x = self.x
+            self.head.y = self.y
 
             self.draw_head()
 
@@ -555,7 +557,6 @@ class Snake:
             
     # Draw stylized tail
     def draw_tail(self, tail, direction):
-        print(direction)
         # Define tail dimensions
         GRID_SIZE = size[configs[1]]
         tail_radius = GRID_SIZE // 3  # Smaller radius for the tail
