@@ -34,6 +34,7 @@ HEAD_COLOR      = "#00aa00"  # Color of the snake's head.
 DEAD_HEAD_COLOR = "#4b0082"  # Color of the dead snake's head.
 TAIL_COLOR      = "#00ff00"  # Color of the snake's tail.
 APPLE_COLOR     = "#aa0000"  # Color of the apple.
+ORANGE_COLOR    = "#ffa500"  # Color of the orange.
 ARENA_COLOR     = "#202020"  # Color of the ground.
 GRID_COLOR      = "#3c3c3b"  # Color of the grid lines.
 SCORE_COLOR     = "#ffffff"  # Color of the scoreboard.
@@ -121,6 +122,9 @@ class Snake:
         # No collected apples.
         self.got_apple = False
 
+        # Multiplier based on number of collected oranges.
+        self.speed = 1         
+
         
     # This function is called at each loop interation.
 
@@ -157,6 +161,7 @@ class Snake:
             # Resurrection
             self.alive = True
             self.got_apple = False
+            self.speed = 1
 
             # Drop an apple
             apple = Apple()
@@ -201,6 +206,33 @@ class Apple:
         # Drop the apple
         pygame.draw.rect(arena, APPLE_COLOR, self.rect)
 
+##
+## The orange class.
+##
+
+class Orange:
+    def __init__(self):
+
+        self.dropped = False
+
+        # Pick a random position within the game arena
+        self.x = int(random.randint(0, WIDTH)/GRID_SIZE) * GRID_SIZE
+        self.y = int(random.randint(0, HEIGHT)/GRID_SIZE) * GRID_SIZE
+
+        # Create an orange at that location
+        self.rect = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
+
+    # This function is called each interation of the game loop
+    def update(self):
+
+        # Check if the orange is already dropped, if not then drop it
+        if self.dropped == False:
+            if random.randint(1, 100) >= 99:
+                pygame.draw.rect(arena, ORANGE_COLOR, self.rect)
+                self.dropped = True
+        elif self.dropped == True:
+            pygame.draw.rect(arena, ORANGE_COLOR, self.rect)
+
 
 ##
 ## Draw the arena
@@ -220,6 +252,8 @@ draw_grid()
 snake = Snake()    # The snake
 
 apple = Apple()    # An apple
+
+orange = Orange()  # An orange
 
 center_prompt(WINDOW_TITLE, "Press to start")
 
@@ -266,6 +300,7 @@ while True:
         draw_grid()
 
         apple.update()
+        orange.update()
 
     # Draw the tail
     for square in snake.tail:
@@ -284,7 +319,13 @@ while True:
         snake.got_apple = True;
         apple = Apple()
 
+    # If the head pass over an orange, speed up the snake and drop another apple
+    if snake.head.x == orange.x and snake.head.y == orange.y:
+        #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
+        snake.speed += 0.04
+        orange = Orange()
+
 
     # Update display and move clock.
     pygame.display.update()
-    clock.tick(CLOCK_TICKS)
+    clock.tick(snake.speed*CLOCK_TICKS)
