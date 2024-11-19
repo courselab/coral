@@ -27,12 +27,21 @@ import os
 ## Game customization.
 ##
 
-WIDTH, HEIGHT = 800, 800     # Game screen dimensions.
+
+# Supported video modes
+
+VIDEO_MODES = [
+    (800, 800), (700, 700), (600, 600),
+    (500, 500), (400, 400), (300, 300)
+]
+
+WIDTH, HEIGHT = 800, 800     # Default game screen dimensions.
 
 HEAD_COLOR      = "#00aa00"  # Color of the snake's head.
 DEAD_HEAD_COLOR = "#4b0082"  # Color of the dead snake's head.
 TAIL_COLOR      = "#00ff00"  # Color of the snake's tail.
 APPLE_COLOR     = "#aa0000"  # Color of the apple.
+ORANGE_COLOR    = "#ffa500"  # Color of the orange.
 ARENA_COLOR     = "#202020"  # Color of the ground.
 CONFIG_COLOR    = "#D3D3D3"  # Color of the config section.
 GRID_COLOR      = "#3c3c3b"  # Color of the grid lines.
@@ -76,7 +85,6 @@ pygame.init()
 
 clock = pygame.time.Clock()
 
-<<<<<<< HEAD
 display_info = pygame.display.Info()
 
 mon_w = display_info.current_w
@@ -111,9 +119,6 @@ got_apple_sound.set_volume(base_volume_levels[1])
 
 game_over_sound = pygame.mixer.Sound('musics/game_over.wav')
 game_over_sound.set_volume(base_volume_levels[2])
-=======
-arena = pygame.display.set_mode((WIDTH, HEIGHT))
->>>>>>> dev
 
 # BIG_FONT   = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/8))
 # SMALL_FONT = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/20))
@@ -144,7 +149,6 @@ def center_prompt(title, subtitle):
     center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.5)))
     arena.blit(center_subtitle, center_subtitle_rect)
 
-<<<<<<< HEAD
     # Add hard mode prompt
     hard_mode_text = SMALL_FONT.render("Press H for Hard Mode", True, MESSAGE_COLOR)
     hard_mode_text_rect = hard_mode_text.get_rect(center=(WIDTH/2, HEIGHT*(0.7)))
@@ -155,8 +159,6 @@ def center_prompt(title, subtitle):
     easy_mode_text_rect = easy_mode_text.get_rect(center=(WIDTH/2, HEIGHT*(0.8)))
     arena.blit(easy_mode_text, easy_mode_text_rect)
     
-=======
->>>>>>> dev
     pygame.display.update()
         
     while ( event := pygame.event.wait() ):
@@ -264,7 +266,7 @@ def update_volume():
 def config_prompt():
     draw_config()
 
-   # Wait for a keypres or a game quit event.
+   # Wait for a keypress or a game quit event.
     n = 0
     stop = 0
     while True:
@@ -310,7 +312,6 @@ def config_prompt():
                     stop = 1
             draw_config(configs)   
 
-<<<<<<< HEAD
 ## This function generate random positions for the snake
 def random_position():
 
@@ -413,23 +414,19 @@ class EnergyBar:
     def set_max_energy(self):
         self.energy = MAX_ENERGY
 
-=======
->>>>>>> dev
 ##
 ## Snake class
 ##
 class Snake:
     def __init__(self):
 
-        # Dimension of each snake segment.
-
-        self.x, self.y = GRID_SIZE, GRID_SIZE
-
         # Initial direction
         # xmov :  -1 left,    0 still,   1 right
         # ymov :  -1 up       0 still,   1 dows
-        self.xmov = 1
-        self.ymov = 0
+
+        # Dimension of each snake segment.
+
+        self.x, self.y, self.xmov, self.ymov = random_position()
 
         # The snake has a head segement,
         self.head = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
@@ -449,6 +446,8 @@ class Snake:
         # Movement queue
         self.move_queue = []
         
+        # Multiplier based on number of collected oranges.
+        self.speed = 1 
 
     # Add movement to movement queuedef
     def set_direction(self, xmov, ymov):
@@ -491,25 +490,15 @@ class Snake:
             self.draw_head()
             center_prompt("Game Over", "Press to restart")
 
-<<<<<<< HEAD
-            # Respan the head with initial directions
+            # Respawn the head with initial directions
             self.x, self.y, self.xmov, self.ymov = random_position()
             self.head.x = self.x
             self.head.y = self.y
 
             self.draw_head()
-=======
-            # Respan the head
-            self.x, self.y = GRID_SIZE, GRID_SIZE
-            self.head = pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
->>>>>>> dev
 
-            # Respan the initial tail
+            # Respawn the initial tail
             self.tail = []
-
-            # Initial direction
-            self.xmov = 1 # Right
-            self.ymov = 0 # Still
 
             # Resurrection
             game_over_sound.stop()
@@ -677,6 +666,36 @@ class Apple:
 
 
 ##
+## The orange class.
+##
+
+class Orange:
+    def __init__(self):
+
+        self.dropped = False
+
+        # Pick a random position within the game arena
+        self.x = int(random.randint(0, WIDTH)/size[configs[1]]) * size[configs[1]]
+        self.y = int(random.randint(0, HEIGHT)/size[configs[1]]) * size[configs[1]]
+
+        # Create an orange at that location
+        self.rect = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
+        self.radius = size[configs[1]] // 2
+
+    # This function is called each interation of the game loop
+    def update(self):
+
+        # Check if the orange is already dropped, if not then maybe drop it
+        if self.dropped == False:
+            #if random.randint(1, 100) >= 99:
+            if True:
+                pygame.draw.circle(arena, ORANGE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
+                self.dropped = True
+
+        elif self.dropped == True:
+            pygame.draw.circle(arena, ORANGE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
+
+##
 ## Draw the arena
 ##
 
@@ -694,6 +713,8 @@ draw_grid()
 snake = Snake()    # The snake
 
 apple = Apple()    # An apple
+
+orange = Orange()  # An orange
 
 center_prompt(WINDOW_TITLE, "Press to start")
 
@@ -765,6 +786,7 @@ while True:
         draw_grid()
 
         apple.update()
+        orange.update()
 
     # Draw the tail
     for square in snake.tail:
@@ -792,6 +814,13 @@ while True:
         apple = Apple()
         got_apple_sound.play()
 
+    # If the head passes over an orange, lengthen the snake and drop another orange
+    if snake.head.x == orange.x and snake.head.y == orange.y:
+        #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
+        snake.speed += 0.04
+        orange = Orange()
+        got_apple_sound.play()
+
 
     # Add the "Press (I)nstructions" text in the top-right corner
     instruction_text = IN_GAME_FONT.render("Press (I)nstructions", True, WHITE_COLOR)
@@ -799,11 +828,6 @@ while True:
     arena.blit(instruction_text, instruction_text_rect)
 
     # Update display and move clock.
-<<<<<<< HEAD
-
-    # Scaling surface to display size
-=======
->>>>>>> dev
     pygame.display.update()
-    clock.tick(velocity[configs[0]])
+    clock.tick(snake.speed*velocity[configs[0]])
 
