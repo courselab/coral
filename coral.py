@@ -212,7 +212,7 @@ def display_instructions():
         arena.blit(text_surface, (50, y_offset))
         y_offset += 50
 
-def draw_config(config = {}):
+def draw_config(config = {}, current_option = 0):
     conf=[1,1,1,1]
     if config:
         conf[0] = config['velocidade']
@@ -235,6 +235,10 @@ def draw_config(config = {}):
     center_subtitle = SMALL_FONT.render("Aperte J para jogar!", True, MESSAGE_COLOR)
     center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.35)))
     arena.blit(center_subtitle, center_subtitle_rect)
+
+    indicator_subtitle = SMALL_FONT.render(">", True, LINE_COLOR)
+    indicator_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2 - 1, HEIGHT*(0.5 + 0.1*current_option)))
+    arena.blit(indicator_subtitle, indicator_subtitle_rect)
 
     center_subtitle = SMALL_FONT.render("Velocidade:", True, LINE_COLOR)
     center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.45)))
@@ -274,7 +278,7 @@ def update_volume():
     
 def config_prompt():
     n = 0
-    draw_config(configs)
+    draw_config(configs, n)
 
    # Wait for a keypres or a game quit event.
     stop = 0
@@ -329,7 +333,7 @@ def config_prompt():
                     sys.exit()
                 elif event.key == pygame.K_j: 
                     stop = 1
-            draw_config(configs)   
+            draw_config(configs, n)   
 
 ## This function generate random positions for the snake
 def random_position():
