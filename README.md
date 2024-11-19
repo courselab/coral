@@ -48,8 +48,18 @@
  Follow these steps to set up and run the Coral Snake Game:
 
  ### Prerequisites
- 
- - Python 3: Make sure you have Python 3 installed on your machine. You can download it from the official Python website.
+
+ ### Prerequisites
+
+- Python 3: Make sure you have Python 3 installed on your machine.   
+  - Linux Users: You can use `apt` to install Python:  
+    ```bash
+    sudo apt update
+    sudo apt install python3
+    ```  
+    Note: The exact installation process may vary depending on your Linux distribution. Check your distribution's documentation if needed.  
+  
+  - Windows/Mac Users: You can download it from the official Python [website](https://www.python.org/downloads/).  
 
  - Pygame: The game requires the Pygame library, which can be installed using `pip` or other package managers like `pacman` on Arch Linux.
 
@@ -60,8 +70,8 @@
  First, clone the Coral repository to your local machine by running the following command in your terminal:
 
  ```bash
- git clone https://github.com/your-username/coral.git
- ```
+ git clone git@github.com:courselab/coral.git
+ ``` 
 
  2. Navigate to the project folder: Once the repository is cloned, navigate to the `coral` folder:
  
