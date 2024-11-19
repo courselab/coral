@@ -57,7 +57,11 @@ size = [60, 40, 20]
 n_apple = [1, 2, 3] 
 base_volume_levels = [0.4, 0.6, 0.7]
 volume_multiplier = [0.3, 1.1, 1.9]
-configs = [1, 1, 0, 1]
+
+configs = { "velocidade": 1,
+          "tamanho": 1,
+          "frequencia": 0,
+          "volume" : 1}
 
 
 WHITE_COLOR = (255, 255, 255)
@@ -177,13 +181,13 @@ def center_prompt(title, subtitle):
         config_prompt()
     if event.key == pygame.K_h:
         hard_mode = True
-        configs[0] = 2
+        configs['velocidade'] = 2
     if event.key == pygame.K_e:
         border_wrap = True
 
     # Set CLOCK_TICKS back to normal if not in hard mode
     if not hard_mode:
-        configs[0] = 1
+        configs['velocidade'] = 1
         
 def display_instructions():
     instruction_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
@@ -208,7 +212,13 @@ def display_instructions():
         arena.blit(text_surface, (50, y_offset))
         y_offset += 50
 
-def draw_config(conf=[1,1,1,1]):
+def draw_config(config = {}):
+    conf=[1,1,1,1]
+    if config:
+        conf[0] = config['velocidade']
+        conf[1] = config['tamanho']
+        conf[2] = config['frequencia']
+        conf[3] = config['volume']
     velocity_string = ["Baixa", "Média", "Alta", "Extrema"]
     size_string = ["Pequeno", "Médio", "Grande"]
     f_string = ["Baixa", "Normal", "Alta"]
@@ -257,16 +267,16 @@ def draw_config(conf=[1,1,1,1]):
     pygame.display.update()
 
 def update_volume():
-    pygame.mixer.music.set_volume(base_volume_levels[0] * volume_multiplier[configs[3]])
-    got_apple_sound.set_volume(base_volume_levels[1] * volume_multiplier[configs[3]])
-    game_over_sound.set_volume(base_volume_levels[2] * volume_multiplier[configs[3]])
+    pygame.mixer.music.set_volume(base_volume_levels[0] * volume_multiplier[configs['volume']])
+    got_apple_sound.set_volume(base_volume_levels[1] * volume_multiplier[configs['volume']])
+    game_over_sound.set_volume(base_volume_levels[2] * volume_multiplier[configs['volume']])
 
     
 def config_prompt():
-    draw_config()
+    n = 0
+    draw_config(configs)
 
    # Wait for a keypres or a game quit event.
-    n = 0
     stop = 0
     while True:
         if stop == 1:
@@ -291,17 +301,27 @@ def config_prompt():
                     else:
                         n -= 1
                 elif event.key == pygame.K_RIGHT: 
-                    if configs[n] == 2:
-                        configs[n] = 0
+                    opcao = 'velocidade'
+                    match n:
+                        case 0:
+                            opcao = 'velocidade'
+                        case 1:
+                            opcao = 'tamanho'
+                        case 2:
+                            opcao = 'frequencia'
+                        case 3:
+                            opcao = 'volume'
+                    if configs[opcao] == 2:
+                        configs[opcao] = 0
                     else:
-                        configs[n] += 1
+                        configs[opcao] += 1
                     if n == 3:
                         update_volume()
                 elif event.key == pygame.K_LEFT:  
-                    if configs[n] == 0:
-                        configs[n] = 2
+                    if configs[opcao] == 0:
+                        configs[opcao] = 2
                     else:
-                        configs[n] -= 1
+                        configs[opcao] -= 1
                     if n == 3:
                         update_volume()
                 elif event.key == pygame.K_q:     
@@ -315,8 +335,8 @@ def config_prompt():
 def random_position():
 
     # Not too close to the border (minimum of 2 border squares)
-    x = int(random.randint(size[configs[1]]*2, WIDTH - size[configs[1]]*2)/size[configs[1]]) * size[configs[1]]
-    y = int(random.randint(size[configs[1]]*2, HEIGHT - size[configs[1]]*2)/size[configs[1]]) * size[configs[1]]
+    x = int(random.randint(size[configs['tamanho']]*2, WIDTH - size[configs['tamanho']]*2)/size[configs['tamanho']]) * size[configs['tamanho']]
+    y = int(random.randint(size[configs['tamanho']]*2, HEIGHT - size[configs['tamanho']]*2)/size[configs['tamanho']]) * size[configs['tamanho']]
 
     # Calculate distances to the borders
     left_dist = x
@@ -428,7 +448,7 @@ class Snake:
         self.x, self.y, self.xmov, self.ymov = random_position()
 
         # The snake has a head segement,
-        self.head = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
+        self.head = pygame.Rect(self.x, self.y, size[configs['tamanho']], size[configs['tamanho']])
 
         # and a tail (array of segments).
         self.tail = []
@@ -514,7 +534,7 @@ class Snake:
         if (self.xmov or self.ymov):
 
             # Prepend a new segment to tail.
-            self.tail.insert(0,pygame.Rect(self.head.x, self.head.y, size[configs[1]], size[configs[1]]))
+            self.tail.insert(0,pygame.Rect(self.head.x, self.head.y, size[configs['tamanho']], size[configs['tamanho']]))
 
             if self.got_apple:
                 self.got_apple = False
@@ -523,8 +543,8 @@ class Snake:
                 self.tail.pop()
 
             # Move the head along current direction.
-            self.head.x += self.xmov * size[configs[1]]
-            self.head.y += self.ymov * size[configs[1]]
+            self.head.x += self.xmov * size[configs['tamanho']]
+            self.head.y += self.ymov * size[configs['tamanho']]
             
         if border_wrap:
             self.head.x %= WIDTH
@@ -533,7 +553,7 @@ class Snake:
     # Draw stylized head 
     def draw_head(self):
         # Define head and rectangle dimensions
-        GRID_SIZE = size[configs[1]]
+        GRID_SIZE = size[configs['tamanho']]
         head_radius = GRID_SIZE // 2
         head_center = (self.head.x + head_radius, self.head.y + head_radius)
         
@@ -607,7 +627,7 @@ class Snake:
     # Draw stylized tail
     def draw_tail(self, tail, direction):
         # Define tail dimensions
-        GRID_SIZE = size[configs[1]]
+        GRID_SIZE = size[configs['tamanho']]
         tail_radius = GRID_SIZE // 3  # Smaller radius for the tail
         big_tail_center = (tail[0] + tail_radius, tail[1] + tail_radius)
         tail_center = (tail[0] + tail_radius, tail[1] + tail_radius)
@@ -643,12 +663,12 @@ class Apple:
     def __init__(self):
 
         # Pick a random position within the game arena
-        self.x = int(random.randint(0, WIDTH)/size[configs[1]]) * size[configs[1]]
-        self.y = int(random.randint(0, HEIGHT)/size[configs[1]]) * size[configs[1]]
+        self.x = int(random.randint(0, WIDTH)/size[configs['tamanho']]) * size[configs['tamanho']]
+        self.y = int(random.randint(0, HEIGHT)/size[configs['tamanho']]) * size[configs['tamanho']]
 
         # Create an apple at that location
-        self.rect = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
-        self.radius = size[configs[1]] // 2
+        self.rect = pygame.Rect(self.x, self.y, size[configs['tamanho']], size[configs['tamanho']])
+        self.radius = size[configs['tamanho']] // 2
 
     # This function is called each interation of the game loop
 
@@ -667,9 +687,9 @@ class Apple:
 ##
 
 def draw_grid():
-    for x in range(0, WIDTH, size[configs[1]]):
-        for y in range(0, HEIGHT, size[configs[1]]):
-            rect = pygame.Rect(x, y, size[configs[1]], size[configs[1]])
+    for x in range(0, WIDTH, size[configs['tamanho']]):
+        for y in range(0, HEIGHT, size[configs['tamanho']]):
+            rect = pygame.Rect(x, y, size[configs['tamanho']], size[configs['tamanho']])
             pygame.draw.rect(arena, GRID_COLOR, rect, 1)
 
 score = BIG_FONT.render("1", True, MESSAGE_COLOR)
@@ -788,5 +808,5 @@ while True:
 
     # Scaling surface to display size
     pygame.display.update()
-    clock.tick(velocity[configs[0]])
+    clock.tick(velocity[configs['velocidade']])
 
