@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+# !/usr/bin/python3
 #
 #   Copyright (c) 2023, Monaco F. J. <monaco@usp.br>
 #   Copyright 2024 The Authors of Coral
@@ -46,6 +46,7 @@ GRID_COLOR      = "#3c3c3b"  # Color of the grid lines.
 SCORE_COLOR     = "#ffffff"  # Color of the scoreboard.
 LINE_COLOR     = "#000000"  # Color of lines in scoreboard.
 MESSAGE_COLOR   = "#808080"  # Color of the game-over message.
+STEM_COLOR      = "#228B22"
 
 WINDOW_TITLE    = "Coral"  # Window title.
 MAX_QUEUE_SIZE = 3 # Movement queue max size
@@ -70,6 +71,7 @@ APPLE_ENERGY = 50
 hard_mode = False  # Defined normal mode as standart.
 border_wrap = False
 is_muted = False #Definied is muted as false 
+instructions_shown = False
 
 ##
 ## Game implementation.
@@ -180,6 +182,29 @@ def center_prompt(title, subtitle):
     if not hard_mode:
         configs[0] = 1
         
+def display_instructions():
+    instruction_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+    # Fill the surface with a semi-transparent black (RGBA color)
+    instruction_surface.fill((0, 0, 0, 128))
+
+    # Blit the overlay surface on top of the game window (arena)
+    arena.blit(instruction_surface, (0, 0))
+    
+    instructions = [
+        "Game Controls:",
+        "- Arrow Keys/WASD: Move",
+        "- P: Pause/Unpause",
+        "- I: Show/Hide Instructions",
+        "",
+        "Press I to return to the game"
+    ]
+    
+    y_offset = HEIGHT/3
+    for line in instructions:
+        text_surface = SMALL_FONT.render(line, True, (255, 255, 255))
+        arena.blit(text_surface, (50, y_offset))
+        y_offset += 50
+
 def draw_config(conf=[1,1,1,1]):
     velocity_string = ["Baixa", "Média", "Alta", "Extrema"]
     size_string = ["Pequeno", "Médio", "Grande"]
@@ -415,6 +440,8 @@ class Snake:
 
             # Respan the head with initial directions
             self.x, self.y, self.xmov, self.ymov = random_position()
+            self.head.x = self.x
+            self.head.y = self.y
 
             self.draw_head()
 
@@ -530,7 +557,6 @@ class Snake:
             
     # Draw stylized tail
     def draw_tail(self, tail, direction):
-        print(direction)
         # Define tail dimensions
         GRID_SIZE = size[configs[1]]
         tail_radius = GRID_SIZE // 3  # Smaller radius for the tail
@@ -573,13 +599,18 @@ class Apple:
 
         # Create an apple at that location
         self.rect = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
+        self.radius = size[configs[1]] // 2
 
     # This function is called each interation of the game loop
 
     def update(self):
 
         # Drop the apple
-        pygame.draw.rect(arena, APPLE_COLOR, self.rect)
+        pygame.draw.circle(arena, APPLE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
+        
+        stem_x = self.rect.centerx
+        stem_y = self.rect.top - 5  # Um pouco acima da maçã
+        pygame.draw.line(arena, STEM_COLOR, (stem_x, stem_y), (stem_x, stem_y - 10), 3)
 
 
 ##
@@ -621,14 +652,17 @@ while True:
             if event.key == pygame.K_q:             # Q         : quit game
                 pygame.quit()
                 sys.exit()
-            elif event.key == pygame.K_p:           # P         : pause game
+            elif event.key == pygame.K_p and not instructions_shown:           # P         : pause game
                 game_on = not game_on
             elif event.key == pygame.K_m:
                 is_muted = not is_muted  
                 pygame.mixer.music.set_volume(0 if is_muted else 0.4) 
+            elif event.key == pygame.K_i:  # Toggle instructions screen
+                instructions_shown = not instructions_shown
+                game_on = True
 
             # Allow movement only if the game is not paused
-            if game_on:
+            if game_on and not instructions_shown:
                 if event.key == pygame.K_DOWN or event.key == pygame.K_s and snake.ymov == 0:    # Down arrow:  move down
                     snake.set_direction(0, 1)
                 elif event.key == pygame.K_UP or event.key == pygame.K_w and snake.ymov == 0:    # Up arrow:    move up
@@ -639,6 +673,12 @@ while True:
                     snake.set_direction(-1, 0)
 
     ## Update the game
+
+    # Show instructions if the flag is set
+    if instructions_shown:
+        display_instructions() 
+        pygame.display.update()
+        continue  # Skip the rest of the loop if instructions are shown
 
     ## Show "Paused" and "Press P to continue" messages in the center of the grid
     if not game_on:
@@ -676,9 +716,8 @@ while True:
     snake.draw_head()
 
     if game_on:
-
         snake.energy.update()
-
+        
     # Show score (snake length = head + tail)
     score = BIG_FONT.render(f"{len(snake.tail)}", True, SCORE_COLOR)
     arena.blit(score, score_rect)
@@ -691,8 +730,14 @@ while True:
         got_apple_sound.play()
 
 
+    # Add the "Press (I)nstructions" text in the top-right corner
+    instruction_text = IN_GAME_FONT.render("Press (I)nstructions", True, WHITE_COLOR)
+    instruction_text_rect = instruction_text.get_rect(topright=(WIDTH - 10, 10))  # Padding from the edge
+    arena.blit(instruction_text, instruction_text_rect)
+
     # Update display and move clock.
 
     # Scaling surface to display size
     pygame.display.update()
     clock.tick(velocity[configs[0]])
+
