@@ -21,6 +21,7 @@
 import pygame
 import random
 import sys
+import os
 
 ##
 ## Game customization.
@@ -73,6 +74,8 @@ border_wrap = False
 is_muted = False #Definied is muted as false 
 instructions_shown = False
 
+
+HIGHSCORE_FILENAME = "data/highscore.bin"
 ##
 ## Game implementation.
 ##
@@ -336,6 +339,49 @@ def random_position():
         xmov = 0
 
     return x, y, xmov, ymov
+  
+## Get and save highscore from/in a file
+def save_high_score(score):
+    if not os.path.exists("data/"):
+        os.makedirs("data/")
+
+    try:
+        with open(HIGHSCORE_FILENAME, "wb+") as file:
+            file.write(score.to_bytes(4))
+    except (FileNotFoundError, ValueError):
+        return 0
+
+
+def get_high_score():
+    try:
+        with open(HIGHSCORE_FILENAME, "rb") as file:
+            return int.from_bytes(file.read(4))
+    except (FileNotFoundError, ValueError):
+        return 0
+
+
+highscore = get_high_score()
+
+## Display highscore
+def display_highscore(score):
+    global highscore
+    new_highscore = ""
+    if score > highscore:
+        # Update highscore
+        highscore = score
+        save_high_score(score)
+
+        new_highscore = "NEW "
+
+    text = new_highscore + "Highscore: " + str(highscore)
+
+    # Display highscore value
+    center_highscore = SMALL_FONT.render(text, True, MESSAGE_COLOR)
+    center_highscore_rect = center_highscore.get_rect(center=(WIDTH/2, HEIGHT*1/5))
+    arena.blit(center_highscore, center_highscore_rect)
+
+    pygame.display.update()
+
 ##
 ## Energy bar class
 ##
@@ -435,6 +481,9 @@ class Snake:
             game_over_sound.play()
 
             # Tell the bad news
+
+            display_highscore(len(snake.tail))
+
             self.draw_head()
             center_prompt("Game Over", "Press to restart")
 
