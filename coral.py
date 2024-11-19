@@ -74,8 +74,8 @@ border_wrap = False
 is_muted = False #Definied is muted as false 
 instructions_shown = False
 
-HIGHSCORE_FILENAME = "data/highscore.bin"
 
+HIGHSCORE_FILENAME = "data/highscore.bin"
 ##
 ## Game implementation.
 ##
@@ -481,7 +481,9 @@ class Snake:
             game_over_sound.play()
 
             # Tell the bad news
+
             display_highscore(len(snake.tail))
+
             self.draw_head()
             center_prompt("Game Over", "Press to restart")
 
@@ -750,8 +752,6 @@ while True:
 
         apple.update()
 
-        snake.energy.update()
-
     # Draw the tail
     for square in snake.tail:
         if square is snake.tail[-1]:
@@ -764,6 +764,9 @@ while True:
     # Draw head
     snake.draw_head()
 
+    if game_on:
+        snake.energy.update()
+        
     # Show score (snake length = head + tail)
     score = BIG_FONT.render(f"{len(snake.tail)}", True, SCORE_COLOR)
     arena.blit(score, score_rect)
@@ -786,3 +789,4 @@ while True:
     # Scaling surface to display size
     pygame.display.update()
     clock.tick(velocity[configs[0]])
+
