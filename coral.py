@@ -41,6 +41,7 @@ HEAD_COLOR      = "#00aa00"  # Color of the snake's head.
 DEAD_HEAD_COLOR = "#4b0082"  # Color of the dead snake's head.
 TAIL_COLOR      = "#00ff00"  # Color of the snake's tail.
 APPLE_COLOR     = "#aa0000"  # Color of the apple.
+ORANGE_COLOR    = "#ffa500"  # Color of the orange.
 ARENA_COLOR     = "#202020"  # Color of the ground.
 CONFIG_COLOR    = "#D3D3D3"  # Color of the config section.
 GRID_COLOR      = "#3c3c3b"  # Color of the grid lines.
@@ -265,7 +266,7 @@ def update_volume():
 def config_prompt():
     draw_config()
 
-   # Wait for a keypres or a game quit event.
+   # Wait for a keypress or a game quit event.
     n = 0
     stop = 0
     while True:
@@ -445,6 +446,8 @@ class Snake:
         # Movement queue
         self.move_queue = []
         
+        # Multiplier based on number of collected oranges.
+        self.speed = 1 
 
     # Add movement to movement queuedef
     def set_direction(self, xmov, ymov):
@@ -487,14 +490,14 @@ class Snake:
             self.draw_head()
             center_prompt("Game Over", "Press to restart")
 
-            # Respan the head with initial directions
+            # Respawn the head with initial directions
             self.x, self.y, self.xmov, self.ymov = random_position()
             self.head.x = self.x
             self.head.y = self.y
 
             self.draw_head()
 
-            # Respan the initial tail
+            # Respawn the initial tail
             self.tail = []
 
             # Resurrection
@@ -663,6 +666,36 @@ class Apple:
 
 
 ##
+## The orange class.
+##
+
+class Orange:
+    def __init__(self):
+
+        self.dropped = False
+
+        # Pick a random position within the game arena
+        self.x = int(random.randint(0, WIDTH)/size[configs[1]]) * size[configs[1]]
+        self.y = int(random.randint(0, HEIGHT)/size[configs[1]]) * size[configs[1]]
+
+        # Create an orange at that location
+        self.rect = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
+        self.radius = size[configs[1]] // 2
+
+    # This function is called each interation of the game loop
+    def update(self):
+
+        # Check if the orange is already dropped, if not then maybe drop it
+        if self.dropped == False:
+            #if random.randint(1, 100) >= 99:
+            if True:
+                pygame.draw.circle(arena, ORANGE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
+                self.dropped = True
+
+        elif self.dropped == True:
+            pygame.draw.circle(arena, ORANGE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
+
+##
 ## Draw the arena
 ##
 
@@ -680,6 +713,8 @@ draw_grid()
 snake = Snake()    # The snake
 
 apple = Apple()    # An apple
+
+orange = Orange()  # An orange
 
 center_prompt(WINDOW_TITLE, "Press to start")
 
@@ -751,6 +786,7 @@ while True:
         draw_grid()
 
         apple.update()
+        orange.update()
 
     # Draw the tail
     for square in snake.tail:
@@ -778,6 +814,13 @@ while True:
         apple = Apple()
         got_apple_sound.play()
 
+    # If the head passes over an orange, lengthen the snake and drop another orange
+    if snake.head.x == orange.x and snake.head.y == orange.y:
+        #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
+        snake.speed += 0.04
+        orange = Orange()
+        got_apple_sound.play()
+
 
     # Add the "Press (I)nstructions" text in the top-right corner
     instruction_text = IN_GAME_FONT.render("Press (I)nstructions", True, WHITE_COLOR)
@@ -785,8 +828,6 @@ while True:
     arena.blit(instruction_text, instruction_text_rect)
 
     # Update display and move clock.
-
-    # Scaling surface to display size
     pygame.display.update()
-    clock.tick(velocity[configs[0]])
+    clock.tick(snake.speed*velocity[configs[0]])
 
