@@ -280,9 +280,20 @@ def config_prompt():
     n = 0
     draw_config(configs, n)
 
-   # Wait for a keypres or a game quit event.
+    # Wait for a keypres or a game quit event.
     stop = 0
     while True:
+        opcao = 'velocidade'
+        match n:
+            case 0:
+                opcao = 'velocidade'
+            case 1:
+                opcao = 'tamanho'
+            case 2:
+                opcao = 'frequencia'
+            case 3:
+                opcao = 'volume'
+
         if stop == 1:
             break
         for event in pygame.event.get():      
@@ -305,16 +316,6 @@ def config_prompt():
                     else:
                         n -= 1
                 elif event.key == pygame.K_RIGHT: 
-                    opcao = 'velocidade'
-                    match n:
-                        case 0:
-                            opcao = 'velocidade'
-                        case 1:
-                            opcao = 'tamanho'
-                        case 2:
-                            opcao = 'frequencia'
-                        case 3:
-                            opcao = 'volume'
                     if configs[opcao] == 2:
                         configs[opcao] = 0
                     else:
