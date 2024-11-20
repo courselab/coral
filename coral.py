@@ -246,7 +246,7 @@ snake = Snake()    # The snake
 
 apple = Apple()    # An apple
 
-center_prompt(WINDOW_TITLE, "Press to start")
+center_prompt(WINDOW_TITLE, "Press any key to start")
 
 ##
 ## Main loop
