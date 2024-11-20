@@ -63,6 +63,8 @@ pygame.display.set_caption(WINDOW_TITLE)
 
 game_on = 1
 
+space_pressed = False  # Track spacebar state
+
 ## This function is called when the snake dies.
 
 def center_prompt(title, subtitle):
@@ -280,6 +282,12 @@ while True:
                 sys.exit()
             elif event.key == pygame.K_p:     # S         : pause game
                 game_on = not game_on
+            elif event.key == pygame.K_SPACE:  # Spacebar pressed
+                space_pressed = True
+        
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_SPACE:  # Spacebar released
+                space_pressed = False
 
     ## Update the game
 
@@ -309,7 +317,11 @@ while True:
         snake.got_apple = True;
         apple = Apple()
 
+    # Adjust speed when spacebar is held down
+    if space_pressed:
+        clock.tick(CLOCK_TICKS * 2)  # Double the speed when space is held down
+    else:
+        clock.tick(CLOCK_TICKS)  # Normal speed
 
     # Update display and move clock.
     pygame.display.update()
-    clock.tick(CLOCK_TICKS)
