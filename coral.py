@@ -521,7 +521,7 @@ class Snake:
 
             if self.got_apple:
                 self.got_apple = False
-                self.energy.increase_energy(APPLE_ENERGY)
+                self.energy.increase_energy(random.randint(APPLE_ENERGY - 25, APPLE_ENERGY))
             else:
                 self.tail.pop()
 
