@@ -348,7 +348,7 @@ def save_high_score(score):
 
     try:
         with open(HIGHSCORE_FILENAME, "wb+") as file:
-            file.write(score.to_bytes(4))
+            file.write(score.to_bytes(4, byteorder='big'))
     except (FileNotFoundError, ValueError):
         return 0
 
@@ -356,7 +356,7 @@ def save_high_score(score):
 def get_high_score():
     try:
         with open(HIGHSCORE_FILENAME, "rb") as file:
-            return int.from_bytes(file.read(4))
+            return int.from_bytes(file.read(4), byteorder='big')
     except (FileNotFoundError, ValueError):
         return 0
 
