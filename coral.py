@@ -638,16 +638,34 @@ class Snake:
         # Draw the rectangular part connecting to the next segment
         pygame.draw.circle(arena, tail_color, big_tail_center, 3 / 2* tail_radius)
 
+    def is_in_position(self, x, y):
+        """ Determine whether any part of the snake is in position (x, y). """
+        """This could be optimized by always maintaining a hashmap of the positions
+        of the snake's segments, which felt unecessary by now. """
+
+        if self.head.x == x and self.head.y == y:
+            return True
+        for square in self.tail: 
+            if square.x == x and square.y == y:
+                return True
+        return False
+
 ##
 ## The apple class.
 ##
 
 class Apple:
-    def __init__(self):
+    def __init__(self, snake=None):
 
         # Pick a random position within the game arena
         self.x = int(random.randint(0, WIDTH)/size[configs[1]]) * size[configs[1]]
         self.y = int(random.randint(0, HEIGHT)/size[configs[1]]) * size[configs[1]]
+
+        if snake:
+            while snake.is_in_position(self.x, self.y):
+                # Prevent apples from spawning on top of the snake
+                self.x = int(random.randint(0, WIDTH)/size[configs[1]]) * size[configs[1]]
+                self.y = int(random.randint(0, HEIGHT)/size[configs[1]]) * size[configs[1]]
 
         # Create an apple at that location
         self.rect = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
@@ -820,7 +838,7 @@ while True:
     if snake.head.x == apple.x and snake.head.y == apple.y:
         #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
         snake.got_apple = True
-        apple = Apple()
+        apple = Apple(snake)
         got_apple_sound.play()
 
     # If the head passes over an orange, lengthen the snake and drop another orange
