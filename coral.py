@@ -691,8 +691,8 @@ class Apple:
         if snake:
             while snake.is_in_position(self.x, self.y):
                 # Prevent apples from spawning on top of the snake
-                self.x = int(random.randint(0, WIDTH)/size[configs[1]]) * size[configs[1]]
-                self.y = int(random.randint(0, HEIGHT)/size[configs[1]]) * size[configs[1]]
+                self.x = int(random.randint(0, WIDTH)/size[configs['tamanho']]) * size[configs['tamanho']]
+                self.y = int(random.randint(0, HEIGHT)/size[configs['tamanho']]) * size[configs['tamanho']]
 
         # Create an apple at that location
         self.rect = pygame.Rect(self.x, self.y, size[configs['tamanho']], size[configs['tamanho']])
@@ -720,12 +720,12 @@ class Orange:
         self.dropped = False
 
         # Pick a random position within the game arena
-        self.x = int(random.randint(0, WIDTH)/size[configs[1]]) * size[configs[1]]
-        self.y = int(random.randint(0, HEIGHT)/size[configs[1]]) * size[configs[1]]
+        self.x = int(random.randint(0, WIDTH)/size[configs['tamanho']]) * size[configs['tamanho']]
+        self.y = int(random.randint(0, HEIGHT)/size[configs['tamanho']]) * size[configs['tamanho']]
 
         # Create an orange at that location
-        self.rect = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
-        self.radius = size[configs[1]] // 2
+        self.rect = pygame.Rect(self.x, self.y, size[configs['tamanho']], size[configs['tamanho']])
+        self.radius = size[configs['tamanho']] // 2
 
     # This function is called each interation of the game loop
     def update(self):
