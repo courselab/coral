@@ -41,6 +41,7 @@ HEAD_COLOR      = "#00aa00"  # Color of the snake's head.
 DEAD_HEAD_COLOR = "#4b0082"  # Color of the dead snake's head.
 TAIL_COLOR      = "#00ff00"  # Color of the snake's tail.
 APPLE_COLOR     = "#aa0000"  # Color of the apple.
+ORANGE_COLOR    = "#ffa500"  # Color of the orange.
 ARENA_COLOR     = "#202020"  # Color of the ground.
 CONFIG_COLOR    = "#D3D3D3"  # Color of the config section.
 GRID_COLOR      = "#3c3c3b"  # Color of the grid lines.
@@ -277,10 +278,12 @@ def update_volume():
 
     
 def config_prompt():
+    draw_config()
+
+   # Wait for a keypress or a game quit event.
     n = 0
     draw_config(configs, n)
 
-    # Wait for a keypres or a game quit event.
     stop = 0
     while True:
         opcao = 'velocidade'
@@ -372,7 +375,7 @@ def save_high_score(score):
 
     try:
         with open(HIGHSCORE_FILENAME, "wb+") as file:
-            file.write(score.to_bytes(4))
+            file.write(score.to_bytes(4, byteorder='big'))
     except (FileNotFoundError, ValueError):
         return 0
 
@@ -380,7 +383,7 @@ def save_high_score(score):
 def get_high_score():
     try:
         with open(HIGHSCORE_FILENAME, "rb") as file:
-            return int.from_bytes(file.read(4))
+            return int.from_bytes(file.read(4), byteorder='big')
     except (FileNotFoundError, ValueError):
         return 0
 
@@ -470,6 +473,8 @@ class Snake:
         # Movement queue
         self.move_queue = []
         
+        # Multiplier based on number of collected oranges.
+        self.speed = 1 
 
     # Add movement to movement queuedef
     def set_direction(self, xmov, ymov):
@@ -512,14 +517,14 @@ class Snake:
             self.draw_head()
             center_prompt("Game Over", "Press to restart")
 
-            # Respan the head with initial directions
+            # Respawn the head with initial directions
             self.x, self.y, self.xmov, self.ymov = random_position()
             self.head.x = self.x
             self.head.y = self.y
 
             self.draw_head()
 
-            # Respan the initial tail
+            # Respawn the initial tail
             self.tail = []
 
             # Resurrection
@@ -543,7 +548,7 @@ class Snake:
 
             if self.got_apple:
                 self.got_apple = False
-                self.energy.increase_energy(APPLE_ENERGY)
+                self.energy.increase_energy(random.randint(APPLE_ENERGY - 25, APPLE_ENERGY))
             else:
                 self.tail.pop()
 
@@ -660,16 +665,34 @@ class Snake:
         # Draw the rectangular part connecting to the next segment
         pygame.draw.circle(arena, tail_color, big_tail_center, 3 / 2* tail_radius)
 
+    def is_in_position(self, x, y):
+        """ Determine whether any part of the snake is in position (x, y). """
+        """This could be optimized by always maintaining a hashmap of the positions
+        of the snake's segments, which felt unecessary by now. """
+
+        if self.head.x == x and self.head.y == y:
+            return True
+        for square in self.tail: 
+            if square.x == x and square.y == y:
+                return True
+        return False
+
 ##
 ## The apple class.
 ##
 
 class Apple:
-    def __init__(self):
+    def __init__(self, snake=None):
 
         # Pick a random position within the game arena
         self.x = int(random.randint(0, WIDTH)/size[configs['tamanho']]) * size[configs['tamanho']]
         self.y = int(random.randint(0, HEIGHT)/size[configs['tamanho']]) * size[configs['tamanho']]
+
+        if snake:
+            while snake.is_in_position(self.x, self.y):
+                # Prevent apples from spawning on top of the snake
+                self.x = int(random.randint(0, WIDTH)/size[configs[1]]) * size[configs[1]]
+                self.y = int(random.randint(0, HEIGHT)/size[configs[1]]) * size[configs[1]]
 
         # Create an apple at that location
         self.rect = pygame.Rect(self.x, self.y, size[configs['tamanho']], size[configs['tamanho']])
@@ -686,6 +709,36 @@ class Apple:
         stem_y = self.rect.top - 5  # Um pouco acima da maçã
         pygame.draw.line(arena, STEM_COLOR, (stem_x, stem_y), (stem_x, stem_y - 10), 3)
 
+
+##
+## The orange class.
+##
+
+class Orange:
+    def __init__(self):
+
+        self.dropped = False
+
+        # Pick a random position within the game arena
+        self.x = int(random.randint(0, WIDTH)/size[configs[1]]) * size[configs[1]]
+        self.y = int(random.randint(0, HEIGHT)/size[configs[1]]) * size[configs[1]]
+
+        # Create an orange at that location
+        self.rect = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
+        self.radius = size[configs[1]] // 2
+
+    # This function is called each interation of the game loop
+    def update(self):
+
+        # Check if the orange is already dropped, if not then maybe drop it
+        if self.dropped == False:
+            #if random.randint(1, 100) >= 99:
+            if True:
+                pygame.draw.circle(arena, ORANGE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
+                self.dropped = True
+
+        elif self.dropped == True:
+            pygame.draw.circle(arena, ORANGE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
 
 ##
 ## Draw the arena
@@ -705,6 +758,8 @@ draw_grid()
 snake = Snake()    # The snake
 
 apple = Apple()    # An apple
+
+orange = Orange()  # An orange
 
 center_prompt(WINDOW_TITLE, "Press to start")
 
@@ -756,6 +811,8 @@ while True:
 
     ## Show "Paused" and "Press P to continue" messages in the center of the grid
     if not game_on:
+        arena.fill(ARENA_COLOR)  # Clear the arena to prevent overlap
+        
         pause_text = BIG_FONT.render("Paused", True, MESSAGE_COLOR)
         pause_text_rect = pause_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
         arena.blit(pause_text, pause_text_rect)
@@ -764,9 +821,16 @@ while True:
         continue_text_rect = continue_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 50))
         arena.blit(continue_text, continue_text_rect)
         
-        
+        quit_text = SMALL_FONT.render("Press q to quit", True, MESSAGE_COLOR)
+        quit_text_rect = quit_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 125))
+        arena.blit(quit_text, quit_text_rect)
+        # Draw the pause menu and update the display
+        win.blit(pygame.transform.rotozoom(arena, 0, win_res / WIDTH), (0, 0))
         pygame.display.update()
-        continue  # Skip the rest of the loop when paused
+        
+        # Skip the rest of the loop when paused, preventing unnecessary updates
+        continue  
+
     
     if game_on:
 
@@ -776,6 +840,7 @@ while True:
         draw_grid()
 
         apple.update()
+        orange.update()
 
     # Draw the tail
     for square in snake.tail:
@@ -800,7 +865,14 @@ while True:
     if snake.head.x == apple.x and snake.head.y == apple.y:
         #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
         snake.got_apple = True
-        apple = Apple()
+        apple = Apple(snake)
+        got_apple_sound.play()
+
+    # If the head passes over an orange, lengthen the snake and drop another orange
+    if snake.head.x == orange.x and snake.head.y == orange.y:
+        #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
+        snake.speed += 0.04
+        orange = Orange()
         got_apple_sound.play()
 
 
@@ -810,8 +882,6 @@ while True:
     arena.blit(instruction_text, instruction_text_rect)
 
     # Update display and move clock.
-
-    # Scaling surface to display size
     pygame.display.update()
-    clock.tick(velocity[configs['velocidade']])
+    clock.tick(snake.speed*velocity[configs['velocidade']])
 
