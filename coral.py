@@ -476,6 +476,9 @@ class Snake:
         if self.energy.get_energy() <= 0:
             self.alive = False
 
+        # Number of collected oranges (for score purposes; they are worth 2 points).
+        self.oranges = int(50*(self.speed - 1))
+
         # In the event of death, reset the game arena.
         if not self.alive:
             
@@ -485,7 +488,7 @@ class Snake:
 
             # Tell the bad news
 
-            display_highscore(len(snake.tail))
+            display_highscore(len(snake.tail) + snake.oranges)
 
             self.draw_head()
             center_prompt("Game Over", "Press to restart")
@@ -499,6 +502,9 @@ class Snake:
 
             # Respawn the initial tail
             self.tail = []
+
+            # Reset speed
+            self.speed = 1
 
             # Resurrection
             game_over_sound.stop()
@@ -811,8 +817,8 @@ while True:
     if game_on:
         snake.energy.update()
         
-    # Show score (snake length = head + tail)
-    score = BIG_FONT.render(f"{len(snake.tail)}", True, SCORE_COLOR)
+    # Show score (snake length = head + tail + oranges)
+    score = BIG_FONT.render(f"{len(snake.tail) + snake.oranges}", True, SCORE_COLOR)
     arena.blit(score, score_rect)
 
     # If the head pass over an apple, lengthen the snake and drop another apple
@@ -837,5 +843,6 @@ while True:
 
     # Update display and move clock.
     pygame.display.update()
+    print(snake.oranges)
     clock.tick(snake.speed*velocity[configs[0]])
 
