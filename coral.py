@@ -514,7 +514,7 @@ class Snake:
 
             display_highscore(len(snake.tail))
 
-            self.draw_head()
+            self.draw()
             center_prompt("Game Over", "Press to restart")
 
             # Respawn the head with initial directions
@@ -522,7 +522,7 @@ class Snake:
             self.head.x = self.x
             self.head.y = self.y
 
-            self.draw_head()
+            self.draw()
 
             # Respawn the initial tail
             self.tail = []
@@ -664,6 +664,19 @@ class Snake:
 
         # Draw the rectangular part connecting to the next segment
         pygame.draw.circle(arena, tail_color, big_tail_center, 3 / 2* tail_radius)
+        
+    def draw(self):
+        # Draw the tail
+        for square in self.tail:
+            if square is self.tail[-1]:
+                if (len(self.tail) == 1):
+                    self.draw_tail(square, (self.xmov, self.ymov))
+                else:
+                    self.draw_tail(square, (self.tail[-2][0] - square[0], self.tail[-2][1] - square[1]))
+            else:
+                pygame.draw.rect(arena, HEAD_COLOR if self.alive else DEAD_HEAD_COLOR, square)
+        # Draw head
+        self.draw_head()
 
     def is_in_position(self, x, y):
         """ Determine whether any part of the snake is in position (x, y). """
@@ -706,7 +719,7 @@ class Apple:
         pygame.draw.circle(arena, APPLE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
         
         stem_x = self.rect.centerx
-        stem_y = self.rect.top - 5  # Um pouco acima da maçã
+        stem_y = self.rect.top - 2  # A little above the circle
         pygame.draw.line(arena, STEM_COLOR, (stem_x, stem_y), (stem_x, stem_y - 10), 3)
 
 
@@ -842,17 +855,8 @@ while True:
         apple.update()
         orange.update()
 
-    # Draw the tail
-    for square in snake.tail:
-        if square is snake.tail[-1]:
-            if (len(snake.tail) == 1):
-                snake.draw_tail(square, (snake.xmov, snake.ymov))
-            else:
-                snake.draw_tail(square, (snake.tail[-2][0] - square[0], snake.tail[-2][1] - square[1]))
-        else:
-            pygame.draw.rect(arena, HEAD_COLOR, square)
-    # Draw head
-    snake.draw_head()
+    # Draw snake
+    snake.draw() 
 
     if game_on:
         snake.energy.update()
