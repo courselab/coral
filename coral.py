@@ -368,6 +368,10 @@ def random_position():
 
     return x, y, xmov, ymov
   
+## The score based on the length and number of collected oranges
+def get_score(snake):
+    return len(snake.tail) + snake.oranges
+
 ## Get and save highscore from/in a file
 def save_high_score(score):
     if not os.path.exists("data/"):
@@ -503,6 +507,9 @@ class Snake:
         if self.energy.get_energy() <= 0:
             self.alive = False
 
+        # Number of collected oranges (for score purposes; they are worth 2 points).
+        self.oranges = int(50*(self.speed - 1))
+
         # In the event of death, reset the game arena.
         if not self.alive:
             
@@ -512,7 +519,7 @@ class Snake:
 
             # Tell the bad news
 
-            display_highscore(len(snake.tail))
+            display_highscore(get_score(self))
 
             self.draw_head()
             center_prompt("Game Over", "Press to restart")
@@ -527,6 +534,9 @@ class Snake:
             # Respawn the initial tail
             self.tail = []
 
+            # Reset speed
+            self.speed = 1
+
             # Resurrection
             game_over_sound.stop()
             self.alive = True
@@ -540,7 +550,7 @@ class Snake:
 
         # Move the snake.
 
-        # If head hasn't moved, tail shouldn't either (otherwise, self-byte).
+        # If head hasn't moved, tail shouldn't either (otherwise, self-bite).
         if (self.xmov or self.ymov):
 
             # Prepend a new segment to tail.
@@ -732,8 +742,7 @@ class Orange:
 
         # Check if the orange is already dropped, if not then maybe drop it
         if self.dropped == False:
-            #if random.randint(1, 100) >= 99:
-            if True:
+            if random.randint(1, 100) >= 99:
                 pygame.draw.circle(arena, ORANGE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
                 self.dropped = True
 
@@ -857,8 +866,8 @@ while True:
     if game_on:
         snake.energy.update()
         
-    # Show score (snake length = head + tail)
-    score = BIG_FONT.render(f"{len(snake.tail)}", True, SCORE_COLOR)
+    # Show score
+    score = BIG_FONT.render(f"{get_score(snake)}", True, SCORE_COLOR)
     arena.blit(score, score_rect)
 
     # If the head pass over an apple, lengthen the snake and drop another apple
@@ -871,6 +880,7 @@ while True:
     # If the head passes over an orange, lengthen the snake and drop another orange
     if snake.head.x == orange.x and snake.head.y == orange.y:
         #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
+        snake.energy.increase_energy(APPLE_ENERGY)
         snake.speed += 0.04
         orange = Orange()
         got_apple_sound.play()
