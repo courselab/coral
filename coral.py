@@ -358,7 +358,7 @@ class Snake:
             self.alive = True
             self.got_apple = False
             self.energy.set_max_energy()
-            pygame.mixer.music.play()
+            pygame.mixer.music.play(-1)
 
             # Drop an apple
             apple = Apple()
