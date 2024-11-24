@@ -80,6 +80,9 @@ class Game:
         
         self.score = self.BIG_FONT.render("1", True, MESSAGE_COLOR)
         self.score_rect = self.score.get_rect(center=(WIDTH/2, HEIGHT/20+HEIGHT/30))
+    
+        self.highscore = self.get_high_score()
+
  
     def center_prompt(self,title, subtitle):
         global hard_mode, border_wrap, CLOCK_TICKS
@@ -277,7 +280,6 @@ class Game:
         except (FileNotFoundError, ValueError):
             return 0
 
-    highscore = get_high_score()
 
     ## Display highscore
     def display_highscore(self,score):
