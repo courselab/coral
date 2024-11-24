@@ -54,7 +54,6 @@ WINDOW_TITLE    = "Coral"  # Window title.
 MAX_QUEUE_SIZE = 3 # Movement queue max size
 
 velocity = [4, 7, 10,15]
-size = [60, 40, 20]  
 n_apple = [1, 2, 3] 
 base_volume_levels = [0.4, 0.6, 0.7]
 volume_multiplier = [0.3, 1.1, 1.9]
@@ -92,6 +91,8 @@ mon_h = display_info.current_h
 
 # Default window size
 win_res = WIDTH
+size = [win_res//16, win_res//20, win_res//25]  
+
 
 # If default video_mode doesn't fit, look for video mode that fits user's screen size
 if (mon_w<WIDTH or mon_h<HEIGHT):
@@ -210,7 +211,7 @@ def display_instructions():
         y_offset += 50
 
 def draw_config(conf=[1,1,1,1]):
-    velocity_string = ["Baixa", "Média", "Alta", "Extrema"]
+    velocity_string = ["Baixa", "Média", "Alta"]
     size_string = ["Pequeno", "Médio", "Grande"]
     f_string = ["Baixa", "Normal", "Alta"]
     sound_string = ["Baixo", "Médio", "Alto"]
@@ -726,6 +727,8 @@ def draw_grid():
 score = BIG_FONT.render("1", True, MESSAGE_COLOR)
 score_rect = score.get_rect(center=(WIDTH/2, HEIGHT/20+HEIGHT/30))
 
+center_prompt(WINDOW_TITLE, "Press to start")
+
 draw_grid()
 
 snake = Snake()    # The snake
@@ -733,8 +736,6 @@ snake = Snake()    # The snake
 apple = Apple()    # An apple
 
 orange = Orange()  # An orange
-
-center_prompt(WINDOW_TITLE, "Press to start")
 
 ##
 ## Main loop
