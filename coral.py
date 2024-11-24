@@ -341,6 +341,10 @@ def random_position():
 
     return x, y, xmov, ymov
   
+## The score based on the length and number of collected oranges
+def get_score(snake):
+    return len(snake.tail) + snake.oranges
+
 ## Get and save highscore from/in a file
 def save_high_score(score):
     if not os.path.exists("data/"):
@@ -488,7 +492,7 @@ class Snake:
 
             # Tell the bad news
 
-            display_highscore(len(snake.tail) + snake.oranges)
+            display_highscore(get_score(self))
 
             self.draw_head()
             center_prompt("Game Over", "Press to restart")
@@ -817,8 +821,8 @@ while True:
     if game_on:
         snake.energy.update()
         
-    # Show score (snake length = head + tail + oranges)
-    score = BIG_FONT.render(f"{len(snake.tail) + snake.oranges}", True, SCORE_COLOR)
+    # Show score
+    score = BIG_FONT.render(f"{get_score(snake)}", True, SCORE_COLOR)
     arena.blit(score, score_rect)
 
     # If the head pass over an apple, lengthen the snake and drop another apple
@@ -843,6 +847,5 @@ while True:
 
     # Update display and move clock.
     pygame.display.update()
-    print(snake.oranges)
     clock.tick(snake.speed*velocity[configs[0]])
 
