@@ -49,7 +49,7 @@
 
 	  * the size of the grid
 	  * the snake speed
-   	  * the number of apples in the arena. 
+    * the number of apples in the arena. 
 	  * whether reversing the snake is allowed or not
 	  * whether apples disappear after some time
 	  * whether there may be poisoned apples that degrades energy
