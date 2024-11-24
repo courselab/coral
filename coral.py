@@ -697,8 +697,7 @@ class Orange:
 
         # Check if the orange is already dropped, if not then maybe drop it
         if self.dropped == False:
-            #if random.randint(1, 100) >= 99:
-            if True:
+            if random.randint(1, 100) >= 99:
                 pygame.draw.circle(arena, ORANGE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
                 self.dropped = True
 
