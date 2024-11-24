@@ -523,7 +523,7 @@ class Snake:
 
         # Move the snake.
 
-        # If head hasn't moved, tail shouldn't either (otherwise, self-byte).
+        # If head hasn't moved, tail shouldn't either (otherwise, self-bite).
         if (self.xmov or self.ymov):
 
             # Prepend a new segment to tail.
@@ -697,7 +697,8 @@ class Orange:
 
         # Check if the orange is already dropped, if not then maybe drop it
         if self.dropped == False:
-            if random.randint(1, 100) >= 99:
+            #if random.randint(1, 100) >= 99:
+            if True:
                 pygame.draw.circle(arena, ORANGE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
                 self.dropped = True
 
@@ -835,6 +836,7 @@ while True:
     # If the head passes over an orange, lengthen the snake and drop another orange
     if snake.head.x == orange.x and snake.head.y == orange.y:
         #snake.tail.append(pygame.Rect(snake.head.x, snake.head.y, GRID_SIZE, GRID_SIZE))
+        snake.energy.increase_energy(APPLE_ENERGY)
         snake.speed += 0.04
         orange = Orange()
         got_apple_sound.play()
