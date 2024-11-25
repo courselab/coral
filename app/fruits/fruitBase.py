@@ -19,16 +19,24 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import pygame
-from app.fruits.fruitBase import BaseFruit
+import random
 from app.config import *
 from app.game import singleton_instance as gm
 
-class Apple(BaseFruit):
-    def __init__(self, snake=None):
-        super().__init__(APPLE_COLOR, snake)
+class BaseFruit:
+    def __init__(self, color, snake=None):
+        self.color = color
+        self.x = int(random.randint(0, WIDTH) / size[configs[1]]) * size[configs[1]]
+        self.y = int(random.randint(0, HEIGHT) / size[configs[1]]) * size[configs[1]]
+
+        if snake:
+            while snake.is_in_position(self.x, self.y):
+                # Prevent fruits from spawning on top of the snake
+                self.x = int(random.randint(0, WIDTH) / size[configs[1]]) * size[configs[1]]
+                self.y = int(random.randint(0, HEIGHT) / size[configs[1]]) * size[configs[1]]
+
+        self.rect = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
+        self.radius = size[configs[1]] // 2
 
     def update(self):
-        super().update()
-        stem_x = self.rect.centerx
-        stem_y = self.rect.top - 5
-        pygame.draw.line(gm.arena, STEM_COLOR, (stem_x, stem_y), (stem_x, stem_y - 10), 3)
+        pygame.draw.circle(gm.arena, self.color, (self.rect.centerx, self.rect.centery), self.radius)

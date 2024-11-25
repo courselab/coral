@@ -18,34 +18,17 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import random
-import pygame
-
 from app.config import *
-from app.game import singleton_instance as gm
+from app.fruits.fruitBase import BaseFruit
 
-class Orange:
 
-    def __init__(self):
+class Orange(BaseFruit):
+    def __init__(self, snake=None):
+        super().__init__(ORANGE_COLOR, snake)
         self.dropped = False
 
-        # Pick a random position within the game arena
-        self.x = int(random.randint(0, WIDTH)/size[configs[1]]) * size[configs[1]]
-        self.y = int(random.randint(0, HEIGHT)/size[configs[1]]) * size[configs[1]]
-
-        # Create an orange at that location
-        self.rect = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
-        self.radius = size[configs[1]] // 2
-
-    # This function is called each interation of the game loop
     def update(self):
-
-        # Check if the orange is already dropped, if not then maybe drop it
-        if self.dropped == False:
-            #if random.randint(1, 100) >= 99:
-            if True:
-                pygame.draw.circle(gm.arena, ORANGE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
-                self.dropped = True
-
-        elif self.dropped == True:
-            pygame.draw.circle(gm.arena, ORANGE_COLOR, (self.rect.centerx, self.rect.centery), self.radius)
+        if not self.dropped:
+            self.dropped = True
+        if self.dropped:
+            super().update()
