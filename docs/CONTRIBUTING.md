@@ -9,7 +9,7 @@ Contributing to Coral
  Contribution workflow
  ------------------------------
 
- The official Coral repository is at https://github.com/monaco/kobrapy
+ The official Coral repository is at https://github.com/courselab/coral
    
  To start contributing, make sure you've read the essential documentation
  thoroughly:

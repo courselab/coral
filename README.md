@@ -30,7 +30,7 @@
 
  User instructions are available in the file `docs/manual.md`.
 
- If you're exploring KobraPy as a programming exercise, please refer to
+ If you're exploring Coral as a programming exercise, please refer to
  the file `docs/challenge.md` for directions. 
 
  And if you like it, feel free to let the author know.
@@ -46,8 +46,6 @@
  ------------------------------
 
  Follow these steps to set up and run the Coral Snake Game:
-
- ### Prerequisites
 
  ### Prerequisites
 
