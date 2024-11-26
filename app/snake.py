@@ -148,6 +148,7 @@ class Snake:
             gm.game_over_sound.stop()
             self.alive = True
             self.got_apple = False
+            self.speed = 1
             self.energy.set_max_energy()
             pygame.mixer.music.play()
 
