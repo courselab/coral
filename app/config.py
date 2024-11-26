@@ -28,9 +28,8 @@ VIDEO_MODES = [
 
 WIDTH, HEIGHT = 800, 800     # Default game screen dimensions.
 
-HEAD_COLOR      = "#00aa00"  # Color of the snake's head.
-DEAD_HEAD_COLOR = "#4b0082"  # Color of the dead snake's head.
-TAIL_COLOR      = "#00ff00"  # Color of the snake's tail.
+SNAKE_COLOR      = "#00aa00"  # Color of the snake's head.
+DEAD_SNAKE_COLOR = "#4b0082"  # Color of the dead snake's head.
 APPLE_COLOR     = "#aa0000"  # Color of the apple.
 ORANGE_COLOR    = "#ffa500"  # Color of the orange.
 ARENA_COLOR     = "#202020"  # Color of the ground.

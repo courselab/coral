@@ -131,7 +131,7 @@ class Snake:
 
             gm.display_highscore(len(self.tail))
 
-            self.draw_head()
+            self.draw()
             gm.center_prompt("Game Over", "Press to restart")
 
             # Respawn the head with initial directions
@@ -139,7 +139,7 @@ class Snake:
             self.head.x = self.x
             self.head.y = self.y
 
-            self.draw_head()
+            self.draw()
 
             # Respawn the initial tail
             self.tail = []
@@ -185,7 +185,7 @@ class Snake:
         head_center = (self.head.x + head_radius, self.head.y + head_radius)
         
         # Select color based on snake's alive status
-        head_color = HEAD_COLOR if self.alive else DEAD_HEAD_COLOR
+        head_color = SNAKE_COLOR if self.alive else DEAD_SNAKE_COLOR
         
         # Draw the rounded head
         pygame.draw.circle(self.__surface, head_color, head_center, head_radius)
@@ -274,7 +274,7 @@ class Snake:
             tail_center = (tail[0] + GRID_SIZE // 2, tail[1] + tail_radius)
 
         # Choose color based on alive status
-        tail_color = HEAD_COLOR if self.alive else DEAD_HEAD_COLOR
+        tail_color = SNAKE_COLOR if self.alive else DEAD_SNAKE_COLOR
 
         # Draw the main part of the tail (rounded edge)
         pygame.draw.circle(self.__surface, tail_color, tail_center, tail_radius)
@@ -293,3 +293,16 @@ class Snake:
             if square.x == x and square.y == y:
                 return True
         return False
+    
+    def draw(self):
+        # Draw the tail
+        for square in self.tail:
+            if square is self.tail[-1]:
+                if (len(self.tail) == 1):
+                    self.draw_tail(square, (self.xmov, self.ymov))
+                else:
+                    self.draw_tail(square, (self.tail[-2][0] - square[0], self.tail[-2][1] - square[1]))
+            else:
+                pygame.draw.rect(gm.arena, SNAKE_COLOR if self.alive else DEAD_SNAKE_COLOR, square)
+        # Draw head
+        self.draw_head()
