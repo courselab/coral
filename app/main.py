@@ -111,17 +111,8 @@ while True:
         apple.update()
         orange.update()
 
-    # Draw the tail
-    for square in snake.tail:
-        if square is snake.tail[-1]:
-            if (len(snake.tail) == 1):
-                snake.draw_tail(square, (snake.xmov, snake.ymov))
-            else:
-                snake.draw_tail(square, (snake.tail[-2][0] - square[0], snake.tail[-2][1] - square[1]))
-        else:
-            pygame.draw.rect(gm.arena, HEAD_COLOR, square)
-    # Draw head
-    snake.draw_head()
+    # Draw snake
+    snake.draw()
 
     if game_on:
         snake.energy.update()
