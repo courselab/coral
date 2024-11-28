@@ -20,7 +20,6 @@
 
 import pygame
 import sys
-import os
 
 from app.config import *
 from app.snake import Snake
@@ -38,37 +37,46 @@ gm.center_prompt(WINDOW_TITLE, "Press to start")
 game_on = gm.game_on
 while True:
 
-    for event in pygame.event.get():           # Wait for events
-
-       # App terminated
+    for event in pygame.event.get():  # Wait for events 
+        # App terminated
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
-          # Key pressed
+        # Key pressed
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_q:             # Q         : quit game
+            key = event.key
+
+            # Global actions
+            if key == pygame.K_q:  # Quit game
                 pygame.quit()
                 sys.exit()
-            elif event.key == pygame.K_p and not instructions_shown:           # P         : pause game
+            elif key == pygame.K_p and not instructions_shown:  # Pause game
                 game_on = not game_on
-            elif event.key == pygame.K_m:
-                is_muted = not is_muted  
-                pygame.mixer.music.set_volume(0 if is_muted else 0.4) 
-            elif event.key == pygame.K_i:  # Toggle instructions screen
+            elif key == pygame.K_m:  # Mute/unmute game
+                is_muted = not is_muted
+                pygame.mixer.music.set_volume(0 if is_muted else 0.4)
+            elif key == pygame.K_i:  # Toggle instructions screen
                 instructions_shown = not instructions_shown
                 game_on = True
 
-            # Allow movement only if the game is not paused
+            # Movement controls (only if game is not paused or showing instructions)
             if game_on and not instructions_shown:
-                if event.key == pygame.K_DOWN or event.key == pygame.K_s and snake.ymov == 0:    # Down arrow:  move down
-                    snake.set_direction(0, 1)
-                elif event.key == pygame.K_UP or event.key == pygame.K_w and snake.ymov == 0:    # Up arrow:    move up
-                    snake.set_direction(0, -1)
-                elif event.key == pygame.K_RIGHT or event.key == pygame.K_d and snake.xmov == 0: # Right arrow: move right
-                    snake.set_direction(1, 0)
-                elif event.key == pygame.K_LEFT or event.key == pygame.K_a and snake.xmov == 0:  # Left arrow:  move left
-                    snake.set_direction(-1, 0)
+                movement_keys = {
+                    pygame.K_DOWN: (0, 1),
+                    pygame.K_s: (0, 1),
+                    pygame.K_UP: (0, -1),
+                    pygame.K_w: (0, -1),
+                    pygame.K_RIGHT: (1, 0),
+                    pygame.K_d: (1, 0),
+                    pygame.K_LEFT: (-1, 0),
+                    pygame.K_a: (-1, 0),
+                }
+
+            if key in movement_keys:
+                x_dir, y_dir = movement_keys[key]
+                if (x_dir != 0 and snake.xmov == 0) or (y_dir != 0 and snake.ymov == 0):
+                    snake.set_direction(x_dir, y_dir)
 
     ## Update the game
 
