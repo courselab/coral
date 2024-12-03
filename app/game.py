@@ -164,7 +164,7 @@ class Game:
         velocity_string = ["Baixa", "Média", "Alta", "Extrema"]
         size_string = ["Pequeno", "Médio", "Grande"]
         f_string = ["Baixa", "Normal", "Alta"]
-        sound_string = ["Baixo", "Médio", "Alto"]
+        sound_string = ["Mudo", "Baixo", "Médio", "Alto"]
 
         self.arena.fill(CONFIG_COLOR)
         center_title = self.BIG_FONT.render("Configuração", True, MESSAGE_COLOR)
@@ -242,19 +242,29 @@ class Game:
                         else:
                             n -= 1
                     elif event.key == pygame.K_RIGHT: 
-                        if configs[n] == 2:
-                            configs[n] = 0
-                        else:
-                            configs[n] += 1
-                        if n == 3:
+                        if n == 3: #controle do som
+                            if configs[n] == 3: # 4 opções: Mudo, Baixo, Médio, Alto
+                                configs[n] = 0
+                            else:
+                                configs[n] += 1
                             self.update_volume()
+                        else:
+                            if configs[n] == 2:
+                                configs[n] = 0
+                            else:
+                                configs[n] += 1
                     elif event.key == pygame.K_LEFT:  
-                        if configs[n] == 0:
-                            configs[n] = 2
-                        else:
-                            configs[n] -= 1
                         if n == 3:
+                            if configs[n] == 0:
+                                configs[n] = 3
+                            else:
+                                configs[n] -= 1
                             self.update_volume()
+                        else:
+                            if configs[n] == 0:
+                                configs[n] = 2
+                            else:
+                                configs[n] -= 1
                     elif event.key == pygame.K_q:     
                         pygame.quit()
                         sys.exit()

@@ -47,7 +47,7 @@ velocity = [4, 7, 10,15]
 size = [50, 40, 25]
 n_apple = [1, 2, 3] 
 base_volume_levels = [0.4, 0.6, 0.7]
-volume_multiplier = [0.3, 1.1, 1.9]
+volume_multiplier = [0, 0.3, 1.1, 1.9]
 configs = [1, 1, 0, 1]
 
 
