@@ -28,11 +28,11 @@ from app.orange import Orange
 from app.game import singleton_instance as gm
 
 
+gm.center_prompt(WINDOW_TITLE, "Press to start")
 gm.draw_grid()
 snake = Snake()    # The snake
 apple = Apple()    # An apple
 orange = Orange()  # An orange
-gm.center_prompt(WINDOW_TITLE, "Press to start")
 
 game_on = gm.game_on
 while True:
