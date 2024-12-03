@@ -96,7 +96,7 @@ class Game:
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.4)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
         
-        center_subtitle = self.SMALL_FONT.render("Aperte C para configurar o jogo!", True, MESSAGE_COLOR)
+        center_subtitle = self.SMALL_FONT.render("Press C for Settings", True, MESSAGE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.5)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
 
@@ -161,38 +161,38 @@ class Game:
             y_offset += 50
 
     def draw_config(self,conf=[1,1,1,1]):
-        velocity_string = ["Baixa", "Média", "Alta", "Extrema"]
-        size_string = ["Pequeno", "Médio", "Grande"]
-        f_string = ["Baixa", "Normal", "Alta"]
-        sound_string = ["Mudo", "Baixo", "Médio", "Alto"]
+        velocity_string = ["Low", "Normal", "High", "Extreme"]
+        size_string = ["Small", "Normal", "Big"]
+        f_string = ["Low", "Normal", "High"]
+        sound_string = ["Muted", "Low", "Medium", "High"]
 
         self.arena.fill(CONFIG_COLOR)
-        center_title = self.BIG_FONT.render("Configuração", True, MESSAGE_COLOR)
+        center_title = self.BIG_FONT.render("Settings", True, MESSAGE_COLOR)
         center_title_rect = center_title.get_rect(center=(WIDTH/2, HEIGHT*(0.20)))
         self.arena.blit(center_title, center_title_rect)
 
-        center_subtitle = self.SMALL_FONT.render("Utilize as setas para navegar!", True, MESSAGE_COLOR)
+        center_subtitle = self.SMALL_FONT.render("Use the arrows to navigate", True, MESSAGE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.30)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
-        center_subtitle = self.SMALL_FONT.render("Aperte J para jogar!", True, MESSAGE_COLOR)
+        center_subtitle = self.SMALL_FONT.render("Press J to Play!", True, MESSAGE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.35)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
 
-        center_subtitle = self.SMALL_FONT.render("Velocidade:", True, LINE_COLOR)
+        center_subtitle = self.SMALL_FONT.render("Velocity:", True, LINE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.45)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
         center_subtitle = self.SMALL_FONT.render("{}".format(velocity_string[conf[0]]), True, MESSAGE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.50)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
         
-        center_subtitle = self.SMALL_FONT.render("Tamanho:", True, LINE_COLOR)
+        center_subtitle = self.SMALL_FONT.render("Board Size:", True, LINE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.55)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
         center_subtitle = self.SMALL_FONT.render("{}".format(size_string[conf[1]]), True, MESSAGE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.60)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
         
-        center_subtitle = self.SMALL_FONT.render("Frequência:", True, LINE_COLOR)
+        center_subtitle = self.SMALL_FONT.render("Frequency:", True, LINE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.65)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
         center_subtitle = self.SMALL_FONT.render("{}".format(f_string[conf[2]]), True, MESSAGE_COLOR)
