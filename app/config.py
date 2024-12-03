@@ -44,7 +44,7 @@ WINDOW_TITLE    = "Coral"  # Window title.
 MAX_QUEUE_SIZE = 3 # Movement queue max size
 
 velocity = [4, 7, 10,15]
-size = [60, 40, 20]  
+size = [50, 40, 25]
 n_apple = [1, 2, 3] 
 base_volume_levels = [0.4, 0.6, 0.7]
 volume_multiplier = [0.3, 1.1, 1.9]
