@@ -39,6 +39,7 @@ SCORE_COLOR     = "#ffffff"  # Color of the scoreboard.
 LINE_COLOR     = "#000000"  # Color of lines in scoreboard.
 MESSAGE_COLOR   = "#808080"  # Color of the game-over message.
 STEM_COLOR      = "#228B22"
+SELECTED_CONFIG_COLOR = "#DE6604"  # Color of the selected config.
 
 WINDOW_TITLE    = "Coral"  # Window title.
 MAX_QUEUE_SIZE = 3 # Movement queue max size
@@ -64,7 +65,6 @@ hard_mode = False  # Defined normal mode as standart.
 border_wrap = False
 is_muted = False #Definied is muted as false 
 instructions_shown = False
-
 
 HIGHSCORE_FILENAME = "data/highscore.bin"
 

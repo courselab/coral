@@ -163,7 +163,7 @@ class Game:
             self.arena.blit(text_surface, (50, y_offset))
             y_offset += 50
 
-    def draw_config(self,conf=[1,1,1,1,1]):
+    def draw_config(self,conf=[1,1,1,1,1], actualPos=0):
         velocity_string = [self.translator.message("velocity_low"),
                            self.translator.message("velocity_medium"),
                            self.translator.message("velocity_high"),
@@ -194,35 +194,35 @@ class Game:
         center_subtitle = self.SMALL_FONT.render(self.translator.message("configuration_3"), True, LINE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.45)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
-        center_subtitle = self.SMALL_FONT.render("{}".format(velocity_string[conf[0]]), True, MESSAGE_COLOR)
+        center_subtitle = self.SMALL_FONT.render("{}".format(velocity_string[conf[0]]), True, SELECTED_CONFIG_COLOR if actualPos == 0 else MESSAGE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.50)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
         
         center_subtitle = self.SMALL_FONT.render(self.translator.message("configuration_4"), True, LINE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.55)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
-        center_subtitle = self.SMALL_FONT.render("{}".format(size_string[conf[1]]), True, MESSAGE_COLOR)
+        center_subtitle = self.SMALL_FONT.render("{}".format(size_string[conf[1]]), True, SELECTED_CONFIG_COLOR if actualPos == 1 else MESSAGE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.60)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
         
         center_subtitle = self.SMALL_FONT.render(self.translator.message("configuration_5"), True, LINE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.65)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
-        center_subtitle = self.SMALL_FONT.render("{}".format(f_string[conf[2]]), True, MESSAGE_COLOR)
+        center_subtitle = self.SMALL_FONT.render("{}".format(f_string[conf[2]]), True, SELECTED_CONFIG_COLOR if actualPos == 2 else MESSAGE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.70)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
 
         center_subtitle = self.SMALL_FONT.render(self.translator.message("configuration_6"), True, LINE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.75)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
-        center_subtitle = self.SMALL_FONT.render("{}".format(sound_string[conf[3]]), True, MESSAGE_COLOR)
+        center_subtitle = self.SMALL_FONT.render("{}".format(sound_string[conf[3]]), True, SELECTED_CONFIG_COLOR if actualPos == 3 else MESSAGE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.80)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
 
         center_subtitle = self.SMALL_FONT.render(self.translator.message("configuration_7"), True, LINE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.85)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
-        center_subtitle = self.SMALL_FONT.render("{}".format(language_string[conf[4]]), True, MESSAGE_COLOR)
+        center_subtitle = self.SMALL_FONT.render("{}".format(language_string[conf[4]]), True, SELECTED_CONFIG_COLOR if actualPos == 4 else MESSAGE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.90)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
         
@@ -236,7 +236,7 @@ class Game:
     def config_prompt(self):
         self.draw_config()
 
-    # Wait for a keypress or a game quit event.
+        # Wait for a keypress or a game quit event.
         n = 0
         stop = 0
         while True:
@@ -288,7 +288,7 @@ class Game:
                         sys.exit()
                     elif event.key == pygame.K_j:
                         stop = 1
-                self.draw_config(configs)
+                self.draw_config(configs, actualPos=n)   
 
     ## Get and save highscore from/in a file
     def save_high_score(self,score):
@@ -340,3 +340,4 @@ class Game:
     
 
 singleton_instance = Game()
+
