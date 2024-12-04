@@ -49,7 +49,7 @@ size = [60, 40, 20]
 n_apple = [1, 2, 3] 
 base_volume_levels = [0.4, 0.6, 0.7]
 volume_multiplier = [0.3, 1.1, 1.9]
-configs = [1, 1, 0, 1]
+configs = [1, 1, 0, 1, 0]
 
 
 WHITE_COLOR = (255, 255, 255)
@@ -67,3 +67,5 @@ is_muted = False #Definied is muted as false
 instructions_shown = False
 
 HIGHSCORE_FILENAME = "data/highscore.bin"
+
+language = "english"
