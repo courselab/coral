@@ -32,7 +32,7 @@ gm.draw_grid()
 snake = Snake()    # The snake
 apple = Apple()    # An apple
 orange = Orange()  # An orange
-gm.center_prompt(WINDOW_TITLE, "Press to start")
+gm.center_prompt(WINDOW_TITLE, "Press any key to start")
 
 game_on = gm.game_on
 while True:
