@@ -26,13 +26,15 @@ from app.snake import Snake
 from app.apple import Apple
 from app.orange import Orange
 from app.game import singleton_instance as gm
+from app.translation import Translator
 
 
 gm.draw_grid()
 snake = Snake()    # The snake
 apple = Apple()    # An apple
 orange = Orange()  # An orange
-gm.center_prompt(WINDOW_TITLE, "Press to start")
+translator = Translator()
+gm.center_prompt(WINDOW_TITLE, translator.message("start"))
 
 game_on = gm.game_on
 while True:
@@ -89,16 +91,16 @@ while True:
     ## Show "Paused" and "Press P to continue" messages in the center of the grid
     if not game_on:
         gm.arena.fill(ARENA_COLOR)  # Clear the arena to prevent overlap
-        
-        pause_text = gm.BIG_FONT.render("Paused", True, MESSAGE_COLOR)
+
+        pause_text = gm.BIG_FONT.render(translator.message("paused"), True, MESSAGE_COLOR)
         pause_text_rect = pause_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
         gm.arena.blit(pause_text, pause_text_rect)
         
-        continue_text = gm.SMALL_FONT.render("Press P to continue", True, MESSAGE_COLOR)
+        continue_text = gm.SMALL_FONT.render(translator.message("continue"), True, MESSAGE_COLOR)
         continue_text_rect = continue_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 50))
         gm.arena.blit(continue_text, continue_text_rect)
         
-        quit_text = gm.SMALL_FONT.render("Press q to quit", True, MESSAGE_COLOR)
+        quit_text = gm.SMALL_FONT.render(translator.message("quit"), True, MESSAGE_COLOR)
         quit_text_rect = quit_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 125))
         gm.arena.blit(quit_text, quit_text_rect)
         # Draw the pause menu and update the display
@@ -145,7 +147,7 @@ while True:
 
 
     # Add the "Press (I)nstructions" text in the top-right corner
-    instruction_text = gm.IN_GAME_FONT.render("Press (I)nstructions", True, WHITE_COLOR)
+    instruction_text = gm.IN_GAME_FONT.render(translator.message("instructions"), True, WHITE_COLOR)
     instruction_text_rect = instruction_text.get_rect(topright=(WIDTH - 10, 10))  # Padding from the edge
     gm.arena.blit(instruction_text, instruction_text_rect)
 

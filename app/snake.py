@@ -132,7 +132,7 @@ class Snake:
             gm.display_highscore(len(self.tail))
 
             self.draw()
-            gm.center_prompt("Game Over", "Press to restart")
+            gm.center_prompt(gm.translator.message("game_over"), gm.translator.message("restart"))
 
             # Respawn the head with initial directions
             self.x, self.y, self.xmov, self.ymov = self.random_position()
