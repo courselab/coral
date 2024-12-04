@@ -140,10 +140,6 @@ class Snake:
             self.reset()
             return
 
-        # Check for border crash.
-        if self.head.x not in range(0, WIDTH) or self.head.y not in range(0, HEIGHT):
-            self.alive = False
-
         # Check for self-bite.
         for square in self.tail:
             if self.head.x == square.x and self.head.y == square.y:
@@ -190,8 +186,8 @@ class Snake:
 
 
             # Move the head along current direction.
-            self.head.x += self.xmov * GRID_SIZE
-            self.head.y += self.ymov * GRID_SIZE
+            self.head.x = (self.head.x + self.xmov * GRID_SIZE + WIDTH) % WIDTH
+            self.head.y = (self.head.y + self.ymov * GRID_SIZE + HEIGHT) % HEIGHT
 
     # Add helper method to reduce code duplication
     def reset(self):
