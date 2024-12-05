@@ -40,37 +40,37 @@ obstacles = create_obstacles(OBSTACLE_COUNT, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_
 
 gm.center_prompt(WINDOW_TITLE, translator.message("start"))
 
-speed_multiplier = 1  # Inicia com velocidade padrão
+speed_multiplier = 1  # Begin with default speed
 game_on = gm.game_on
 
 while True:
 
-    for event in pygame.event.get():  # Aguarda eventos
-        # App encerrado
+    for event in pygame.event.get():  # Wait for events
+        # App terminated
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
-        # Tecla pressionada
+        # Key pressed
         if event.type == pygame.KEYDOWN:
             key = event.key
 
-            # Ações globais
-            if key == pygame.K_q:  # Sair do jogo
+            # Global actions
+            if key == pygame.K_q:  # Quit game
                 pygame.quit()
                 sys.exit()
-            elif key == pygame.K_p and not instructions_shown:  # Pausar jogo
+            elif key == pygame.K_p and not instructions_shown:  # Pause game
                 game_on = not game_on
-            elif key == pygame.K_m:  # Mute
+            elif key == pygame.K_m:  # Mute/unmute game
                 is_muted = not is_muted
                 pygame.mixer.music.set_volume(0 if is_muted else 0.4)
-            elif key == pygame.K_i:  # Alternar tela de instruções
+            elif key == pygame.K_i:  # Toggle instructions screen
                 instructions_shown = not instructions_shown
                 game_on = True
-            elif key == pygame.K_SPACE:  # Aumentar velocidade
-                speed_multiplier = 2  # Multiplica a velocidade
+            elif key == pygame.K_SPACE:  # Increase speed
+                speed_multiplier = 2
 
-            # Controles de movimento
+            # Movement controls (only if game is not paused or showing instructions)
             if game_on and not instructions_shown:
                 movement_keys = {
                     pygame.K_DOWN: (0, 1),
@@ -88,30 +88,37 @@ while True:
                     if (x_dir != 0 and snake.xmov == 0) or (y_dir != 0 and snake.ymov == 0):
                         snake.set_direction(x_dir, y_dir)
 
-        # Tecla solta
+        # Key released
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_SPACE:  # Voltar à velocidade normal
+            if event.key == pygame.K_SPACE:  # Go back to normal speed
                 speed_multiplier = 1
 
-    ## Atualizar o jogo
+    # Show instructions if the flag is set
     if instructions_shown:
         gm.display_instructions() 
         pygame.display.update()
         continue
 
+    # Show "Paused" and "Press P to continue" messages in the center of the grid
     if not game_on:
-        gm.arena.fill(ARENA_COLOR)
+        gm.arena.fill(ARENA_COLOR) # Clear the arena to prevent overlap
         pause_text = gm.BIG_FONT.render(translator.message("paused"), True, MESSAGE_COLOR)
         pause_text_rect = pause_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
         gm.arena.blit(pause_text, pause_text_rect)
+
         continue_text = gm.SMALL_FONT.render(translator.message("continue"), True, MESSAGE_COLOR)
         continue_text_rect = continue_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 50))
         gm.arena.blit(continue_text, continue_text_rect)
+
         quit_text = gm.SMALL_FONT.render(translator.message("quit"), True, MESSAGE_COLOR)
         quit_text_rect = quit_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 125))
         gm.arena.blit(quit_text, quit_text_rect)
+
+        # Draw the pause menu and update the display
         gm.win.blit(pygame.transform.rotozoom(gm.arena, 0, gm.win_res / WIDTH), (0, 0))
         pygame.display.update()
+
+        # Skip the rest of the loop when paused, preventing unnecessary updates
         continue
 
     if game_on:
@@ -129,26 +136,32 @@ while True:
             if snake.head.colliderect(obstacle.rect):
                 game_on = False # End the game if the snake collides with an obstacle
                 gm.game_over_sound.play()
+
+    # Draw snake
     snake.draw()
     if game_on:
         snake.energy.update()
 
+    # Show score (snake length = head + tail)
     score = gm.BIG_FONT.render(f"{len(snake.tail)}", True, SCORE_COLOR)
     gm.arena.blit(score, gm.score_rect)
 
+    # If the head pass over an apple, lengthen the snake and drop another apple
     if snake.head.x == apple.x and snake.head.y == apple.y:
         snake.got_apple = True
         apple = Apple(snake)
         gm.got_apple_sound.play()
 
+    # If the head passes over an orange, lengthen the snake and drop another orange
     if snake.head.x == orange.x and snake.head.y == orange.y:
-        snake.speed += 0.04
         orange = Orange()
         gm.got_apple_sound.play()
 
+    # Add the "Press (I)nstructions" text in the top-right corner
     instruction_text = gm.IN_GAME_FONT.render(translator.message("instructions"), True, WHITE_COLOR)
     instruction_text_rect = instruction_text.get_rect(topright=(WIDTH - 10, 10))
     gm.arena.blit(instruction_text, instruction_text_rect)
 
+    # Update display and move clock.
     pygame.display.update()
-    gm.clock.tick(snake.speed * velocity[configs[0]] * speed_multiplier)
+    gm.clock.tick(velocity[configs[0]] * speed_multiplier)
