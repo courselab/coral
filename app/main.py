@@ -141,7 +141,6 @@ while True:
 
     # If the head passes over an orange, lengthen the snake and drop another orange
     if snake.head.x == orange.x and snake.head.y == orange.y:
-        snake.speed += 0.04
         orange = Orange()
         gm.got_apple_sound.play()
 
@@ -152,4 +151,4 @@ while True:
 
     # Update display and move clock.
     pygame.display.update()
-    gm.clock.tick(snake.speed * velocity[configs[0]] * speed_multiplier)
+    gm.clock.tick(velocity[configs[0]] * speed_multiplier)
