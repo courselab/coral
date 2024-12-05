@@ -17,6 +17,10 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#
+#   REUSE Copyright 2024 The Parkinsans Project Authors (https://github.com/redstonedesign/parkinsans)
+#
 
 import pygame
 import random
