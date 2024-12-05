@@ -71,9 +71,9 @@ class Game:
         # BIG_FONT   = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/8))
         # SMALL_FONT = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/20))
 
-        self.BIG_FONT   = pygame.font.Font("assets/font/GetVoIP-Grotesque.ttf", int(WIDTH/8))
-        self.SMALL_FONT = pygame.font.Font("assets/font/GetVoIP-Grotesque.ttf", int(WIDTH/20))
-        self.IN_GAME_FONT = pygame.font.Font("assets/font/GetVoIP-Grotesque.ttf", int(WIDTH/48))
+        self.BIG_FONT   = pygame.font.Font("assets/font/MidnightLetters.ttf", int(WIDTH/8))
+        self.SMALL_FONT = pygame.font.Font("assets/font/MidnightLetters.ttf", int(WIDTH/20))
+        self.IN_GAME_FONT = pygame.font.Font("assets/font/MidnightLetters.ttf", int(WIDTH/48))
 
         pygame.display.set_caption(WINDOW_TITLE)
 
