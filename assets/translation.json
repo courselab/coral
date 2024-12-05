@@ -4,7 +4,7 @@
     "instructions_2": "- Arrow Keys/WASD: Move",
     "instructions_3": "- P: Pause/Unpause",
     "instructions_4": "- I: Show/Hide Instructions",
-    "instructions_5": "",
+    "instructions_5": "- Space: Run",
     "instructions_6": "Press I to return to the game",
 
     "velocity_low": "Low",
@@ -49,7 +49,7 @@
     "instructions_2": "- Setas/WASD: Mover",
     "instructions_3": "- P: Pausar/Continuar",
     "instructions_4": "- I: Mostrar/Esconder Instruções",
-    "instructions_5": "",
+    "instructions_5": "- Espaço: Correr",
     "instructions_6": "Pressione I para voltar ao jogo",
 
     "velocity_low": "Baixa",
