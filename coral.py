@@ -53,11 +53,8 @@ clock = pygame.time.Clock()
 
 arena = pygame.display.set_mode((WIDTH, HEIGHT))
 
-# BIG_FONT   = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/8))
-# SMALL_FONT = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/20))
-
-BIG_FONT   = pygame.font.Font("assets/font/GetVoIP-Grotesque.ttf", int(WIDTH/8))
-SMALL_FONT = pygame.font.Font("assets/font/GetVoIP-Grotesque.ttf", int(WIDTH/20))
+BIG_FONT   = pygame.font.Font("assets/font/Parkinsans-SemiBold.ttf", int(WIDTH/8))
+SMALL_FONT = pygame.font.Font("assets/font/Parkinsans-SemiBold.ttf", int(WIDTH/20))
 
 pygame.display.set_caption(WINDOW_TITLE)
 
