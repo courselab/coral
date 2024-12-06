@@ -44,6 +44,9 @@ SELECTED_CONFIG_COLOR = "#DE6604"  # Color of the selected config.
 WINDOW_TITLE    = "Coral"  # Window title.
 MAX_QUEUE_SIZE = 3 # Movement queue max size
 
+OBSTACLE_COUNT = 5
+OBSTACLE_COLOR = "#FF4500"
+
 velocity = [4, 7, 10,15]
 size = [60, 40, 20]  
 n_apple = [1, 2, 3] 
