@@ -154,7 +154,7 @@ class Snake:
 
             # Tell the bad news
             pygame.draw.rect(arena, DEAD_HEAD_COLOR, snake.head)
-            center_prompt("Game Over", "Press to restart")
+            center_prompt("Game Over", "Press any key to restart")
 
             # Respan the head
             self.x, self.y = GRID_SIZE, GRID_SIZE
