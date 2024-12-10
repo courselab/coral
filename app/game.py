@@ -26,6 +26,7 @@ import os
 from app.config import *
 from app.translation import Translator
 
+
 # singleton_module.py
 class Game:
     def __init__(self):
@@ -42,9 +43,9 @@ class Game:
         self.win_res = WIDTH
 
         # If default video_mode doesn't fit, look for video mode that fits user's screen size
-        if (mon_w<WIDTH or mon_h<HEIGHT):
+        if mon_w < WIDTH or mon_h < HEIGHT:
             self.min_dim = min(mon_w, mon_h)
-            self.win_res = VIDEO_MODES[-1][0] # The default is the smallest one
+            self.win_res = VIDEO_MODES[-1][0]  # The default is the smallest one
             for mode in VIDEO_MODES:
                 if mode[0] < mon_w and mode[1] < mon_h:
                     self.win_res = mode[0]
@@ -55,67 +56,89 @@ class Game:
         # arena = pygame.Surface((WIDTH, HEIGHT))
         self.arena = pygame.display.set_mode((WIDTH, HEIGHT))
 
-
         # Play background sound and change volume
         pygame.mixer.music.set_volume(base_volume_levels[0])
-        self.background_music = pygame.mixer.music.load('musics/CPU Talk - FMA - CC BY BoxCat Games.mp3')
+        self.background_music = pygame.mixer.music.load(
+            "musics/CPU Talk - FMA - CC BY BoxCat Games.mp3"
+        )
         pygame.mixer.music.play(-1)
 
         # Set game's sounds effects
-        self.got_apple_sound = pygame.mixer.Sound('musics/got_apple.ogg')
+        self.got_apple_sound = pygame.mixer.Sound("musics/got_apple.ogg")
         self.got_apple_sound.set_volume(base_volume_levels[1])
 
-        self.game_over_sound = pygame.mixer.Sound('musics/game_over.wav')
+        self.game_over_sound = pygame.mixer.Sound("musics/game_over.wav")
         self.game_over_sound.set_volume(base_volume_levels[2])
 
         # BIG_FONT   = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/8))
         # SMALL_FONT = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/20))
 
-        self.BIG_FONT   = pygame.font.Font("assets/font/MidnightLetters.ttf", int(WIDTH/8))
-        self.SMALL_FONT = pygame.font.Font("assets/font/MidnightLetters.ttf", int(WIDTH/20))
-        self.IN_GAME_FONT = pygame.font.Font("assets/font/MidnightLetters.ttf", int(WIDTH/48))
+        self.BIG_FONT = pygame.font.Font(
+            "assets/font/MidnightLetters.ttf", int(WIDTH / 8)
+        )
+        self.SMALL_FONT = pygame.font.Font(
+            "assets/font/MidnightLetters.ttf", int(WIDTH / 20)
+        )
+        self.IN_GAME_FONT = pygame.font.Font(
+            "assets/font/MidnightLetters.ttf", int(WIDTH / 48)
+        )
 
         pygame.display.set_caption(WINDOW_TITLE)
 
         self.game_on = 1
-        
+
         self.score = self.BIG_FONT.render("1", True, MESSAGE_COLOR)
-        self.score_rect = self.score.get_rect(center=(WIDTH/2, HEIGHT/20+HEIGHT/30))
-    
+        self.score_rect = self.score.get_rect(
+            center=(WIDTH / 2, HEIGHT / 20 + HEIGHT / 30)
+        )
+
         self.highscore = self.get_high_score()
 
         self.translator = Translator()
 
- 
-    def center_prompt(self,title, subtitle):
+    def center_prompt(self, title, subtitle):
         global hard_mode, border_wrap, CLOCK_TICKS
 
         # Show title and subtitle
         center_title = self.BIG_FONT.render(title, True, MESSAGE_COLOR)
-        center_title_rect = center_title.get_rect(center=(WIDTH/2, HEIGHT*(0.3)))
+        center_title_rect = center_title.get_rect(center=(WIDTH / 2, HEIGHT * (0.3)))
         self.arena.blit(center_title, center_title_rect)
 
         center_subtitle = self.SMALL_FONT.render(subtitle, True, MESSAGE_COLOR)
-        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.4)))
+        center_subtitle_rect = center_subtitle.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.4))
+        )
         self.arena.blit(center_subtitle, center_subtitle_rect)
-        
-        center_subtitle = self.SMALL_FONT.render(self.translator.message("configuration"), True, MESSAGE_COLOR)
-        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.5)))
+
+        center_subtitle = self.SMALL_FONT.render(
+            self.translator.message("configuration"), True, MESSAGE_COLOR
+        )
+        center_subtitle_rect = center_subtitle.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.5))
+        )
         self.arena.blit(center_subtitle, center_subtitle_rect)
 
         # Add hard mode prompt
-        hard_mode_text = self.SMALL_FONT.render(self.translator.message("hard_mode"), True, MESSAGE_COLOR)
-        hard_mode_text_rect = hard_mode_text.get_rect(center=(WIDTH/2, HEIGHT*(0.7)))
+        hard_mode_text = self.SMALL_FONT.render(
+            self.translator.message("hard_mode"), True, MESSAGE_COLOR
+        )
+        hard_mode_text_rect = hard_mode_text.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.7))
+        )
         self.arena.blit(hard_mode_text, hard_mode_text_rect)
 
         # Add easy mode prompt
-        easy_mode_text = self.SMALL_FONT.render(self.translator.message("easy_mode"), True, MESSAGE_COLOR)
-        easy_mode_text_rect = easy_mode_text.get_rect(center=(WIDTH/2, HEIGHT*(0.8)))
+        easy_mode_text = self.SMALL_FONT.render(
+            self.translator.message("easy_mode"), True, MESSAGE_COLOR
+        )
+        easy_mode_text_rect = easy_mode_text.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.8))
+        )
         self.arena.blit(easy_mode_text, easy_mode_text_rect)
-        
+
         pygame.display.update()
-            
-        while ( event := pygame.event.wait() ):
+
+        while event := pygame.event.wait():
             if event.type == pygame.KEYDOWN:
                 break
             if event.type == pygame.QUIT:
@@ -125,7 +148,7 @@ class Game:
         # Reset game configurations before starting a new game
         border_wrap = False
 
-        if event.key == pygame.K_q:          # 'Q' quits game
+        if event.key == pygame.K_q:  # 'Q' quits game
             pygame.quit()
             sys.exit()
         if event.key == pygame.K_c:
@@ -139,7 +162,7 @@ class Game:
         # Set CLOCK_TICKS back to normal if not in hard mode
         if not hard_mode:
             configs[0] = 1
-            
+
     def display_instructions(self):
         instruction_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         # Fill the surface with a semi-transparent black (RGBA color)
@@ -147,7 +170,7 @@ class Game:
 
         # Blit the overlay surface on top of the game window (arena)
         self.arena.blit(instruction_surface, (0, 0))
-        
+
         instructions = [
             self.translator.message("instructions_1"),
             self.translator.message("instructions_2"),
@@ -156,82 +179,156 @@ class Game:
             self.translator.message("instructions_5"),
             self.translator.message("instructions_6"),
         ]
-        
-        y_offset = HEIGHT/3
+
+        y_offset = HEIGHT / 3
         for line in instructions:
             text_surface = self.SMALL_FONT.render(line, True, (255, 255, 255))
             self.arena.blit(text_surface, (50, y_offset))
             y_offset += 50
 
-    def draw_config(self,conf=[1,1,1,1,1], actualPos=0):
-        velocity_string = [self.translator.message("velocity_low"),
-                           self.translator.message("velocity_medium"),
-                           self.translator.message("velocity_high"),
-                           self.translator.message("velocity_extreme")]
-        size_string = [self.translator.message("size_low"),
-                       self.translator.message("size_medium"),
-                       self.translator.message("size_high")]
-        f_string = [self.translator.message("frequency_low"),
-                    self.translator.message("frequency_medium"),
-                    self.translator.message("frequency_high")]
-        sound_string = [self.translator.message("sound_low"),
-                        self.translator.message("sound_medium"),
-                        self.translator.message("sound_high")]
+    def draw_config(self, conf=[1, 1, 1, 1, 1], actualPos=0):
+        velocity_string = [
+            self.translator.message("velocity_low"),
+            self.translator.message("velocity_medium"),
+            self.translator.message("velocity_high"),
+            self.translator.message("velocity_extreme"),
+        ]
+        size_string = [
+            self.translator.message("size_low"),
+            self.translator.message("size_medium"),
+            self.translator.message("size_high"),
+        ]
+        f_string = [
+            self.translator.message("frequency_low"),
+            self.translator.message("frequency_medium"),
+            self.translator.message("frequency_high"),
+        ]
+        sound_string = [
+            self.translator.message("sound_low"),
+            self.translator.message("sound_medium"),
+            self.translator.message("sound_high"),
+        ]
         language_string = self.translator.available_languages
 
         self.arena.fill(CONFIG_COLOR)
-        center_title = self.BIG_FONT.render(self.translator.message("title_configuration"), True, MESSAGE_COLOR)
-        center_title_rect = center_title.get_rect(center=(WIDTH/2, HEIGHT*(0.20)))
+        center_title = self.BIG_FONT.render(
+            self.translator.message("title_configuration"), True, MESSAGE_COLOR
+        )
+        center_title_rect = center_title.get_rect(center=(WIDTH / 2, HEIGHT * (0.20)))
         self.arena.blit(center_title, center_title_rect)
 
-        center_subtitle = self.SMALL_FONT.render(self.translator.message("configuration_1"), True, MESSAGE_COLOR)
-        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.30)))
+        center_subtitle = self.SMALL_FONT.render(
+            self.translator.message("configuration_1"), True, MESSAGE_COLOR
+        )
+        center_subtitle_rect = center_subtitle.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.30))
+        )
         self.arena.blit(center_subtitle, center_subtitle_rect)
-        center_subtitle = self.SMALL_FONT.render(self.translator.message("configuration_2"), True, MESSAGE_COLOR)
-        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.35)))
-        self.arena.blit(center_subtitle, center_subtitle_rect)
-
-        center_subtitle = self.SMALL_FONT.render(self.translator.message("configuration_3"), True, LINE_COLOR)
-        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.45)))
-        self.arena.blit(center_subtitle, center_subtitle_rect)
-        center_subtitle = self.SMALL_FONT.render("{}".format(velocity_string[conf[0]]), True, SELECTED_CONFIG_COLOR if actualPos == 0 else MESSAGE_COLOR)
-        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.50)))
-        self.arena.blit(center_subtitle, center_subtitle_rect)
-        
-        center_subtitle = self.SMALL_FONT.render(self.translator.message("configuration_4"), True, LINE_COLOR)
-        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.55)))
-        self.arena.blit(center_subtitle, center_subtitle_rect)
-        center_subtitle = self.SMALL_FONT.render("{}".format(size_string[conf[1]]), True, SELECTED_CONFIG_COLOR if actualPos == 1 else MESSAGE_COLOR)
-        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.60)))
-        self.arena.blit(center_subtitle, center_subtitle_rect)
-        
-        center_subtitle = self.SMALL_FONT.render(self.translator.message("configuration_5"), True, LINE_COLOR)
-        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.65)))
-        self.arena.blit(center_subtitle, center_subtitle_rect)
-        center_subtitle = self.SMALL_FONT.render("{}".format(f_string[conf[2]]), True, SELECTED_CONFIG_COLOR if actualPos == 2 else MESSAGE_COLOR)
-        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.70)))
+        center_subtitle = self.SMALL_FONT.render(
+            self.translator.message("configuration_2"), True, MESSAGE_COLOR
+        )
+        center_subtitle_rect = center_subtitle.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.35))
+        )
         self.arena.blit(center_subtitle, center_subtitle_rect)
 
-        center_subtitle = self.SMALL_FONT.render(self.translator.message("configuration_6"), True, LINE_COLOR)
-        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.75)))
+        center_subtitle = self.SMALL_FONT.render(
+            self.translator.message("configuration_3"), True, LINE_COLOR
+        )
+        center_subtitle_rect = center_subtitle.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.45))
+        )
         self.arena.blit(center_subtitle, center_subtitle_rect)
-        center_subtitle = self.SMALL_FONT.render("{}".format(sound_string[conf[3]]), True, SELECTED_CONFIG_COLOR if actualPos == 3 else MESSAGE_COLOR)
-        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.80)))
+        center_subtitle = self.SMALL_FONT.render(
+            "{}".format(velocity_string[conf[0]]),
+            True,
+            SELECTED_CONFIG_COLOR if actualPos == 0 else MESSAGE_COLOR,
+        )
+        center_subtitle_rect = center_subtitle.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.50))
+        )
         self.arena.blit(center_subtitle, center_subtitle_rect)
 
-        center_subtitle = self.SMALL_FONT.render(self.translator.message("configuration_7"), True, LINE_COLOR)
-        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.85)))
+        center_subtitle = self.SMALL_FONT.render(
+            self.translator.message("configuration_4"), True, LINE_COLOR
+        )
+        center_subtitle_rect = center_subtitle.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.55))
+        )
         self.arena.blit(center_subtitle, center_subtitle_rect)
-        center_subtitle = self.SMALL_FONT.render("{}".format(language_string[conf[4]]), True, SELECTED_CONFIG_COLOR if actualPos == 4 else MESSAGE_COLOR)
-        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.90)))
+        center_subtitle = self.SMALL_FONT.render(
+            "{}".format(size_string[conf[1]]),
+            True,
+            SELECTED_CONFIG_COLOR if actualPos == 1 else MESSAGE_COLOR,
+        )
+        center_subtitle_rect = center_subtitle.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.60))
+        )
         self.arena.blit(center_subtitle, center_subtitle_rect)
-        
+
+        center_subtitle = self.SMALL_FONT.render(
+            self.translator.message("configuration_5"), True, LINE_COLOR
+        )
+        center_subtitle_rect = center_subtitle.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.65))
+        )
+        self.arena.blit(center_subtitle, center_subtitle_rect)
+        center_subtitle = self.SMALL_FONT.render(
+            "{}".format(f_string[conf[2]]),
+            True,
+            SELECTED_CONFIG_COLOR if actualPos == 2 else MESSAGE_COLOR,
+        )
+        center_subtitle_rect = center_subtitle.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.70))
+        )
+        self.arena.blit(center_subtitle, center_subtitle_rect)
+
+        center_subtitle = self.SMALL_FONT.render(
+            self.translator.message("configuration_6"), True, LINE_COLOR
+        )
+        center_subtitle_rect = center_subtitle.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.75))
+        )
+        self.arena.blit(center_subtitle, center_subtitle_rect)
+        center_subtitle = self.SMALL_FONT.render(
+            "{}".format(sound_string[conf[3]]),
+            True,
+            SELECTED_CONFIG_COLOR if actualPos == 3 else MESSAGE_COLOR,
+        )
+        center_subtitle_rect = center_subtitle.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.80))
+        )
+        self.arena.blit(center_subtitle, center_subtitle_rect)
+
+        center_subtitle = self.SMALL_FONT.render(
+            self.translator.message("configuration_7"), True, LINE_COLOR
+        )
+        center_subtitle_rect = center_subtitle.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.85))
+        )
+        self.arena.blit(center_subtitle, center_subtitle_rect)
+        center_subtitle = self.SMALL_FONT.render(
+            "{}".format(language_string[conf[4]]),
+            True,
+            SELECTED_CONFIG_COLOR if actualPos == 4 else MESSAGE_COLOR,
+        )
+        center_subtitle_rect = center_subtitle.get_rect(
+            center=(WIDTH / 2, HEIGHT * (0.90))
+        )
+        self.arena.blit(center_subtitle, center_subtitle_rect)
+
         pygame.display.update()
 
     def update_volume(self):
-        pygame.mixer.music.set_volume(base_volume_levels[0] * volume_multiplier[configs[3]])
-        self.got_apple_sound.set_volume(base_volume_levels[1] * volume_multiplier[configs[3]])
-        self.game_over_sound.set_volume(base_volume_levels[2] * volume_multiplier[configs[3]])
+        pygame.mixer.music.set_volume(
+            base_volume_levels[0] * volume_multiplier[configs[3]]
+        )
+        self.got_apple_sound.set_volume(
+            base_volume_levels[1] * volume_multiplier[configs[3]]
+        )
+        self.game_over_sound.set_volume(
+            base_volume_levels[2] * volume_multiplier[configs[3]]
+        )
 
     def config_prompt(self):
         self.draw_config()
@@ -242,26 +339,26 @@ class Game:
         while True:
             if stop == 1:
                 break
-            for event in pygame.event.get():      
+            for event in pygame.event.get():
                 if stop == 1:
-                    break     
-            # App terminated
+                    break
+                # App terminated
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
                 # Key pressed
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_DOWN:  
+                    if event.key == pygame.K_DOWN:
                         if n == 4:
-                            n = 0  
+                            n = 0
                         else:
                             n += 1
-                    elif event.key == pygame.K_UP:   
+                    elif event.key == pygame.K_UP:
                         if n == 0:
-                            n = 4 
+                            n = 4
                         else:
                             n -= 1
-                    elif event.key == pygame.K_RIGHT: 
+                    elif event.key == pygame.K_RIGHT:
                         if configs[n] == 2:
                             configs[n] = 0
                         else:
@@ -271,8 +368,10 @@ class Game:
                         if n == 4:
                             if configs[n] >= len(self.translator.available_languages):
                                 configs[n] = 0
-                            self.translator.set_language(self.translator.available_languages[configs[4]])
-                    elif event.key == pygame.K_LEFT:  
+                            self.translator.set_language(
+                                self.translator.available_languages[configs[4]]
+                            )
+                    elif event.key == pygame.K_LEFT:
                         if configs[n] == 0:
                             configs[n] = 2
                         else:
@@ -282,35 +381,36 @@ class Game:
                         if n == 4:
                             if configs[n] >= len(self.translator.available_languages):
                                 configs[n] = 0
-                            self.translator.set_language(self.translator.available_languages[configs[4]])
+                            self.translator.set_language(
+                                self.translator.available_languages[configs[4]]
+                            )
                     elif event.key == pygame.K_q:
                         pygame.quit()
                         sys.exit()
                     elif event.key == pygame.K_j:
                         stop = 1
-                self.draw_config(configs, actualPos=n)   
+                self.draw_config(configs, actualPos=n)
 
     ## Get and save highscore from/in a file
-    def save_high_score(self,score):
+    def save_high_score(self, score):
         if not os.path.exists("../data/"):
             os.makedirs("../data/")
 
         try:
             with open(HIGHSCORE_FILENAME, "wb+") as file:
-                file.write(score.to_bytes(4, byteorder='big'))
+                file.write(score.to_bytes(4, byteorder="big"))
         except (FileNotFoundError, ValueError):
             return 0
 
     def get_high_score(self):
         try:
             with open(HIGHSCORE_FILENAME, "rb") as file:
-                return int.from_bytes(file.read(4), byteorder='big')
+                return int.from_bytes(file.read(4), byteorder="big")
         except (FileNotFoundError, ValueError):
             return 0
 
-
     ## Display highscore
-    def display_highscore(self,score):
+    def display_highscore(self, score):
         new_highscore = ""
         if score > self.highscore:
             # Update highscore
@@ -323,7 +423,9 @@ class Game:
 
         # Display highscore value
         center_highscore = self.SMALL_FONT.render(text, True, MESSAGE_COLOR)
-        center_highscore_rect = center_highscore.get_rect(center=(WIDTH/2, HEIGHT*1/5))
+        center_highscore_rect = center_highscore.get_rect(
+            center=(WIDTH / 2, HEIGHT * 1 / 5)
+        )
         self.arena.blit(center_highscore, center_highscore_rect)
 
         pygame.display.update()
@@ -337,7 +439,5 @@ class Game:
                 rect = pygame.Rect(x, y, size[configs[1]], size[configs[1]])
                 pygame.draw.rect(self.arena, GRID_COLOR, rect, 1)
 
-    
 
 singleton_instance = Game()
-
