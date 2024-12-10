@@ -43,7 +43,6 @@ obstacles = [
 
 gm.center_prompt(WINDOW_TITLE, translator.message("start"))
 
-speed_multiplier = 1  # Begin with default speed
 game_on = gm.game_on
 
 while True:
@@ -70,7 +69,7 @@ while True:
                 instructions_shown = not instructions_shown
                 game_on = True
             elif key == pygame.K_SPACE:  # Increase speed
-                speed_multiplier = 2
+                snake.speed = 2
 
             # Movement controls (only if game is not paused or showing instructions)
             if game_on and not instructions_shown:
@@ -95,7 +94,7 @@ while True:
         # Key released
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_SPACE:  # Go back to normal speed
-                speed_multiplier = 1
+                snake.speed = 1
 
     # Show instructions if the flag is set
     if instructions_shown:
@@ -144,6 +143,7 @@ while True:
         # Check for collisions with obstacles
         for obstacle in obstacles:
             if snake.head.colliderect(obstacle.rect):
+                # End the game if the snake collides with an obstacle
                 snake.alive = False
                 gm.game_over_sound.play()
 
@@ -176,4 +176,4 @@ while True:
 
     # Update display and move clock.
     pygame.display.update()
-    gm.clock.tick(velocity[configs[0]] * speed_multiplier)
+    gm.clock.tick(velocity[configs[0]] * snake.speed)
