@@ -27,16 +27,19 @@ from app.apple import Apple
 from app.orange import Orange
 from app.game import singleton_instance as gm
 from app.translation import Translator
-from app.obstacles import create_obstacles
+from app.obstacles import Obstacle
 
 
 gm.draw_grid()
-snake = Snake()    # The snake
-apple = Apple()    # An apple
+snake = Snake()  # The snake
+apple = Apple()  # An apple
 orange = Orange()  # An orange
 translator = Translator()
 GRID_SIZE = size[configs[1]]
-obstacles = create_obstacles(OBSTACLE_COUNT, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_COLOR)
+obstacles = [
+    Obstacle(snake, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_COLOR)
+    for _ in range(OBSTACLE_COUNT)
+]
 
 gm.center_prompt(WINDOW_TITLE, translator.message("start"))
 
@@ -44,7 +47,6 @@ speed_multiplier = 1  # Begin with default speed
 game_on = gm.game_on
 
 while True:
-
     for event in pygame.event.get():  # Wait for events
         # App terminated
         if event.type == pygame.QUIT:
@@ -85,7 +87,9 @@ while True:
 
                 if key in movement_keys:
                     x_dir, y_dir = movement_keys[key]
-                    if (x_dir != 0 and snake.xmov == 0) or (y_dir != 0 and snake.ymov == 0):
+                    if (x_dir != 0 and snake.xmov == 0) or (
+                        y_dir != 0 and snake.ymov == 0
+                    ):
                         snake.set_direction(x_dir, y_dir)
 
         # Key released
@@ -95,22 +99,28 @@ while True:
 
     # Show instructions if the flag is set
     if instructions_shown:
-        gm.display_instructions() 
+        gm.display_instructions()
         pygame.display.update()
         continue
 
     # Show "Paused" and "Press P to continue" messages in the center of the grid
     if not game_on:
-        gm.arena.fill(ARENA_COLOR) # Clear the arena to prevent overlap
-        pause_text = gm.BIG_FONT.render(translator.message("paused"), True, MESSAGE_COLOR)
+        gm.arena.fill(ARENA_COLOR)  # Clear the arena to prevent overlap
+        pause_text = gm.BIG_FONT.render(
+            translator.message("paused"), True, MESSAGE_COLOR
+        )
         pause_text_rect = pause_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
         gm.arena.blit(pause_text, pause_text_rect)
 
-        continue_text = gm.SMALL_FONT.render(translator.message("continue"), True, MESSAGE_COLOR)
+        continue_text = gm.SMALL_FONT.render(
+            translator.message("continue"), True, MESSAGE_COLOR
+        )
         continue_text_rect = continue_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 50))
         gm.arena.blit(continue_text, continue_text_rect)
 
-        quit_text = gm.SMALL_FONT.render(translator.message("quit"), True, MESSAGE_COLOR)
+        quit_text = gm.SMALL_FONT.render(
+            translator.message("quit"), True, MESSAGE_COLOR
+        )
         quit_text_rect = quit_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 125))
         gm.arena.blit(quit_text, quit_text_rect)
 
@@ -127,14 +137,14 @@ while True:
         gm.draw_grid()
         apple.update()
         orange.update()
-    # Update and draw obstacles
+        # Update and draw obstacles
         for obstacle in obstacles:
             obstacle.update(gm.arena)
 
-    # Check for collisions with obstacles
+        # Check for collisions with obstacles
         for obstacle in obstacles:
             if snake.head.colliderect(obstacle.rect):
-                game_on = False # End the game if the snake collides with an obstacle
+                snake.alive = False
                 gm.game_over_sound.play()
 
     # Draw snake
@@ -158,7 +168,9 @@ while True:
         gm.got_apple_sound.play()
 
     # Add the "Press (I)nstructions" text in the top-right corner
-    instruction_text = gm.IN_GAME_FONT.render(translator.message("instructions"), True, WHITE_COLOR)
+    instruction_text = gm.IN_GAME_FONT.render(
+        translator.message("instructions"), True, WHITE_COLOR
+    )
     instruction_text_rect = instruction_text.get_rect(topright=(WIDTH - 10, 10))
     gm.arena.blit(instruction_text, instruction_text_rect)
 
