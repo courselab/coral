@@ -74,7 +74,7 @@ class Game:
         # SMALL_FONT = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/20))
 
         self.BIG_FONT = pygame.font.Font(
-            "assets/font/MidnightLetters.ttf", int(WIDTH / 8)
+            "assets/font/MidnightLetters.ttf", int(WIDTH / 10)
         )
         self.SMALL_FONT = pygame.font.Font(
             "assets/font/MidnightLetters.ttf", int(WIDTH / 20)
