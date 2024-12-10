@@ -56,7 +56,7 @@ while True:
             key = event.key
 
             # Global actions
-            if key == pygame.K_q:  # Quit game
+            if key == pygame.K_ESCAPE:  # Quit game
                 pygame.quit()
                 sys.exit()
             elif key == pygame.K_p and not instructions_shown:  # Pause game
@@ -127,6 +127,7 @@ while True:
         gm.draw_grid()
         apple.update()
         orange.update()
+
     # Update and draw obstacles
         for obstacle in obstacles:
             obstacle.update(gm.arena)
