@@ -105,7 +105,9 @@ while True:
         pause_text = gm.BIG_FONT.render(
             translator.message("paused"), True, MESSAGE_COLOR
         )
-        pause_text_rect = pause_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
+        pause_text_rect = pause_text.get_rect(
+            center=(WIDTH / 2, HEIGHT / 2 - GRID_SIZE)
+        )
         gm.arena.blit(pause_text, pause_text_rect)
 
         continue_text = gm.SMALL_FONT.render(
