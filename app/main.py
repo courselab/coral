@@ -18,17 +18,17 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import pygame
 import sys
 
-from app.config import *
-from app.snake import Snake
-from app.apple import Apple
-from app.orange import Orange
-from app.game import singleton_instance as gm
-from app.translation import Translator
-from app.obstacles import Obstacle
+import pygame
 
+from app.apple import Apple
+from app.config import *
+from app.game import singleton_instance as gm
+from app.obstacles import Obstacle
+from app.orange import Orange
+from app.snake import Snake
+from app.translation import Translator
 
 gm.draw_grid()
 snake = Snake()  # The snake
@@ -69,7 +69,7 @@ while True:
                 instructions_shown = not instructions_shown
                 game_on = True
             elif key == pygame.K_SPACE:  # Increase speed
-                snake.speed = 2
+                snake.speed = 2.0
 
             # Movement controls (only if game is not paused or showing instructions)
             if game_on and not instructions_shown:
@@ -94,7 +94,7 @@ while True:
         # Key released
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_SPACE:  # Go back to normal speed
-                snake.speed = 1
+                snake.speed = 1.0
 
     # Show instructions if the flag is set
     if instructions_shown:
@@ -133,6 +133,7 @@ while True:
         continue
 
     if game_on:
+        print(snake.speed)
         snake.update()
         gm.arena.fill(ARENA_COLOR)
         gm.draw_grid()
@@ -166,6 +167,7 @@ while True:
 
     # If the head passes over an orange, lengthen the snake and drop another orange
     if snake.head.x == orange.x and snake.head.y == orange.y:
+        snake.speed += 0.05
         orange = Orange()
         gm.got_apple_sound.play()
 
