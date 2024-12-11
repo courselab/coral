@@ -70,11 +70,8 @@ class Game:
         self.game_over_sound = pygame.mixer.Sound("musics/game_over.wav")
         self.game_over_sound.set_volume(base_volume_levels[2])
 
-        # BIG_FONT   = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/8))
-        # SMALL_FONT = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/20))
-
         self.BIG_FONT = pygame.font.Font(
-            "assets/font/MidnightLetters.ttf", int(WIDTH / 8)
+            "assets/font/MidnightLetters.ttf", int(WIDTH / 10)
         )
         self.SMALL_FONT = pygame.font.Font(
             "assets/font/MidnightLetters.ttf", int(WIDTH / 20)
