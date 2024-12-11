@@ -31,18 +31,18 @@ from app.snake import Snake
 from app.translation import Translator
 
 gm.draw_grid()
+translator = Translator()
+
+gm.center_prompt(WINDOW_TITLE, translator.message("start"))
+
+GRID_SIZE = size[configs[1]]
 snake = Snake()  # The snake
 apple = Apple()  # An apple
 orange = Orange()  # An orange
-translator = Translator()
-GRID_SIZE = size[configs[1]]
 obstacles = [
     Obstacle(snake, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_COLOR)
     for _ in range(OBSTACLE_COUNT)
 ]
-
-gm.center_prompt(WINDOW_TITLE, translator.message("start"))
-
 game_on = gm.game_on
 
 while True:
