@@ -18,17 +18,17 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import pygame
 import sys
 
-from app.config import *
-from app.snake import Snake
-from app.apple import Apple
-from app.orange import Orange
-from app.game import singleton_instance as gm
-from app.translation import Translator
-from app.obstacles import create_obstacles
+import pygame
 
+from app.apple import Apple
+from app.config import *
+from app.game import singleton_instance as gm
+from app.obstacles import Obstacle
+from app.orange import Orange
+from app.snake import Snake
+from app.translation import Translator
 
 gm.draw_grid()
 snake = Snake()  # The snake
@@ -36,7 +36,10 @@ apple = Apple()  # An apple
 orange = Orange()  # An orange
 translator = Translator()
 GRID_SIZE = size[configs[1]]
-obstacles = create_obstacles(OBSTACLE_COUNT, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_COLOR)
+obstacles = [
+    Obstacle(snake, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_COLOR)
+    for _ in range(OBSTACLE_COUNT)
+]
 
 gm.center_prompt(WINDOW_TITLE, translator.message("start"))
 
@@ -66,7 +69,7 @@ while True:
                 instructions_shown = not instructions_shown
                 game_on = True
             elif key == pygame.K_SPACE:  # Increase speed
-                snake.speed = 2
+                snake.speed = 2.0
 
             # Movement controls (only if game is not paused or showing instructions)
             if game_on and not instructions_shown:
@@ -91,7 +94,7 @@ while True:
         # Key released
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_SPACE:  # Go back to normal speed
-                snake.speed = 1
+                snake.speed = 1.0
 
     # Show instructions if the flag is set
     if instructions_shown:
@@ -143,7 +146,8 @@ while True:
         # Check for collisions with obstacles
         for obstacle in obstacles:
             if snake.head.colliderect(obstacle.rect):
-                game_on = False  # End the game if the snake collides with an obstacle
+                # End the game if the snake collides with an obstacle
+                snake.alive = False
                 gm.game_over_sound.play()
 
     # Draw snake
@@ -163,6 +167,7 @@ while True:
 
     # If the head passes over an orange, lengthen the snake and drop another orange
     if snake.head.x == orange.x and snake.head.y == orange.y:
+        snake.speed += 0.05
         orange = Orange()
         gm.got_apple_sound.play()
 
