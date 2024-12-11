@@ -74,7 +74,7 @@ class Game:
         # SMALL_FONT = pygame.font.Font("assets/font/Ramasuri.ttf", int(WIDTH/20))
 
         self.BIG_FONT = pygame.font.Font(
-            "assets/font/MidnightLetters.ttf", int(WIDTH / 10)
+            "assets/font/MidnightLetters.ttf", int(WIDTH / 8)
         )
         self.SMALL_FONT = pygame.font.Font(
             "assets/font/MidnightLetters.ttf", int(WIDTH / 20)
@@ -148,7 +148,7 @@ class Game:
         # Reset game configurations before starting a new game
         border_wrap = False
 
-        if event.key == pygame.K_q:  # 'Q' quits game
+        if event.key == pygame.K_ESCAPE:  # 'ESC' quits game
             pygame.quit()
             sys.exit()
         if event.key == pygame.K_c:
@@ -348,47 +348,36 @@ class Game:
                     sys.exit()
                 # Key pressed
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_DOWN:
-                        if n == 4:
-                            n = 0
-                        else:
-                            n += 1
-                    elif event.key == pygame.K_UP:
-                        if n == 0:
-                            n = 4
-                        else:
-                            n -= 1
-                    elif event.key == pygame.K_RIGHT:
-                        if configs[n] == 2:
-                            configs[n] = 0
-                        else:
-                            configs[n] += 1
-                        if n == 3:
-                            self.update_volume()
-                        if n == 4:
-                            if configs[n] >= len(self.translator.available_languages):
-                                configs[n] = 0
-                            self.translator.set_language(
-                                self.translator.available_languages[configs[4]]
-                            )
-                    elif event.key == pygame.K_LEFT:
-                        if configs[n] == 0:
-                            configs[n] = 2
-                        else:
-                            configs[n] -= 1
-                        if n == 3:
-                            self.update_volume()
-                        if n == 4:
-                            if configs[n] >= len(self.translator.available_languages):
-                                configs[n] = 0
-                            self.translator.set_language(
-                                self.translator.available_languages[configs[4]]
-                            )
-                    elif event.key == pygame.K_q:
-                        pygame.quit()
-                        sys.exit()
-                    elif event.key == pygame.K_j:
-                        stop = 1
+                    match event.key:
+                        case pygame.K_DOWN | pygame.K_s:
+                            n = (n + 1) % 5
+                        case pygame.K_UP | pygame.K_w:
+                            n = (n - 1) % 5
+                        case key if key in (
+                            pygame.K_RIGHT,
+                            pygame.K_d,
+                            pygame.K_LEFT,
+                            pygame.K_a,
+                        ):
+                            if key in (pygame.K_RIGHT, pygame.K_d):
+                                configs[n] += 1
+                            else:
+                                configs[n] -= 1
+                            if n == 3:
+                                self.update_volume()
+                            elif n == 4:
+                                if configs[n] >= len(
+                                    self.translator.available_languages
+                                ):
+                                    configs[n] = 0
+                                self.translator.set_language(
+                                    self.translator.available_languages[configs[4]]
+                                )
+                        case pygame.K_ESCAPE:
+                            pygame.quit()
+                            sys.exit()
+                        case pygame.K_j:
+                            stop = 1
                 self.draw_config(configs, actualPos=n)
 
     ## Get and save highscore from/in a file
