@@ -27,7 +27,7 @@ from app.apple import Apple
 from app.orange import Orange
 from app.game import singleton_instance as gm
 from app.translation import Translator
-from app.obstacles import create_obstacles
+from app.obstacles import Obstacle
 
 
 gm.draw_grid()
@@ -36,7 +36,10 @@ apple = Apple()  # An apple
 orange = Orange()  # An orange
 translator = Translator()
 GRID_SIZE = size[configs[1]]
-obstacles = create_obstacles(OBSTACLE_COUNT, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_COLOR)
+obstacles = [
+    Obstacle(snake, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_COLOR)
+    for _ in range(OBSTACLE_COUNT)
+]
 
 gm.center_prompt(WINDOW_TITLE, translator.message("start"))
 
@@ -142,7 +145,8 @@ while True:
         # Check for collisions with obstacles
         for obstacle in obstacles:
             if snake.head.colliderect(obstacle.rect):
-                game_on = False  # End the game if the snake collides with an obstacle
+                # End the game if the snake collides with an obstacle
+                snake.alive = False
                 gm.game_over_sound.play()
 
     # Draw snake
