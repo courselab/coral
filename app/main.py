@@ -37,12 +37,12 @@ gm.center_prompt(WINDOW_TITLE, translator.message("start"))
 
 GRID_SIZE = size[configs[1]]
 snake = Snake()  # The snake
-apple = Apple()  # An apple
-orange = Orange()  # An orange
 obstacles = [
     Obstacle(snake, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_COLOR)
     for _ in range(OBSTACLE_COUNT)
 ]
+apple = Apple(snake, obstacles)  # An apple
+orange = Orange(snake, obstacles)  # An orange
 game_on = gm.game_on
 
 while True:
@@ -162,7 +162,7 @@ while True:
     # If the head pass over an apple, lengthen the snake and drop another apple
     if snake.head.x == apple.x and snake.head.y == apple.y:
         snake.got_apple = True
-        apple = Apple(snake)
+        apple = Apple(snake, obstacles)
         gm.got_apple_sound.play()
 
     # If the head passes over an orange, lengthen the snake and drop another orange

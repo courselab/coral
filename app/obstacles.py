@@ -50,3 +50,6 @@ class Obstacle:
         :param arena: The game arena (pygame surface) where the obstacle will be drawn.
         """
         pygame.draw.rect(arena, self.color, self.rect)
+
+    def is_in_position(self, x: int, y: int) -> bool:
+        return x == self.x and y == self.y

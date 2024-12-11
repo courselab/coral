@@ -23,8 +23,8 @@ from app.fruits.fruitBase import BaseFruit
 
 
 class Orange(BaseFruit):
-    def __init__(self, snake=None):
-        super().__init__(ORANGE_COLOR, snake)
+    def __init__(self, snake, obstacles):
+        super().__init__(ORANGE_COLOR, snake, obstacles)
         self.dropped = False
 
     def update(self):

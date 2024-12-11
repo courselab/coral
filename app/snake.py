@@ -22,7 +22,6 @@ import random
 
 import pygame
 
-from app.apple import Apple
 from app.config import *
 from app.energybar import EnergyBar
 from app.game import singleton_instance as gm
@@ -167,8 +166,6 @@ class Snake:
             self.energy.set_max_energy()
             pygame.mixer.music.play()
 
-            # Drop an apple
-            apple = Apple()
 
         # Move the snake.
 

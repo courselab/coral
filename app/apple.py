@@ -23,12 +23,15 @@ from app.fruits.fruitBase import BaseFruit
 from app.config import *
 from app.game import singleton_instance as gm
 
+
 class Apple(BaseFruit):
-    def __init__(self, snake=None):
-        super().__init__(APPLE_COLOR, snake)
+    def __init__(self, snake, obstacles):
+        super().__init__(APPLE_COLOR, snake, obstacles)
 
     def update(self):
         super().update()
         stem_x = self.rect.centerx
         stem_y = self.rect.top - 2
-        pygame.draw.line(gm.arena, STEM_COLOR, (stem_x, stem_y), (stem_x, stem_y - 10), 3)
+        pygame.draw.line(
+            gm.arena, STEM_COLOR, (stem_x, stem_y), (stem_x, stem_y - 10), 3
+        )
