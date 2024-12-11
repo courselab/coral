@@ -133,7 +133,6 @@ while True:
         continue
 
     if game_on:
-        print(snake.speed)
         snake.update()
         gm.arena.fill(ARENA_COLOR)
         gm.draw_grid()
