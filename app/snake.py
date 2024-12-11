@@ -19,10 +19,11 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import random
+
 import pygame
 
-from app.config import *
 from app.apple import Apple
+from app.config import *
 from app.energybar import EnergyBar
 from app.game import singleton_instance as gm
 
@@ -62,7 +63,7 @@ class Snake:
         self.move_queue = []
 
         # Multiplier based on number of collected oranges.
-        self.speed = 1
+        self.speed = 1.0
 
     # Add movement to movement queuedef
     def set_direction(self, xmov, ymov):
@@ -162,7 +163,7 @@ class Snake:
             gm.game_over_sound.stop()
             self.alive = True
             self.got_apple = False
-            self.speed = 1
+            self.speed = 1.0
             self.energy.set_max_energy()
             pygame.mixer.music.play()
 
