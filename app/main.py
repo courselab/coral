@@ -142,6 +142,13 @@ while True:
         # Update and draw obstacles
         for obstacle in obstacles:
             obstacle.update(gm.arena)
+            # fixes apples and oranges spawning on top of obstacles
+            if obstacle.x == apple.x and obstacle.y == apple.y:
+                apple.x = obstacle.x - 1 % size[configs[1]]
+                apple.y = obstacle.x - 1 % size[configs[1]]
+            if obstacle.x == orange.x and obstacle.y == orange.y:
+                orange.x = obstacle.x - 1 % size[configs[1]]
+                orange.y = obstacle.x - 1 % size[configs[1]]
 
         # Check for collisions with obstacles
         for obstacle in obstacles:
