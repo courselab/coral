@@ -24,7 +24,7 @@ from app.config import *
 from app.game import singleton_instance as gm
 
 class BaseFruit:
-    def __init__(self, color, snake=None, obstacle=None):
+    def __init__(self, color, snake=None):
         self.color = color
         self.x = int(random.randint(0, WIDTH) / size[configs[1]]) * size[configs[1]]
         self.y = int(random.randint(0, HEIGHT) / size[configs[1]]) * size[configs[1]]
