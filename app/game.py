@@ -175,6 +175,7 @@ class Game:
             self.translator.message("instructions_4"),
             self.translator.message("instructions_5"),
             self.translator.message("instructions_6"),
+            self.translator.message("instructions_7"),
         ]
 
         y_offset = HEIGHT / 3
