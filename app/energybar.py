@@ -37,7 +37,9 @@ class EnergyBar:
         self.decrease_energy(ENERGY_CONSUMPTION)
         current_width = (self.energy / MAX_ENERGY) * ENERGY_BAR_WIDTH
         pygame.draw.rect(gm.arena, GREEN_COLOR, (self.x, self.y, current_width, self.height))
-        label = pygame.font.Font("assets/font/GetVoIP-Grotesque.ttf", int(WIDTH/48)).render(f'Energy: {self.energy} / {MAX_ENERGY}', True, WHITE_COLOR)
+
+        label = pygame.font.Font("assets/font/MidnightLetters.ttf", int(WIDTH/48)).render(f'Energy: {self.energy} / {MAX_ENERGY}', True, WHITE_COLOR)
+
         gm.arena.blit(label, (self.x, self.y + 3))
 
     def increase_energy(self, amount):
