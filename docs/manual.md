@@ -1,5 +1,14 @@
+<!--
+   SPDX-FileCopyrightText: 2023 Monaco F. J.
+   SPDX-FileCopyrightText: 2024 The authors of Coral
+  
+   SPDX-License-Identifier: GPL-3.0-or-later
 
- Coral Manual
+ This file is part of Cobra, and is a derivative work of KobraPy
+ (https://github.com/monacofj/kobrapy)
+-->
+
+Coral Manual
  ==============================
 
  Coral is intended as programming exercise.

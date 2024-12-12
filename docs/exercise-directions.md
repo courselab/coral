@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: 2023 Monaco F. J.
 
- Directions for the programming exercise
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
+Directions for the programming exercise
  =======================================
  
  KobraPy is intended as programming exercise.
