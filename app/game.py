@@ -132,35 +132,11 @@ class Game:
             center=(WIDTH / 2, HEIGHT * (0.8))
         )
         self.arena.blit(easy_mode_text, easy_mode_text_rect)
-        
+
         pygame.display.update()
-                
-        while ( event := pygame.event.wait() ):
+
+        while event := pygame.event.wait():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_i:
-                    # Save current display for restoring later
-                    old_surface = self.arena.copy()
-                    
-                    # Show instructions
-                    self.arena.fill(ARENA_COLOR)  # Fill with black background
-                    self.display_instructions()
-                    pygame.display.update()
-                    
-                    # Wait for I to be pressed again
-                    while True:
-                        event = pygame.event.wait()
-                        if event.type == pygame.QUIT:
-                            pygame.quit()
-                            sys.exit()
-                        if event.type == pygame.KEYDOWN and event.key == pygame.K_i:
-                            break
-                    
-                    # Restore game over screen
-                    self.arena.fill(ARENA_COLOR)  # Fill with black background
-                    self.arena.blit(old_surface, (0, 0))
-                    pygame.display.update()
-                    continue
-                    
                 break
             if event.type == pygame.QUIT:
                 pygame.quit()
