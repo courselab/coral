@@ -21,7 +21,6 @@
 import pygame
 import random
 from app.config import *
-from app.game import singleton_instance as gm
 
 class BaseFruit:
     def __init__(self, color, snake=None, obstacle=None):
@@ -38,5 +37,5 @@ class BaseFruit:
         self.rect = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
         self.radius = size[configs[1]] // 2
 
-    def update(self):
-        pygame.draw.circle(gm.arena, self.color, (self.rect.centerx, self.rect.centery), self.radius)
+    def update(self, game_arena):
+        pygame.draw.circle(game_arena, self.color, (self.rect.centerx, self.rect.centery), self.radius)

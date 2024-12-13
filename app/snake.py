@@ -27,7 +27,6 @@ from app.config import *
 from app.energybar import EnergyBar
 from app.game import singleton_instance as gm
 
-
 ##
 ## Snake class
 ##

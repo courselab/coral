@@ -35,14 +35,7 @@ translator = Translator()
 
 gm.center_prompt(WINDOW_TITLE, translator.message("start"))
 
-GRID_SIZE = size[configs[1]]
-snake = Snake()  # The snake
-apple = Apple()  # An apple
-orange = Orange()  # An orange
-obstacles = [
-    Obstacle(snake, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_COLOR)
-    for _ in range(OBSTACLE_COUNT)
-]
+
 game_on = gm.game_on
 
 while True:
@@ -69,7 +62,7 @@ while True:
                 instructions_shown = not instructions_shown
                 game_on = True
             elif key == pygame.K_SPACE:  # Increase speed
-                snake.speed = 2.0
+                gm.snake.speed = 2.0
 
             # Movement controls (only if game is not paused or showing instructions)
             if game_on and not instructions_shown:
@@ -86,15 +79,15 @@ while True:
 
                 if key in movement_keys:
                     x_dir, y_dir = movement_keys[key]
-                    if (x_dir != 0 and snake.xmov == 0) or (
-                        y_dir != 0 and snake.ymov == 0
+                    if (x_dir != 0 and gm.snake.xmov == 0) or (
+                        y_dir != 0 and gm.snake.ymov == 0
                     ):
-                        snake.set_direction(x_dir, y_dir)
+                        gm.snake.set_direction(x_dir, y_dir)
 
         # Key released
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_SPACE:  # Go back to normal speed
-                snake.speed = 1.0
+                gm.snake.speed = 1.0
 
     # Show instructions if the flag is set
     if instructions_shown:
@@ -133,49 +126,49 @@ while True:
         continue
 
     if game_on:
-        snake.update()
+        gm.snake.update()
         gm.arena.fill(ARENA_COLOR)
         gm.draw_grid()
-        apple.update()
-        orange.update()
+        gm.apple.update(gm.arena)
+        gm.orange.update(gm.arena)
 
         # Update and draw obstacles
-        for obstacle in obstacles:
+        for obstacle in gm.obstacles:
             obstacle.update(gm.arena)
             # fixes apples and oranges spawning on top of obstacles
-            if obstacle.x == apple.x and obstacle.y == apple.y:
-                apple.x = obstacle.x - 1 % size[configs[1]]
-                apple.y = obstacle.x - 1 % size[configs[1]]
-            if obstacle.x == orange.x and obstacle.y == orange.y:
-                orange.x = obstacle.x - 1 % size[configs[1]]
-                orange.y = obstacle.x - 1 % size[configs[1]]
+            if obstacle.x == gm.apple.x and obstacle.y == gm.apple.y:
+                gm.apple.x = obstacle.x - 1 % size[configs[1]]
+                gm.apple.y = obstacle.x - 1 % size[configs[1]]
+            if obstacle.x == gm.orange.x and obstacle.y == gm.orange.y:
+                gm.orange.x = obstacle.x - 1 % size[configs[1]]
+                gm.orange.y = obstacle.x - 1 % size[configs[1]]
 
         # Check for collisions with obstacles
-        for obstacle in obstacles:
-            if snake.head.colliderect(obstacle.rect):
+        for obstacle in gm.obstacles:
+            if gm.snake.head.colliderect(obstacle.rect):
                 # End the game if the snake collides with an obstacle
-                snake.alive = False
+                gm.snake.alive = False
                 gm.game_over_sound.play()
 
     # Draw snake
-    snake.draw()
+    gm.snake.draw()
     if game_on:
-        snake.energy.update()
+        gm.snake.energy.update()
 
     # Show score (snake length = head + tail)
-    score = gm.BIG_FONT.render(f"{len(snake.tail)}", True, SCORE_COLOR)
+    score = gm.BIG_FONT.render(f"{len(gm.snake.tail)}", True, SCORE_COLOR)
     gm.arena.blit(score, gm.score_rect)
 
-    # If the head pass over an apple, lengthen the snake and drop another apple
-    if snake.head.x == apple.x and snake.head.y == apple.y:
-        snake.got_apple = True
-        apple = Apple(snake)
+    # If the head pass over an apple, lengthen the gm. and drop another apple
+    if gm.snake.head.x == gm.apple.x and gm.snake.head.y == gm.apple.y:
+        gm.snake.got_apple = True
+        gm.apple = Apple(gm.snake)
         gm.got_apple_sound.play()
 
     # If the head passes over an orange, lengthen the snake and drop another orange
-    if snake.head.x == orange.x and snake.head.y == orange.y:
-        snake.speed += 0.05
-        orange = Orange()
+    if gm.snake.head.x == gm.orange.x and gm.snake.head.y == gm.orange.y:
+        gm.snake.speed += 0.05
+        gm.orange = Orange()
         gm.got_apple_sound.play()
 
     # Add the "Press (I)nstructions" text in the top-right corner
@@ -187,4 +180,4 @@ while True:
 
     # Update display and move clock.
     pygame.display.update()
-    gm.clock.tick(velocity[configs[0]] * snake.speed)
+    gm.clock.tick(velocity[configs[0]] * gm.snake.speed)

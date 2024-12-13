@@ -27,8 +27,8 @@ class Orange(BaseFruit):
         super().__init__(ORANGE_COLOR, snake)
         self.dropped = False
 
-    def update(self):
+    def update(self, game_arena):
         if not self.dropped:
             self.dropped = True
         if self.dropped:
-            super().update()
+            super().update(game_arena)

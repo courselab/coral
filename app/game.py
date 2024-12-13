@@ -25,7 +25,10 @@ import os
 
 from app.config import *
 from app.translation import Translator
-
+from app.apple import Apple
+from app.orange import Orange
+from app.obstacles import Obstacle
+from app.snake import Snake
 
 # singleton_module.py
 class Game:
@@ -92,6 +95,14 @@ class Game:
         self.highscore = self.get_high_score()
 
         self.translator = Translator()
+
+        self.snake = Snake()  # The snake
+        self.apple = Apple()  # An apple
+        self.orange = Orange()  # An orange
+        self.obstacles = [
+            Obstacle(self.snake, WIDTH, HEIGHT, size[configs[1]], OBSTACLE_COLOR)
+            for _ in range(OBSTACLE_COUNT)
+        ]       
 
     def center_prompt(self, title, subtitle):
         global hard_mode, border_wrap, CLOCK_TICKS
