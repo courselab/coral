@@ -9,7 +9,7 @@ Contributing to Coral
  Contribution workflow
  ------------------------------
 
- The official Coral repository is at https://github.com/monaco/kobrapy
+ The official Coral repository is at https://github.com/courselab/coral
    
  To start contributing, make sure you've read the essential documentation
  thoroughly:
@@ -93,11 +93,11 @@ Contributing to Coral
  When creating an ephemeral branch, use the following keywords to indicate the
  branch type:
 
- - `feat`  : extend of modify feature (GitFlow `feature`)
- - `hot`   : carry on maintenance on former releases  (GitFlow `hotfix`)
- - `rel`   : prepare a new release (GitFlow `release`)
- - `wip`   : work-in-progress branch (unrelated to any issue)
- - `adoc`  : critical maintance bypassing the regular workflow
+ - `feat`     : extend of modify feature (GitFlow `feature`)
+ - `hot`      : carry on maintenance on former releases  (GitFlow `hotfix`)
+ - `wip`      : work-in-progress branch (unrelated to any issue)
+ - `vx.y.z`   : prepare release vx.y.z, e.g. v1.0.0) (GitFlow `release`)
+- `adoc`      : critical maintance bypassing the regular workflow
 
  For `feat` and `hot` branches, use the scheme
 
