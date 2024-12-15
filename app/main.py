@@ -155,7 +155,6 @@ while True:
             if snake.head.colliderect(obstacle.rect):
                 # End the game if the snake collides with an obstacle
                 snake.alive = False
-                gm.game_over_sound.play()
 
     # Draw snake
     snake.draw()
