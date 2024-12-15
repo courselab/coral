@@ -38,7 +38,7 @@
         "quit": "Press ESC to quit",
         "instructions": "Press (I)nstructions",
         "game_over": "Game Over",
-        "restart": "Press to restart",
+        "restart": "Press any key to restart",
         "energy": "Energy"
     },
     "portuguese": {
@@ -80,7 +80,7 @@
         "quit": "Aperte ESC para sair",
         "instructions": "Aperte (I)nstruções",
         "game_over": "Game Over",
-        "restart": "Pressione para reiniciar",
+        "restart": "Pressione qualquer botão para reiniciar",
         "energy": "Energia"
     }
 }
