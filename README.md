@@ -59,7 +59,7 @@
   
   - Windows/Mac Users: You can download it from the official Python [website](https://www.python.org/downloads/).  
 
- - Pygame: The game requires the Pygame library, which can be installed using `pip` or other package managers like `pacman` on Arch Linux.
+ - Pygame: The game requires the Pygame library, which can be installed using one of the installation methods listed bellow or with a package manager of your choice.
 
  ### Installation Steps
  
@@ -85,11 +85,17 @@
  pip install pygame
  ```
 
- - Alternatively, if you're on an Arch-based system, you can install Pygame using pacman:
+ - Using `pacman` (for Arch Linux):
 
  ```bash
  sudo pacman -S python-pygame
  ```
+
+- Using `nix`:
+
+To create a development shell with all dependencies installed: `ǹix develop`
+
+To create a shell to simply run the game: `nix run`
 
  4. Run the game: After installing Pygame, you can start the game by running the coral.py file. Run the following command:
 
