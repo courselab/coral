@@ -142,14 +142,21 @@ while True:
         # Update and draw obstacles
         for obstacle in obstacles:
             obstacle.update(gm.arena)
-            # fixes apples and oranges spawning on top of obstacles
-            while obstacle.x == apple.x and obstacle.y == apple.y:
-                apple.recalc(snake)
-                apple.update()
 
-            while obstacle.x == orange.x and obstacle.y == orange.y:
-                orange.recalc(snake)
-                orange.update()
+        # Prevent fruits from being inside obstacles
+        restart_test = False
+        while restart_test:
+            restart_test = False
+            for obstacle in obstacles:
+                if obstacle.x == apple.x and obstacle.y == apple.y:
+                    print("recalc")
+                    apple.recalc(snake)
+                    apple.update()
+                    restart_test = True
+                if obstacle.x == orange.x and obstacle.y == orange.y:
+                    orange.recalc(snake)
+                    orange.update()
+                    restart_test = True
 
         # Check for collisions with obstacles
         for obstacle in obstacles:
