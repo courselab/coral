@@ -144,12 +144,11 @@ while True:
             obstacle.update(gm.arena)
 
         # Prevent fruits from being inside obstacles
-        restart_test = False
+        restart_test = True 
         while restart_test:
             restart_test = False
             for obstacle in obstacles:
                 if obstacle.x == apple.x and obstacle.y == apple.y:
-                    print("recalc")
                     apple.recalc(snake)
                     apple.update()
                     restart_test = True
