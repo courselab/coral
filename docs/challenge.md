@@ -64,37 +64,8 @@
  * The snake should start in a random position (but not too close to the
    border where it is heading to).
 
- Directions for this exercise
+  Other steps you **must** take
  ------------------------------
-
- The official repository of KobraPy is https://github.com/monacofj/kobrapy.
-
- To start working on the exercise:
-
- * create (don't fork) a new public repository in the online SCM platform;
-
- * give the development team access to the newly created repository;
-
- * clone your repository and copy KobraPy source into your work tree;
-
- * follow the instructions given in `docs/CONTRIBUTING.md`;
-
- * make the necessary changes 
-
- * commit your changes and proceed therefrom.
- 
-
- Other steps you **must** take
- ------------------------------
-
- __Name your project__
-
- You have the arduous task of choosing a cool, catchy, awesome name
- for your amazing new project (KobraPy is taken :)
-
- * Edit the documentation and the source code accordingly.
-    
- * Rename file `kobra.py` to match your project's name.
 
  __Revise copyright information__ 
 
@@ -123,8 +94,7 @@
  * provide a code of conduct document;
  
  * revise the contributor guidelines;
-
- * comply with SDPX [1] and REUSE [2] standards;
+* comply with SDPX [1] and REUSE [2] standards;
 
  * maintain a ChangeLog file
 

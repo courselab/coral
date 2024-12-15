@@ -5,7 +5,7 @@
  KobraPy is intended as programming exercise.
 
  It consists in a very simple version of the classical 80s' arcade snake game
- written in Python, that is provided as an initial codebase  that should be 
+ written in Python, that is provided as an initial codebase that should be 
  further extended by the learner. It was originally created as an educational
  resource to teach open-source development practices, tools and project
  management methodologies to graduate computer sciences students.
@@ -69,15 +69,13 @@
 
  To start working on the exercise:
 
- * create (don't fork) a new public repository in the online SCM platform;
+ * Your teacher should clone (not fork) a new public repository in the online SCM platform;
 
- * give the development team access to the newly created repository;
+ * You should request development team access to the newly created repository;
 
- * clone your repository and copy KobraPy source into your work tree
+ * Then follow the instructions given in `docs/CONTRIBUTING.md`;
 
- * follow the instructions given in `docs/CONTRIBUTING.md`.
-
- * make the necessary changes (see Copyright and attribution below)
+ * make the necessary changes (see Copyright and attribution below);
 
  * commit your changes (GitFlow) and proceed therefrom.
 
@@ -95,22 +93,13 @@
  into the public repository.
 
 
- 1) Name your project.
-
-    You have the arduous task of choosing a cool, catchy, awesome name
-    for your amazing new project (KobraPy is taken :)
-
-    * Edit the documentation and the source code accordingly.
-    
-    * Preferably, rename file `khobra.py` as you wish.
-
- 2) Edit your project's documentation properly.
+ 1) Edit your project's documentation properly.
  
    * Rewrite `README.md` providing information on your project.
 
    * Rewrite or replace `manual.md` according to your program.
 
- 3) Provide copyright and attribution information.
+ 2) Provide copyright and attribution information.
    
    * Update the author and copyright information in every source file.
 
