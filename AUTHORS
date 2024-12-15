@@ -1,5 +1,8 @@
+# SPDX-FileCopyrightText: 2024 The authors of Coral
+#
+# SPDX-License-Identifier: CC0-1.0
 
- The Authors of Cobra
+The Authors of Cobra
  ==============================
 
  * Luan Benson <luanbenson@usp.br> 
@@ -7,7 +10,7 @@
  Attribution
  ------------------------------
 
- Coral is a derivative work of KobraPy.
+ Coral is a derivative work of KobraPy (git@github.com/monacofj/KobraPy)
 
  KobraPy is an open education resource teaching open-source development
  practices and tools for newcomers. It was originally written by
