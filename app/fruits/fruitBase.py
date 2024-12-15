@@ -24,7 +24,7 @@ from app.config import *
 from app.game import singleton_instance as gm
 
 class BaseFruit:
-    def __init__(self, color, snake=None, obstacle=None):
+    def __init__(self, color, snake=None):
         self.color = color
         self.x = int(random.randint(0, WIDTH) / size[configs[1]]) * size[configs[1]]
         self.y = int(random.randint(0, HEIGHT) / size[configs[1]]) * size[configs[1]]
@@ -37,6 +37,10 @@ class BaseFruit:
 
         self.rect = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
         self.radius = size[configs[1]] // 2
+
+    def recalc(self, snake=None):
+        # Reconstruct fruit object to recalculate position in case of conflict
+        self.__init__(snake)
 
     def update(self):
         pygame.draw.circle(gm.arena, self.color, (self.rect.centerx, self.rect.centery), self.radius)
