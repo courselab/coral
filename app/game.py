@@ -22,12 +22,15 @@
 import pygame
 import sys
 import os
-
 from app.config import *
 
 # singleton_module.py
 class Game:
     def __init__(self):
+        self.snake_colors = [(0, 255, 0), (255, 0, 0), (0, 0, 255), (255, 255, 0)]  # Green, Red, Blue, Yellow
+        self.current_snake_color_index = 0  # Current snake index
+        self.snake_color = self.snake_colors[self.current_snake_color_index]  # Initial color
+
         pygame.init()
 
         self.clock = pygame.time.Clock()
@@ -82,7 +85,7 @@ class Game:
         self.score_rect = self.score.get_rect(center=(WIDTH/2, HEIGHT/20+HEIGHT/30))
     
         self.highscore = self.get_high_score()
-
+    
  
     def center_prompt(self,title, subtitle):
         global hard_mode, border_wrap, CLOCK_TICKS
@@ -136,7 +139,8 @@ class Game:
         # Set CLOCK_TICKS back to normal if not in hard mode
         if not hard_mode:
             configs[0] = 1
-            
+    
+   
     def display_instructions(self):
         instruction_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         # Fill the surface with a semi-transparent black (RGBA color)
@@ -159,12 +163,15 @@ class Game:
             text_surface = self.SMALL_FONT.render(line, True, (255, 255, 255))
             self.arena.blit(text_surface, (50, y_offset))
             y_offset += 50
+    
+    
 
     def draw_config(self,conf=[1,1,1,1]):
         velocity_string = ["Baixa", "Média", "Alta", "Extrema"]
         size_string = ["Pequeno", "Médio", "Grande"]
         f_string = ["Baixa", "Normal", "Alta"]
         sound_string = ["Baixo", "Médio", "Alto"]
+        color_string = ["Verde", "Vermelho", "Azul", "Amarelo"]
 
         self.arena.fill(CONFIG_COLOR)
         center_title = self.BIG_FONT.render("Configuração", True, MESSAGE_COLOR)
@@ -205,6 +212,14 @@ class Game:
         center_subtitle = self.SMALL_FONT.render("{}".format(sound_string[conf[3]]), True, MESSAGE_COLOR)
         center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.80)))
         self.arena.blit(center_subtitle, center_subtitle_rect)
+
+        # Opção de cor da cobra
+        center_subtitle = self.SMALL_FONT.render("Cor da Cobra:", True, LINE_COLOR)
+        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.85)))
+        self.arena.blit(center_subtitle, center_subtitle_rect)
+        center_subtitle = self.SMALL_FONT.render("{}".format(color_string[self.current_snake_color_index]), True, MESSAGE_COLOR)
+        center_subtitle_rect = center_subtitle.get_rect(center=(WIDTH/2, HEIGHT*(0.90)))
+        self.arena.blit(center_subtitle, center_subtitle_rect)
         
         pygame.display.update()
 
@@ -216,7 +231,6 @@ class Game:
     def config_prompt(self):
         self.draw_config()
 
-    # Wait for a keypress or a game quit event.
         n = 0
         stop = 0
         while True:
@@ -232,27 +246,35 @@ class Game:
                 # Key pressed
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_DOWN:  
-                        if n == 3:
+                        if n == 4:  
                             n = 0  
                         else:
                             n += 1
                     elif event.key == pygame.K_UP:   
                         if n == 0:
-                            n = 3 
+                            n = 4 
                         else:
                             n -= 1
                     elif event.key == pygame.K_RIGHT: 
-                        if configs[n] == 2:
-                            configs[n] = 0
+                        if n == 4:  
+                            self.current_snake_color_index = (self.current_snake_color_index + 1) % len(self.snake_colors)
+                            self.snake_color = self.snake_colors[self.current_snake_color_index]
                         else:
-                            configs[n] += 1
+                            if configs[n] == 2:
+                                configs[n] = 0
+                            else:
+                                configs[n] += 1
                         if n == 3:
                             self.update_volume()
                     elif event.key == pygame.K_LEFT:  
-                        if configs[n] == 0:
-                            configs[n] = 2
+                        if n == 4:  
+                            self.current_snake_color_index = (self.current_snake_color_index - 1) % len(self.snake_colors)
+                            self.snake_color = self.snake_colors[self.current_snake_color_index]
                         else:
-                            configs[n] -= 1
+                            if configs[n] == 0:
+                                configs[n] = 2
+                            else:
+                                configs[n] -= 1
                         if n == 3:
                             self.update_volume()
                     elif event.key == pygame.K_q:     
@@ -260,7 +282,8 @@ class Game:
                         sys.exit()
                     elif event.key == pygame.K_j: 
                         stop = 1
-                self.draw_config(configs)   
+                self.draw_config(configs)
+
 
     ## Get and save highscore from/in a file
     def save_high_score(self,score):

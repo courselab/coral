@@ -183,13 +183,13 @@ class Snake:
         GRID_SIZE = size[configs[1]]
         head_radius = GRID_SIZE // 2
         head_center = (self.head.x + head_radius, self.head.y + head_radius)
-        
-        # Select color based on snake's alive status
-        head_color = SNAKE_COLOR if self.alive else DEAD_SNAKE_COLOR
-        
+
+        # Use the configured snake color
+        head_color = gm.snake_color if self.alive else DEAD_SNAKE_COLOR
+
         # Draw the rounded head
         pygame.draw.circle(self.__surface, head_color, head_center, head_radius)
-        
+
         # Draw the rectangle body behind the head circle based on direction
         eye_offset = head_radius // 2
         if self.xmov == 1:  # Moving right
@@ -222,7 +222,7 @@ class Snake:
         eye_radius = 7
         left_eye_pos = (head_center[0] + left_eye[0], head_center[1] + left_eye[1])
         right_eye_pos = (head_center[0] + right_eye[0], head_center[1] + right_eye[1])
-        
+
         # Draw eyes based on snake's alive status
         if self.alive:
             pupil_radius = 4
@@ -250,6 +250,7 @@ class Snake:
         # Randomly display the tongue
         if self.alive and random.randint(0, 10) > 8:  # Adjust chance of appearance here
             pygame.draw.rect(self.__surface, "#FF0000", pygame.Rect(tongue_pos, tongue_direction))
+
             
     # Draw stylized tail
     def draw_tail(self, tail, direction):
@@ -273,8 +274,8 @@ class Snake:
             big_tail_center = (tail[0] + GRID_SIZE // 2 , tail[1])
             tail_center = (tail[0] + GRID_SIZE // 2, tail[1] + tail_radius)
 
-        # Choose color based on alive status
-        tail_color = SNAKE_COLOR if self.alive else DEAD_SNAKE_COLOR
+        # Use the configured snake color
+        tail_color = gm.snake_color if self.alive else DEAD_SNAKE_COLOR
 
         # Draw the main part of the tail (rounded edge)
         pygame.draw.circle(self.__surface, tail_color, tail_center, tail_radius)
@@ -303,6 +304,8 @@ class Snake:
                 else:
                     self.draw_tail(square, (self.tail[-2][0] - square[0], self.tail[-2][1] - square[1]))
             else:
-                pygame.draw.rect(gm.arena, SNAKE_COLOR if self.alive else DEAD_SNAKE_COLOR, square)
+                # Use the configured snake color
+                pygame.draw.rect(gm.arena, gm.snake_color if self.alive else DEAD_SNAKE_COLOR, square)
+
         # Draw head
         self.draw_head()
