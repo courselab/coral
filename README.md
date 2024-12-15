@@ -59,7 +59,7 @@
   
   - Windows/Mac Users: You can download it from the official Python [website](https://www.python.org/downloads/).  
 
- - Pygame: This project uses the  `pygame 2.6.0` library, python's package manager `pip` or other package manager of your choice.
+ - Pygame: The game requires the Pygame library, which can be installed using `pip` or other package managers like `pacman` on Arch Linux.
 
  ### Installation Steps
  
@@ -82,7 +82,7 @@
  - Using pip (recommended for most users):
  
  ```bash
- pip install -r requirements.txt
+ pip install pygame
  ```
 
  - Alternatively, if you're on an Arch-based system, you can install Pygame using pacman:
