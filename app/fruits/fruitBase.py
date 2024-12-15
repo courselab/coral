@@ -38,5 +38,9 @@ class BaseFruit:
         self.rect = pygame.Rect(self.x, self.y, size[configs[1]], size[configs[1]])
         self.radius = size[configs[1]] // 2
 
+    def recalc(self, snake=None):
+        # Reconstruct fruit object to recalculate position in case of conflict
+        self.__init__(snake)
+
     def update(self):
         pygame.draw.circle(gm.arena, self.color, (self.rect.centerx, self.rect.centery), self.radius)
