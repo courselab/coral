@@ -22,7 +22,7 @@ translator = Translator()
 
 gm.center_prompt(WINDOW_TITLE, translator.message("start"))
 
-GRID_SIZE = size[configs[1]]
+GRID_SIZE = size[configs[1]] 
 snake = Snake()  # The snake
 apple = Apple()  # An apple
 orange = Orange()  # An orange
@@ -131,7 +131,12 @@ while True:
         if grid_resize:
             apple.recalc(snake)
             orange.recalc(snake)
-
+            obstacles = []
+            GRID_SIZE = size[configs[1]] 
+            obstacles = [
+                Obstacle(snake, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_COLOR)
+                for _ in range(OBSTACLE_COUNT)
+            ]
         # Update and draw obstacles
         for obstacle in obstacles:
             obstacle.update(gm.arena)
@@ -181,7 +186,7 @@ while True:
     instruction_text = gm.IN_GAME_FONT.render(
         translator.message("instructions"), True, WHITE_COLOR
     )
-    instruction_text_rect = instruction_text.get_rect(topright=(WIDTH - 10, 10))
+    instruction_text_rect = instruction_text.get_rect(topright=(WIDTH - 10, 10)) 
     gm.arena.blit(instruction_text, instruction_text_rect)
 
     # Update display and move clock.
