@@ -120,11 +120,17 @@ while True:
         continue
 
     if game_on:
-        snake.update()
+        grid_resize = snake.update()
         gm.arena.fill(ARENA_COLOR)
         gm.draw_grid()
         apple.update()
         orange.update()
+
+
+        # Redraw fruits if the grid was resized
+        if grid_resize:
+            apple.recalc(snake)
+            orange.recalc(snake)
 
         # Update and draw obstacles
         for obstacle in obstacles:

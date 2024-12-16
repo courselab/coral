@@ -101,8 +101,9 @@ class Snake:
         return x, y, xmov, ymov
 
     # This function is called at each loop interation.
-    def update(self):
+    def update(self) -> bool:
         global apple, border_wrap
+        resize_grid = False
 
         # Read and pop movement from queue.
         if self.move_queue:
@@ -132,7 +133,7 @@ class Snake:
             gm.display_highscore(len(self.tail))
 
             self.draw()
-            gm.center_prompt(
+            resize_grid = gm.center_prompt(
                 gm.translator.message("game_over"), gm.translator.message("restart")
             )
 
@@ -184,6 +185,8 @@ class Snake:
         if border_wrap:
             self.head.x %= WIDTH
             self.head.y %= HEIGHT
+
+        return resize_grid
 
     # Draw stylized head
     def draw_head(self):
