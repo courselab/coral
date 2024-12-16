@@ -131,12 +131,13 @@ while True:
         if grid_resize:
             apple.recalc(snake)
             orange.recalc(snake)
-            obstacles = []
             GRID_SIZE = size[configs[1]] 
-            obstacles = [
-                Obstacle(snake, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_COLOR)
-                for _ in range(OBSTACLE_COUNT)
-            ]
+            for i in range(0, OBSTACLE_COUNT):
+                obstacles = [
+                    Obstacle(snake, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_COLOR)
+                    for _ in range(OBSTACLE_COUNT)
+                ]
+            snake = Snake()
         # Update and draw obstacles
         for obstacle in obstacles:
             obstacle.update(gm.arena)
