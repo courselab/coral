@@ -1,3 +1,9 @@
+---
+SPDX-FileCopyrightText: 2023 Monaco F. J. <monaco@usp.br>
+SPDX-FileCopyrightText: 2024 Coral authors <git@github.com/courselab/coral>
+SPDX-License-Identifier: GPL-3.0-or-later
+---
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -9,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Licensing compatible with the SPDX specification (#145)
 - Static obstacles to the map (PR #160)
 - Ability to make the snake "run" by pressing space bar (#84)
 - Support for multiple languages(#141)
