@@ -1,14 +1,17 @@
+# SPDX-FileCopyrightText: 2024 The authors of Coral
+#
+# SPDX-License-Identifier: CC0-1.0
 
  The Authors of Cobra
  ==============================
 
- * Caio Capocasali		    <caio.capocasali@usp.br>
- * Caio Petroncini		    <caiopetroncini@usp.br>
- * Gabriela Rodrigues do Prado	    <gabrielarprado@usp.br>
- * Guilherme de Abreu Barreto	    <de_abreu@usp.br>
- * Guilherme Sousa Panza	    <guilherme.panza@usp.br>
- * Gustavo Alvares Andó		    <gustavo.ando@usp.br>
- * Jean Michel Furtado M'Peko	    <furtado.jean@usp.br>
+
+ * Caio Petroncini		                <caiopetroncini@usp.br>
+ * Gabriela Rodrigues do Prado	     <gabrielarprado@usp.br>
+ * Guilherme de Abreu Barreto	      <de_abreu@usp.br>
+ * Guilherme Sousa Panza	           <guilherme.panza@usp.br>
+ * Gustavo Alvares Andó		           <gustavo.ando@usp.br>
+ * Jean Michel Furtado M'Peko	      <furtado.jean@usp.br>
  * João Brasieliro Moreira da Silva <joaobrasileiro@usp.br>
  * João Pedro Rodrigues Freitas     <joaoprf23@usp.br>
  * João Victor De Bortoli Prado     <joaovictordbp@usp.br>
@@ -21,6 +24,7 @@
  * Théo Bruno Frey Riffel           <theobfriffel@usp.br>
  * Vitor Daniel de Resende          <vitor.resende@usp.br>
  * Vitor Rocha Veiga                <vitorveiga@usp.br>
+ * Shogo Shima                      <shogoshima@usp.br>
 
  Attribution
  ------------------------------
@@ -39,9 +43,3 @@
 
  If you ever check out this project in any educational program, the author
  would love to hear from you (monaco@usp.br)."
-
-
-
-
-
-

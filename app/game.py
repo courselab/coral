@@ -1,23 +1,11 @@
-# !/usr/bin/python3
+#  Copyright (c) 2023, Monaco F. J. <monaco@usp.br>
+#  Copyright 2024 The Authors of Coral
+#  SPDX-FileCopyrightText: 2023 Monaco F. J. <monaco@usp.br>
+#  SPDX-FileCopyrightText: 2024 Coral authors <git@github.com/courselab/coral>
+#   
+#  SPDX-License-Identifier: GPL-3.0-or-later
 #
-#   Copyright (c) 2023, Monaco F. J. <monaco@usp.br>
-#   Copyright 2024 The Authors of Coral
-#
-#   This file is part of Coral.
-#
-#   Coral is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
-#
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License
-#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+#  This file is part of Cobra, a derivative work of KobraPy.
 
 import pygame
 import sys
@@ -93,8 +81,9 @@ class Game:
 
         self.translator = Translator()
 
-    def center_prompt(self, title, subtitle):
+    def center_prompt(self, title, subtitle) -> bool:
         global hard_mode, border_wrap, CLOCK_TICKS
+        resize_grid = False
 
         # Show title and subtitle
         center_title = self.BIG_FONT.render(title, True, MESSAGE_COLOR)
@@ -169,7 +158,7 @@ class Game:
             pygame.quit()
             sys.exit()
         if event.key == pygame.K_c:
-            self.config_prompt()
+            resize_grid = self.config_prompt()
         if event.key == pygame.K_h:
             hard_mode = True
             configs[0] = 2
@@ -179,6 +168,8 @@ class Game:
         # Set CLOCK_TICKS back to normal if not in hard mode
         if not hard_mode:
             configs[0] = 1
+
+        return resize_grid;
 
     def display_instructions(self):
         instruction_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
@@ -274,7 +265,7 @@ class Game:
             base_volume_levels[2] * volume_multiplier[configs[3]]
         )
 
-    def config_prompt(self):
+    def config_prompt(self) -> bool:
         self.draw_config()
 
         # Wait for a keypress or a game quit event.
@@ -314,13 +305,17 @@ class Game:
                             elif n == 4:
                                 self.translator.set_language(
                                     self.translator.available_languages[configs[4]]
-                                )
+                            )
                         case pygame.K_ESCAPE:
                             pygame.quit()
                             sys.exit()
                         case pygame.K_j:
                             stop = 1
                 self.draw_config(configs, actualPos=n)
+        # Returns true if the grid size changed
+        if (n == 1):
+            return True
+        return False
 
     ## Get and save highscore from/in a file
     def save_high_score(self, score):

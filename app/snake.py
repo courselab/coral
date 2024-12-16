@@ -1,22 +1,9 @@
-# !/usr/bin/python3
+#  SPDX-FileCopyrightText: 2023 Monaco F. J. <monaco@usp.br>
+#  SPDX-FileCopyrightText: 2024 Coral authors <git@github.com/courselab/coral>
+#   
+#  SPDX-License-Identifier: GPL-3.0-or-later
 #
-#   Copyright (c) 2023, Monaco F. J. <monaco@usp.br>
-#   Copyright 2024 The Authors of Coral
-#
-#   This file is part of Coral.
-#
-#   Coral is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
-#
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License
-#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#  This file is part of Cobra, a derivative work of KobraPy.
 
 import random
 
@@ -114,8 +101,9 @@ class Snake:
         return x, y, xmov, ymov
 
     # This function is called at each loop interation.
-    def update(self):
+    def update(self) -> bool:
         global apple, border_wrap
+        resize_grid = False
 
         # Read and pop movement from queue.
         if self.move_queue:
@@ -145,7 +133,7 @@ class Snake:
             gm.display_highscore(len(self.tail))
 
             self.draw()
-            gm.center_prompt(
+            resize_grid = gm.center_prompt(
                 gm.translator.message("game_over"), gm.translator.message("restart")
             )
 
@@ -197,6 +185,8 @@ class Snake:
         if border_wrap:
             self.head.x %= WIDTH
             self.head.y %= HEIGHT
+
+        return resize_grid
 
     # Draw stylized head
     def draw_head(self):

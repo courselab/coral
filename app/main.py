@@ -1,22 +1,9 @@
-# !/usr/bin/python3
+#  SPDX-FileCopyrightText: 2023 Monaco F. J. <monaco@usp.br>
+#  SPDX-FileCopyrightText: 2024 Coral authors <git@github.com/courselab/coral>
+#   
+#  SPDX-License-Identifier: GPL-3.0-or-later
 #
-#   Copyright (c) 2023, Monaco F. J. <monaco@usp.br>
-#   Copyright 2024 The Authors of Coral
-#
-#   This file is part of Coral.
-#
-#   Coral is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
-#
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License
-#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#  This file is part of Cobra, a derivative work of KobraPy.
 
 import sys
 
@@ -35,7 +22,7 @@ translator = Translator()
 
 gm.center_prompt(WINDOW_TITLE, translator.message("start"))
 
-GRID_SIZE = size[configs[1]]
+GRID_SIZE = size[configs[1]] 
 snake = Snake()  # The snake
 apple = Apple()  # An apple
 orange = Orange()  # An orange
@@ -133,22 +120,41 @@ while True:
         continue
 
     if game_on:
-        snake.update()
+        grid_resize = snake.update()
         gm.arena.fill(ARENA_COLOR)
         gm.draw_grid()
         apple.update()
         orange.update()
 
+
+        # Redraw fruits if the grid was resized
+        if grid_resize:
+            apple.recalc(snake)
+            orange.recalc(snake)
+            GRID_SIZE = size[configs[1]] 
+            for i in range(0, OBSTACLE_COUNT):
+                obstacles = [
+                    Obstacle(snake, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_COLOR)
+                    for _ in range(OBSTACLE_COUNT)
+                ]
+            snake = Snake()
         # Update and draw obstacles
         for obstacle in obstacles:
             obstacle.update(gm.arena)
-            # fixes apples and oranges spawning on top of obstacles
-            if obstacle.x == apple.x and obstacle.y == apple.y:
-                apple.x = obstacle.x - 1 % size[configs[1]]
-                apple.y = obstacle.x - 1 % size[configs[1]]
-            if obstacle.x == orange.x and obstacle.y == orange.y:
-                orange.x = obstacle.x - 1 % size[configs[1]]
-                orange.y = obstacle.x - 1 % size[configs[1]]
+
+        # Prevent fruits from being inside obstacles
+        restart_test = True 
+        while restart_test:
+            restart_test = False
+            for obstacle in obstacles:
+                if obstacle.x == apple.x and obstacle.y == apple.y:
+                    apple.recalc(snake)
+                    apple.update()
+                    restart_test = True
+                if obstacle.x == orange.x and obstacle.y == orange.y:
+                    orange.recalc(snake)
+                    orange.update()
+                    restart_test = True
 
         # Check for collisions with obstacles
         for obstacle in obstacles:
@@ -181,7 +187,7 @@ while True:
     instruction_text = gm.IN_GAME_FONT.render(
         translator.message("instructions"), True, WHITE_COLOR
     )
-    instruction_text_rect = instruction_text.get_rect(topright=(WIDTH - 10, 10))
+    instruction_text_rect = instruction_text.get_rect(topright=(WIDTH - 10, 10)) 
     gm.arena.blit(instruction_text, instruction_text_rect)
 
     # Update display and move clock.
