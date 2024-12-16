@@ -360,10 +360,15 @@ class Game:
     ## Draw the arena
     ##
     def draw_grid(self):
-        for x in range(0, WIDTH, size[configs[1]]):
-            for y in range(0, HEIGHT, size[configs[1]]):
-                rect = pygame.Rect(x, y, size[configs[1]], size[configs[1]])
-                pygame.draw.rect(self.arena, GRID_COLOR, rect, 1)
+        num_cells_x = WIDTH // size[configs[1]]
+        num_cells_y = HEIGHT // size[configs[1]]
 
+        cell_width = WIDTH // num_cells_x
+        cell_height = HEIGHT // num_cells_y
+
+        for x in range(0, WIDTH, cell_width):
+            for y in range(0, HEIGHT, cell_height):
+                rect = pygame.Rect(x, y, cell_width, cell_height)  # Correção da identação
+                pygame.draw.rect(self.arena, GRID_COLOR, rect, 1)
 
 singleton_instance = Game()
