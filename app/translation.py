@@ -1,3 +1,10 @@
+#  SPDX-FileCopyrightText: 2023 Monaco F. J. <monaco@usp.br>
+#  SPDX-FileCopyrightText: 2024 Coral authors <git@github.com/courselab/coral>
+#   
+#  SPDX-License-Identifier: GPL-3.0-or-later
+#
+#  This file is part of Cobra, a derivative work of KobraPy.
+
 import json
 
 class Translator:
