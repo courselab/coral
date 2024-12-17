@@ -6,3 +6,4 @@
 #  This file is part of Coral, a derivative work of KobraPy.
 
 pygame==2.6.0
+pyinstaller==6.11.0
