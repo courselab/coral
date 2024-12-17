@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Generated binary for Linux running in x86-64 architecture(#220)
 - Licensing compatible with the SPDX specification (#145)
 - Static obstacles to the map (PR #160)
 - Ability to make the snake "run" by pressing space bar (#84)
