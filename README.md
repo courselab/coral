@@ -1,5 +1,13 @@
+<!--
+ SPDX-FileCopyrightText: 2023 Monaco F. J. <monaco@usp.br>
+ SPDX-FileCopyrightText: 2024 Coral authors <git@github.com/courselab/coral>
+  
+ SPDX-License-Identifier: GPL-3.0-or-later
 
- Copyright 2023 Monaco F. J. <monaco@usp.br> 
+ This file is part of Cobra, a derivative work of KobraPy.
+-->
+
+Copyright 2023 Monaco F. J. <monaco@usp.br> 
  Copyright 2024 The Authors of Coral
 
  Coral is free software and is distributed under the terms of the
@@ -59,7 +67,7 @@
   
   - Windows/Mac Users: You can download it from the official Python [website](https://www.python.org/downloads/).  
 
- - Pygame: The game requires the Pygame library, which can be installed using one of the installation methods listed bellow or with a package manager of your choice.
+ - Pygame: This project uses the  `pygame 2.6.0` library, python's package manager `pip` or other package manager of your choice.
 
  ### Installation Steps
  
@@ -82,7 +90,7 @@
  - Using pip (recommended for most users):
  
  ```bash
- pip install pygame
+ pip install -r requirements.txt
  ```
 
  - Using `pacman` (for Arch Linux):

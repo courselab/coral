@@ -1,23 +1,9 @@
-
-# !/usr/bin/python3
+#  SPDX-FileCopyrightText: 2023 Monaco F. J. <monaco@usp.br>
+#  SPDX-FileCopyrightText: 2024 Coral authors <git@github.com/courselab/coral>
+#   
+#  SPDX-License-Identifier: GPL-3.0-or-later
 #
-#   Copyright (c) 2023, Monaco F. J. <monaco@usp.br>
-#   Copyright 2024 The Authors of Coral
-#
-#   This file is part of Coral.
-#
-#   Coral is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
-#
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License
-#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#  This file is part of Cobra, a derivative work of KobraPy.
 
 # Supported video modes
 
@@ -39,16 +25,20 @@ SCORE_COLOR     = "#ffffff"  # Color of the scoreboard.
 LINE_COLOR     = "#000000"  # Color of lines in scoreboard.
 MESSAGE_COLOR   = "#808080"  # Color of the game-over message.
 STEM_COLOR      = "#228B22"
+SELECTED_CONFIG_COLOR = "#DE6604"  # Color of the selected config.
 
 WINDOW_TITLE    = "Coral"  # Window title.
 MAX_QUEUE_SIZE = 3 # Movement queue max size
+
+OBSTACLE_COUNT = 5
+OBSTACLE_COLOR = "#FF4500"
 
 velocity = [4, 7, 10,15]
 size = [60, 40, 20]  
 n_apple = [1, 2, 3] 
 base_volume_levels = [0.4, 0.6, 0.7]
 volume_multiplier = [0.3, 1.1, 1.9]
-configs = [1, 1, 0, 1]
+configs = [1, 1, 0, 1, 0]
 
 
 WHITE_COLOR = (255, 255, 255)
@@ -65,6 +55,6 @@ border_wrap = False
 is_muted = False #Definied is muted as false 
 instructions_shown = False
 
-
 HIGHSCORE_FILENAME = "data/highscore.bin"
 
+language = "english"
