@@ -5,11 +5,12 @@
 #   
 #  SPDX-License-Identifier: GPL-3.0-or-later
 #
-#  This file is part of Cobra, a derivative work of KobraPy.
+#  This file is part of Coral, a derivative work of KobraPy.
 
 import pygame
 import sys
 import os
+
 from app.config import *
 from app.translation import Translator
 
@@ -17,10 +18,6 @@ from app.translation import Translator
 # singleton_module.py
 class Game:
     def __init__(self):
-        self.snake_colors = [(0, 255, 0), (255, 0, 0), (0, 0, 255), (255, 255, 0)]  # Green, Red, Blue, Yellow
-        self.current_snake_color_index = 0  # Current snake index
-        self.snake_color = self.snake_colors[self.current_snake_color_index]  # Initial color
-
         pygame.init()
 
         self.clock = pygame.time.Clock()
@@ -81,6 +78,7 @@ class Game:
         )
 
         self.highscore = self.get_high_score()
+
         self.translator = Translator()
 
     def center_prompt(self, title, subtitle) -> bool:
@@ -170,6 +168,7 @@ class Game:
         # Set CLOCK_TICKS back to normal if not in hard mode
         if not hard_mode:
             configs[0] = 1
+
         return resize_grid;
 
     def display_instructions(self):
@@ -195,8 +194,6 @@ class Game:
             text_surface = self.SMALL_FONT.render(line, True, (255, 255, 255))
             self.arena.blit(text_surface, (50, y_offset))
             y_offset += 50
-    
-    
 
     def get_options(self):
         options = [
@@ -271,6 +268,7 @@ class Game:
     def config_prompt(self) -> bool:
         self.draw_config()
 
+        # Wait for a keypress or a game quit event.
         n = 0
         stop = 0
         while True:
