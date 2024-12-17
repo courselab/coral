@@ -11,11 +11,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0]
 
 ### Added
 
-- Generated binary for Linux running in x86-64 architecture(#220)
+- Generated binary for Linux running in x86-64 architecture (#220)
 - Licensing compatible with the SPDX specification (#145)
 - Static obstacles to the map (PR #160)
 - Ability to make the snake "run" by pressing space bar (#84)
