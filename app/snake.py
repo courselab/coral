@@ -138,14 +138,22 @@ class Snake:
             )
 
             # Respawn the head with initial directions
+            self.x, self.y, self.xmov, self.ymov = self.random_position()
+            self.head.x = self.x
+            self.head.y = self.y
 
-            self.reset()
             self.draw()
+
+            # Respawn the initial tail
+            self.tail = []
 
             # Resurrection
             gm.game_over_sound.stop()
-      
-          
+            self.alive = True
+            self.got_apple = False
+            self.speed = 1.0
+            self.energy.set_max_energy()
+            pygame.mixer.music.play(-1)
 
             # Drop an apple
             apple = Apple()
@@ -179,8 +187,6 @@ class Snake:
             self.head.y %= HEIGHT
 
         return resize_grid
-    
-
 
     # Draw stylized head
     def draw_head(self):
@@ -352,18 +358,3 @@ class Snake:
                 )
         # Draw head
         self.draw_head()
-
-    def reset(self):
-            
-        self.x, self.y, self.xmov, self.ymov = self.random_position()
-        self.head.x = self.x
-        self.head.y = self.y
-        self.tail = []
-        self.alive = True
-        self.got_apple = False
-        self.speed = 1.0
-        self.energy.set_max_energy()
-        pygame.mixer.music.play(-1)
-
-
-            
