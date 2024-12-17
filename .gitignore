@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 The authors of Coral
+#
+# SPDX-License-Identifier: CC0-1.0
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -164,4 +168,6 @@ cython_debug/
 # Game files
 data/
 
+# OS
+.DS_Store
 *~
