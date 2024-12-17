@@ -10,7 +10,6 @@ import sys
 import pygame
 
 from app.apple import Apple
-from app.poisonApple import PoisonApple
 from app.config import *
 from app.game import singleton_instance as gm
 from app.obstacles import Obstacle
@@ -27,7 +26,6 @@ GRID_SIZE = size[configs[1]]
 snake = Snake()  # The snake
 apple = Apple()  # An apple
 orange = Orange()  # An orange
-poison_apple = PoisonApple(snake)  # A poison apple
 obstacles = [
     Obstacle(snake, WIDTH, HEIGHT, GRID_SIZE, OBSTACLE_COLOR)
     for _ in range(OBSTACLE_COUNT)
@@ -127,13 +125,12 @@ while True:
         gm.draw_grid()
         apple.update()
         orange.update()
-        poison_apple.update() # Update poison apple
+
 
         # Redraw fruits if the grid was resized
         if grid_resize:
             apple.recalc(snake)
             orange.recalc(snake)
-            poison_apple.reset()
             GRID_SIZE = size[configs[1]] 
             for i in range(0, OBSTACLE_COUNT):
                 obstacles = [
@@ -157,10 +154,6 @@ while True:
                 if obstacle.x == orange.x and obstacle.y == orange.y:
                     orange.recalc(snake)
                     orange.update()
-                    restart_test = True
-                if poison_apple.active and obstacle.x == poison_apple.x and obstacle.y == poison_apple.y:
-                    poison_apple.recalc(snake)
-                    poison_apple.update()
                     restart_test = True
 
         # Check for collisions with obstacles
@@ -189,21 +182,6 @@ while True:
         snake.speed += 0.05
         orange = Orange()
         gm.got_apple_sound.play()
-
-    # If the snake eats a poison apple
-    if poison_apple.active and snake.head.colliderect(poison_apple.rect):
-        # Decrease snake length
-        if len(snake.tail) > 0:
-            snake.tail.pop(0)
-            gm.got_apple_sound.play()
-        #If there is no tail, the snake dies
-        else:
-            snake.alive = False
-            gm.game_over_sound.play()
-            gm.display_highscore(len(snake.tail))
-            #snake.reset()
-            #poison_apple.reset()
-        poison_apple = PoisonApple(snake) # Respawn poison apple
 
     # Add the "Press (I)nstructions" text in the top-right corner
     instruction_text = gm.IN_GAME_FONT.render(
