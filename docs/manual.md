@@ -4,7 +4,7 @@
   
    SPDX-License-Identifier: GPL-3.0-or-later
 
- This file is part of Cobra, and is a derivative work of KobraPy
+ This file is part of Coral, and is a derivative work of KobraPy
  (https://github.com/monacofj/kobrapy)
 -->
 
