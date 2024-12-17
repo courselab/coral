@@ -1,5 +1,13 @@
+<!--
+ SPDX-FileCopyrightText: 2023 Monaco F. J. <monaco@usp.br>
+ SPDX-FileCopyrightText: 2024 Coral authors <git@github.com/courselab/coral>
+  
+ SPDX-License-Identifier: GPL-3.0-or-later
 
- Copyright 2023 Monaco F. J. <monaco@usp.br> 
+ This file is part of Cobra, a derivative work of KobraPy.
+-->
+
+Copyright 2023 Monaco F. J. <monaco@usp.br> 
  Copyright 2024 The Authors of Coral
 
  Coral is free software and is distributed under the terms of the
@@ -30,7 +38,7 @@
 
  User instructions are available in the file `docs/manual.md`.
 
- If you're exploring KobraPy as a programming exercise, please refer to
+ If you're exploring Coral as a programming exercise, please refer to
  the file `docs/challenge.md` for directions. 
 
  And if you like it, feel free to let the author know.
@@ -41,3 +49,58 @@
  Your contribution will be greatly appreciated.
 
  See `docs/CONTRIBUTING.md` for further information.
+
+ Installation
+ ------------------------------
+
+ Follow these steps to set up and run the Coral Snake Game:
+
+ ### Prerequisites
+
+- Python 3: Make sure you have Python 3 installed on your machine.   
+  - Linux Users: You can use `apt` to install Python:  
+    ```bash
+    sudo apt update
+    sudo apt install python3
+    ```  
+    Note: The exact installation process may vary depending on your Linux distribution. Check your distribution's documentation if needed.  
+  
+  - Windows/Mac Users: You can download it from the official Python [website](https://www.python.org/downloads/).  
+
+ - Pygame: This project uses the  `pygame 2.6.0` library, python's package manager `pip` or other package manager of your choice.
+
+ ### Installation Steps
+ 
+ 1. Clone the repository:
+
+ First, clone the Coral repository to your local machine by running the following command in your terminal:
+
+ ```bash
+ git clone git@github.com:courselab/coral.git
+ ``` 
+
+ 2. Navigate to the project folder: Once the repository is cloned, navigate to the `coral` folder:
+ 
+ ```bash
+ cd coral
+ ```
+
+ 3. Install dependencies: To install the required dependencies, you'll need to install Pygame. Run the following command:
+ 
+ - Using pip (recommended for most users):
+ 
+ ```bash
+ pip install -r requirements.txt
+ ```
+
+ - Alternatively, if you're on an Arch-based system, you can install Pygame using pacman:
+
+ ```bash
+ sudo pacman -S python-pygame
+ ```
+
+ 4. Run the game: After installing Pygame, you can start the game by running the coral.py file. Run the following command:
+
+ ```bash
+ python coral.py
+ ```
