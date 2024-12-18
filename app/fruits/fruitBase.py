@@ -3,7 +3,7 @@
 #   
 #  SPDX-License-Identifier: GPL-3.0-or-later
 #
-#  This file is part of Cobra, a derivative work of KobraPy.
+#  This file is part of Coral, a derivative work of KobraPy.
 
 import pygame
 import random
