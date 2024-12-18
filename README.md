@@ -45,7 +45,7 @@ See `docs/CONTRIBUTING.md` for further information.
 Playing
 ------------------------------
 
-Either download the game's executeable from [Releases](https://github.com/courselab/coral/releases) and run it or follow the installation instructions to run it from your terminal with `python coral.py`
+You can download a packaged executable of the game from [Releases](https://github.com/courselab/coral/releases). Pick a version compatible with your operating system, extract the contents of the zip file, an run the executable `coral` file. Otherwise follow the installation instructions bellow to run it using the source code.
 
 
 Installing
@@ -57,45 +57,51 @@ Coral requires the installation of `python3`, the libary [`pygame`](https://pypi
 
 #### Installation Steps
 
-1. Install Python
-
-- Linux Users: You can use `apt` to install Python:  
-  ```bash
-  sudo apt update
-  sudo apt install python3
-  ```  
-
-  Note: The exact installation process may vary depending on your Linux distribution. Check your distribution's documentation if needed.  
-
-- Windows/Mac Users: You can download it from the official Python [website](https://www.python.org/downloads/).  
-
-2. Clone the repository:
+##### 1. Clone the repository:
 
 First, clone the Coral repository to your local machine by running the following command in your terminal:
 
 ```bash
-git clone git@github.com:courselab/coral.git
+git clone https://github.com/courselab/coral.git
 ``` 
 
-3. Navigate to the project folder: Once the repository is cloned, navigate to the `coral` folder:
+##### 2. Navigate to the project folder: Once the repository is cloned, navigate to the `coral` folder:
 
 ```bash
 cd coral
 ```
 
-3. Install dependencies: To install the required dependencies, you'll need to install Pygame. Run the following command:
+##### 3. Install Python and required libraries
 
-- Using pip (recommended for most users):
+:::note Using Nix
+All dependencies are described in the `flake.nix` file, so that:
+  - the game can be executed with `nix run`
+  - A development environment with all required dependencies can be accessed with `nix develop`
+That's it, you're done. Skip all following steps.
+:::
+
+- Installing python
+
+  - Linux users: You can use `apt` to install Python:  
+    ```bash
+    sudo apt update
+    sudo apt install python3
+    ```  
+
+    Note: The exact installation process may vary depending on your Linux distribution. Check your distribution's documentation if needed.  
+
+  - Windows/Mac Users: You can download it from the official Python [website](https://www.python.org/downloads/).  
+
+
+- Installing dependencies using pip (recommended for most users):
 
 ```bash
 pip install -r requirements.txt
 ```
 
-- Using `nix`:
+##### 4. Running the game
 
-Create a development shell with all dependencies installed: `nix develop`
-
-4. Run the game: you can start the game by running the coral.py file. Run the following command:
+You can start the game by running the coral.py file. Run the following command:
 
 ```bash
 python coral.py

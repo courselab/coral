@@ -12,6 +12,10 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in
     {
+      packages.${system}.default = pkgs.writeShellScriptBin "coral" ''
+        ${pkgs.python3.withPackages (python-pkgs: with python-pkgs; [ pygame ])}/bin/python coral.py
+      '';
+
       devShells.${system}.default = pkgs.mkShell {
         packages = [
           (pkgs.python3.withPackages (python-pkgs: with python-pkgs; [ pygame pyinstaller ]))
