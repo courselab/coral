@@ -1,9 +1,11 @@
 
-Copyright 2023 Monaco F. J. <monaco@usp.br> 
-Copyright 2024 The Authors of Coral
-
-Coral is free software and is distributed under the terms of the
-GNU General Public License 3.0.
+<!--
+ SPDX-FileCopyrightText: 2023 Monaco F. J. <monaco@usp.br>
+ SPDX-FileCopyrightText: 2024 Coral authors <git@github.com/courselab/coral>
+  
+ SPDX-License-Identifier: GPL-3.0-or-later
+ This file is part of Cobra, a derivative work of KobraPy.
+-->
 
 Coral - Snake game challenge
 ==============================
@@ -73,10 +75,11 @@ cd coral
 
 ##### 3. Install Python and required libraries
 
-> [!note]
+> [!note] When using Nix
 > All dependencies are described in the `flake.nix` file, so that:
 >   - the game can be executed with `nix run`
 >   - A development environment with all required dependencies can be accessed with `nix develop`
+>
 > That's it, you're done. Skip all following steps.
 
 - Installing python
