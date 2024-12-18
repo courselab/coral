@@ -75,8 +75,8 @@ cd coral
 
 ##### 3. Install Python and required libraries
 
-> [!note] When using Nix
-> All dependencies are described in the `flake.nix` file, so that:
+> [!note]
+> When using the Nix package manager, all dependencies are described in the `flake.nix` file, so that:
 >   - the game can be executed with `nix run`
 >   - A development environment with all required dependencies can be accessed with `nix develop`
 >
