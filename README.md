@@ -1,4 +1,3 @@
-
 <!--
  SPDX-FileCopyrightText: 2023 Monaco F. J. <monaco@usp.br>
  SPDX-FileCopyrightText: 2024 Coral authors <git@github.com/courselab/coral>
@@ -6,6 +5,10 @@
  SPDX-License-Identifier: GPL-3.0-or-later
  This file is part of Cobra, a derivative work of KobraPy.
 -->
+
+Copyright 2023 Monaco F. J. <monaco@usp.br> 
+
+Copyright 2024 The Authors of Coral
 
 Coral - Snake game challenge
 ==============================
